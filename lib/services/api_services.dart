@@ -1,16 +1,17 @@
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ApiService {
-  static const String baseUrl = 'http://10.0.2.2:3000'; // Android emulator
-
-  static Future<String> getBackendMessage() async {
-    final uri = Uri.parse('$baseUrl/');
-    final response = await http.get(uri);
+  static Future<String> fetchMessage() async {
+    final url = Uri.parse('http://10.0.2.2:3000/message'); //  Correct route
+    final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      return response.body;
+      final jsonBody = json.decode(response.body);
+      return jsonBody['message'] ?? 'No message';
     } else {
-      throw Exception('❌ Failed to connect: ${response.statusCode}');
+      throw Exception('Failed to load message');
     }
   }
 }
+

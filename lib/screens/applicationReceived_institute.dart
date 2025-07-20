@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tech_linker_new/screens/InstituteMessage.dart';
 
 class ApplicationsReceivedScreen extends StatefulWidget {
   const ApplicationsReceivedScreen({super.key});
@@ -14,82 +15,104 @@ class _ApplicationsReceivedScreenState
     {
       'studentName': 'Ali Raza',
       'internshipTitle': 'Flutter Developer',
-      'status': 'ShortListed',
+      'Email': 'Aliraza@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'Sara Khan',
       'internshipTitle': 'UI Designer',
-      'status': 'Accepted',
+      'Email': 'Sara@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'Ahmed Khan',
       'internshipTitle': 'Backend Developer',
-      'status': 'ShortListed',
+      'Email': 'Ahmed@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'Ahsan Khan',
       'internshipTitle': 'Backend Developer',
-      'status': 'Rejected',
+      'Email': 'Ahsan@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'AliKhan',
       'internshipTitle': 'Backend Developer',
-      'status': 'ShortListed',
+      'Email': 'AliKhan@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'Daniyal Khan',
       'internshipTitle': 'Backend Developer',
-      'status': 'Accepted',
+      'Email': 'Daniyal@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'Samina Khan',
-      'internshipTitle': 'Backend Developer',
-      'status': 'Rejected',
+      'internshipTitle': 'Samina Developer',
+      'Email': 'Aliraza@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'Eman Khan',
       'internshipTitle': 'Backend Developer',
-      'status': 'ShortListed',
+      'Email': 'Eman@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'AbuBakkar Khan',
       'internshipTitle': 'Backend Developer',
-      'status': 'Accepted',
+      'Email': 'AbuBakkar@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'Taniya',
       'internshipTitle': 'Backend Developer',
-      'status': 'ShortListed',
+      'Email': 'Taniya@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'ALiza',
       'internshipTitle': 'Backend Developer',
-      'status': 'Accepted',
+      'Email': 'ALiza@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'Samia',
       'internshipTitle': 'Backend Developer',
-      'status': 'Rejected',
+      'Email': 'Samia@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'Tahira',
       'internshipTitle': 'Backend Developer',
-      'status': 'ShortListed',
+      'Email': 'Tahira@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'Minahil',
       'internshipTitle': 'Backend Developer',
-      'status': 'Rejected',
+      'Email': 'Minahil@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'Tamseela',
       'internshipTitle': 'Backend Developer',
-      'status': 'Accepted',
+      'Email': 'Tamseela@gmail.com',
+      'status': 'New',
+    },
+    {
+      'studentName': 'Hassan',
+      'internshipTitle': 'Backend Developer',
+      'Email': 'Hassan@gmail.com',
+      'status': 'New',
     },
     {
       'studentName': 'Haseeb',
       'internshipTitle': 'Backend Developer',
-      'status': 'ShortListed',
+      'Email': 'Haseeb@gmail.com',
+      'status': 'New',
     },
 
   ];
@@ -99,20 +122,21 @@ class _ApplicationsReceivedScreenState
       allApplications[index]['status'] = newStatus;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4, // All, Accepted, Rejected
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Applications Received",style: TextStyle(color: Colors.white),),
-          iconTheme: IconThemeData(color: Colors.white),
+          title: const Text("Applications Received", style: TextStyle(color: Colors.white)),
+          iconTheme: const IconThemeData(color: Colors.white),
           backgroundColor: Colors.deepPurple,
-          bottom: TabBar(
+          bottom: const TabBar(
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             tabs: [
-              Tab(text: 'All'),
+              Tab(text: 'New'),
               Tab(text: 'Accepted'),
               Tab(text: 'Rejected'),
               Tab(text: 'ShortListed'),
@@ -121,7 +145,7 @@ class _ApplicationsReceivedScreenState
         ),
         body: TabBarView(
           children: [
-            buildApplicationsList('All'),
+            buildApplicationsList('New'),
             buildApplicationsList('Accepted'),
             buildApplicationsList('Rejected'),
             buildApplicationsList('ShortListed'),
@@ -132,22 +156,23 @@ class _ApplicationsReceivedScreenState
   }
 
   Widget buildApplicationsList(String statusFilter) {
-    List<Map<String, String>> filteredList;
-    if(statusFilter=='All'){
-      filteredList = allApplications;
-    } else{
-      filteredList=allApplications.where((app)=> app['status']== statusFilter).toList();
-    }
-    if(filteredList.isEmpty){
-      return Center(child: Text('No Application with Status "$statusFilter".',style: TextStyle(color: Colors.grey,fontSize: 16),));
-    }
+    List<Map<String, String>> filteredList = allApplications
+        .where((app) => app['status'] == statusFilter)
+        .toList();
 
+    if (filteredList.isEmpty) {
+      return Center(
+        child: Text(
+          'No Application with Status "$statusFilter".',
+          style: const TextStyle(color: Colors.grey, fontSize: 16),
+        ),
+      );
+    }
 
     return ListView.builder(
       itemCount: filteredList.length,
       itemBuilder: (context, index) {
         final app = filteredList[index];
-        // Get original index from allApplications
         final originalIndex = allApplications.indexOf(app);
 
         return Card(
@@ -159,48 +184,73 @@ class _ApplicationsReceivedScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Student: ${app['studentName']}',
-                    style:  TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
-                 SizedBox(height: 5),
-                Text('Internship: ${app['internshipTitle']}'),
-                 SizedBox(height: 5),
-                Text('Status: ${app['status']}',
-                    style:  TextStyle(
-                        fontStyle: FontStyle.italic, color: Colors.grey)),
-                 SizedBox(height: 10),
 
-                /// Show Accept/Reject/Restore buttons
+                //Name and Message Icon (only for Accepted)
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (app['status'] != 'Accepted')
+                    Text('Student: ${app['studentName']}',
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+
+                    // Message Icon for Accepted Status
+                    if (statusFilter == 'Accepted')
+                      IconButton(
+                        icon: const Icon(Icons.message, color: Colors.deepPurple),
+                        tooltip: 'Message Student',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MessagesScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                ),
+
+                const SizedBox(height: 5),
+                Text('Internship: ${app['internshipTitle']}'),
+                Text('Email: ${app['Email']}'),
+                const SizedBox(height: 5),
+
+                if (statusFilter != 'New')
+                  Text('Status: ${app['status']}',
+                      style: const TextStyle(
+                          fontStyle: FontStyle.italic, color: Colors.grey)),
+
+                const SizedBox(height: 10),
+
+                // Buttons only for "New" Tab
+                if (statusFilter == 'New')
+                  Row(
+                    children: [
                       ElevatedButton(
                         onPressed: () =>
                             updateStatus(originalIndex, 'Accepted'),
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green),
-                        child:  Text('Accept'),
+                        child: const Text('Accept'),
                       ),
-                     SizedBox(width: 10),
-                    if (app['status'] != 'Rejected')
+                      const SizedBox(width: 10),
                       ElevatedButton(
                         onPressed: () =>
                             updateStatus(originalIndex, 'Rejected'),
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red),
-                        child: Text('Reject'),
+                        child: const Text('Reject'),
                       ),
-                    SizedBox(width: 7,),
-                    if (app['status'] != 'ShortListed')
+                      const SizedBox(width: 10),
                       ElevatedButton(
                         onPressed: () =>
                             updateStatus(originalIndex, 'ShortListed'),
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue),
-                        child: Text('ShortListed'),
+                        child: const Text('ShortList'),
                       ),
-                  ],
-                )
+                    ],
+                  ),
               ],
             ),
           ),
@@ -208,4 +258,5 @@ class _ApplicationsReceivedScreenState
       },
     );
   }
+
 }

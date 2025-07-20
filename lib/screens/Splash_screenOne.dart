@@ -1,8 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:tech_linker_new/screens/Splash_ScreenTwo.dart';
 import 'package:tech_linker_new/widget/coustomElevated_Button.dart';
-class ScreenOne extends StatelessWidget {
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
+import 'package:tech_linker_new/services/api_services.dart';
+
+class ScreenOne extends StatefulWidget {
   const ScreenOne({super.key});
+
+  @override
+  State<ScreenOne> createState() => _ScreenOneState();
+}
+
+class _ScreenOneState extends State<ScreenOne> {
+  // String backendMessage = "Waiting for backend...";
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getMessageFromBackend();
+  // }
+  //
+  // void getMessageFromBackend() async {
+  //   String msg = await ApiService.fetchMessage();
+  //   setState(() {
+  //     backendMessage = msg;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +75,19 @@ class ScreenOne extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
+
+                // /// Backend message added here
+                // Text(
+                //   backendMessage,
+                //   style: TextStyle(
+                //     color: Colors.yellowAccent,
+                //     fontSize: 16,
+                //     fontWeight: FontWeight.w600,
+                //   ),
+                // ),
+
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 18),
                   child: Text(
                     'TechLinker is your guide. Explore internships\nthat match your passion and skills.',
                     textAlign: TextAlign.center,
@@ -63,8 +98,12 @@ class ScreenOne extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 150),
-                CustomElevatedButton(text: 'Get Started', onPressed: (){ Navigator.of(context).push(_modernRoute());})
+                SizedBox(height: 100),
+                CustomElevatedButton(
+                    text: 'Get Started',
+                    onPressed: () {
+                      Navigator.of(context).push(_modernRoute());
+                    }),
               ],
             ),
           ],
@@ -73,7 +112,7 @@ class ScreenOne extends StatelessWidget {
     );
   }
 
-  /// 👇 MODERN Slide + Fade + Scale Animation
+  ///  MODERN Slide + Fade + Scale Animation
   Route _modernRoute() {
     return PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 600),
@@ -96,9 +135,4 @@ class ScreenOne extends StatelessWidget {
       },
     );
   }
-
-
-
-
-
 }
