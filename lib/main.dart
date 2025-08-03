@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tech_linker_new/screens/Splash_screenOne.dart';
+import 'package:tech_linker_new/screens/student/home/home.dart';
+import 'package:tech_linker_new/screens/student/main_tab.dart';
 // import 'package:firebase_core/firebase_core.dart';
 // import 'firebase_options.dart';
 void main() {
@@ -11,7 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
         return Container(
