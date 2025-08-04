@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:tech_linker_new/widget/intern_Card.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:tech_linker_new/screens/InstituteInternship_detailScreen.dart';
 
 class Instituteinternships extends StatefulWidget {
   const Instituteinternships({super.key});
@@ -9,169 +11,120 @@ class Instituteinternships extends StatefulWidget {
 }
 
 class _InstituteinternshipsState extends State<Instituteinternships> {
-  String searchQuery='';
-  TextEditingController searchController =TextEditingController();
-  List<Map<String,dynamic>>Internships= [
-    {
-      "text": "Flutter Developer",
-      "posted": "12May2025",
-      "institute": "Era Tech",
-      "location": "Mumtaz Market",
-      "featured":false,
-      "featuredAt":null,
+  List<Map<String, dynamic>> internships = [];
+  File? _selectedImage;
 
-    },
-    {
-      "text": "UI/Ux",
-      "posted": "15Feb2025",
-      "institute": "Era Tech",
-      "location": "Mumtaz Market",
-      "featured":false,
-      "featuredAt":null,
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-
-    },
-    {
-      "text": "React Native",
-      "posted": "12Jan2025",
-      "institute": "Era Tech",
-      "location": "Mumtaz Market",
-      "featured":false,
-      "featuredAt":null,
-
-
-    },
-    {
-      "text": "React Node",
-      "posted": "09April2025",
-      "institute": "Era Tech",
-      "location": "Mumtaz Market",
-      "featured":false,
-      "featuredAt":null,
-
-
-    },
-    {
-      "text": "Java",
-      "posted": "12June2025",
-      "institute": "Era Tech",
-      "location": "Mumtaz Market",
-      "featured":false,
-      "featuredAt":null,
-
-    },
-    {
-      "text": "Java Script",
-      "posted": "01August2025",
-      "institute": "Era Tech",
-      "location": "Mumtaz Market",
-      "featured":false,
-      "featuredAt":null,
-
-    },
-    {
-      "text": "Graphic Designing",
-      "posted": "27March2025",
-      "institute": "Era Tech",
-      "location": "Mumtaz Market",
-      "featured":false,
-      "featuredAt":null,
-    },
-
-  ];
-  void onFeatured(int index){
-    setState(() {
-      Internships[index]['featured']=!(Internships[index]['featured']??false);
-      Internships = List.from(Internships); // force rebuild
-      Internships.sort((a, b) {
-        if ((a['featured'] ?? false) && (b['featured'] ?? false)) {
-          return (b['featuredAt'] as DateTime).compareTo(a['featuredAt'] as DateTime);
-        }
-        return (b['featured'] ? 1 : 0).compareTo(a['featured'] ? 1 : 0);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
       });
-    });
+      _showPostForm();
+    }
   }
-  void onDelete(int index){
-   setState(() {
-     Internships.removeAt(index);
-   });
-  }
-  @override
-  Widget build(BuildContext context) {
-    final filteredList =Internships.where((item)=>
-    item['text'].toLowerCase().contains(searchQuery.toLowerCase())||
-    item['institute'].toLowerCase().contains(searchQuery.toLowerCase())).toList();
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        title: Text('My Internships', style: TextStyle(color: Colors.white,
-            fontWeight: FontWeight.w500,
-            fontStyle: FontStyle.italic,
-            shadows: [
-              Shadow(color: Colors.black, blurRadius: 2, offset: Offset(2, 2)),
-              Shadow(
-                  color: Colors.deepPurple, blurRadius: 6, offset: Offset(2, 2))
-            ]),),
-        iconTheme: IconThemeData(color: Colors.white),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-             onChanged: (value){setState(() {
-               searchQuery=value;
-             });},
-              decoration: InputDecoration(
-                hintText: 'Search by name or institute',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)
-                ),
-                filled: true,
-                fillColor: Colors.white
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: filteredList.length,
-                itemBuilder: (context, index) {
-                  final item = filteredList[index];
-                  final realIndex = Internships.indexOf(item);
-                  return InternCard(
-                    text: item['text'],
-                    posted: item['posted'],
-                    institute: item['institute'],
-                    location: item['location'],
-                    featured:item['featured'],
-                    onTap: () {},
-                    onDeleteTap: () {
-                      if (realIndex != -1) {
-                        onDelete(realIndex); // ✅ Use real index
-                      }
-                    },
-                onFeaturedTap: () {
-                setState(() {
-                Internships[index]['featured'] = !(Internships[index]['featured'] ?? false);
-                Internships[index]['featuredAt'] = Internships[index]['featured'] ? DateTime.now() : null;
 
-                Internships = List.from(Internships); // force rebuild
-                Internships.sort((a, b) {
-                if ((a['featured'] ?? false) && (b['featured'] ?? false)) {
-                return (b['featuredAt'] as DateTime).compareTo(a['featuredAt'] as DateTime);
-                }
-                return (b['featured'] ? 1 : 0).compareTo(a['featured'] ? 1 : 0);
-                });
-                });
+  void _showPostForm() {
+    final titleController = TextEditingController();
+    final locationController = TextEditingController();
+    final descriptionController = TextEditingController();
+    String type = 'Paid';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              if (_selectedImage != null)
+                Image.file(_selectedImage!, height: 100),
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(labelText: 'Internship Title'),
+              ),
+              TextField(
+                controller: locationController,
+                decoration: InputDecoration(labelText: 'Location'),
+              ),
+              TextField(
+                controller: descriptionController,
+                decoration: InputDecoration(labelText: 'Description'),
+              ),
+              DropdownButton<String>(
+                value: type,
+                onChanged: (value) => setState(() => type = value!),
+                items: ['Paid', 'Unpaid']
+                    .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                    .toList(),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (titleController.text.isNotEmpty &&
+                      locationController.text.isNotEmpty) {
+                    setState(() {
+                      internships.add({
+                        'title': titleController.text,
+                        'location': locationController.text,
+                        'description': descriptionController.text,
+                        'type': type,
+                        'image': _selectedImage,
+                        'posted': DateTime.now().toString().substring(0, 10)
+                      });
+                    });
+                    Navigator.pop(context);
+                  }
                 },
-                //     onDeleteTap: () => onDelete(index),
-                  );
-                }
-            ),
+                child: Text('Post Internship'),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
-  }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("My Internships"),
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: internships.isEmpty
+          ? Center(child: Text("No internships yet"))
+          : ListView.builder(
+        itemCount: internships.length,
+        itemBuilder: (context, index) {
+          final post = internships[index];
+          return Card(
+            margin: EdgeInsets.all(10),
+            child: ListTile(
+              leading: post['image'] != null
+                  ? Image.file(post['image'], width: 50, fit: BoxFit.cover)
+                  : null,
+              title: Text(post['title']),
+              subtitle: Text("${post['location']} • ${post['type']}"),
+              trailing: Text(post['posted']),
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>InstituteinternshipDetailscreen(post: post)));
+              },
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _pickImage,
+        child: Icon(Icons.camera_alt),
+        backgroundColor: Colors.blueAccent,
+      ),
+    );
+  }
+}
