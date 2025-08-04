@@ -3,7 +3,7 @@ class CustomListTiles extends StatelessWidget {
   final IconData icon;
   final String title;
   final VoidCallback onTap;
-  final Color color;
+  final Color? color;
 
   const CustomListTiles({super.key,required this.icon,required this.title,required this.onTap,required this.color});
 
