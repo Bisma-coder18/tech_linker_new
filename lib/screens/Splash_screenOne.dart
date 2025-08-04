@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tech_linker_new/screens/Splash_ScreenTwo.dart';
 import 'package:tech_linker_new/widget/coustomElevated_Button.dart';
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:tech_linker_new/services/api_services.dart';
 
 class ScreenOne extends StatefulWidget {
@@ -13,20 +13,20 @@ class ScreenOne extends StatefulWidget {
 }
 
 class _ScreenOneState extends State<ScreenOne> {
-  // String backendMessage = "Waiting for backend...";
+  String backendMessage = "Waiting for backend...";
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getMessageFromBackend();
-  // }
-  //
-  // void getMessageFromBackend() async {
-  //   String msg = await ApiService.fetchMessage();
-  //   setState(() {
-  //     backendMessage = msg;
-  //   });
-  // }
+  @override
+  void initState() {
+    super.initState();
+    getMessageFromBackend();
+  }
+
+  void getMessageFromBackend() async {
+    String msg = await ApiService.fetchMessage();
+    setState(() {
+      backendMessage = msg;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,15 +76,15 @@ class _ScreenOneState extends State<ScreenOne> {
                 ),
                 const SizedBox(height: 18),
 
-                // /// Backend message added here
-                // Text(
-                //   backendMessage,
-                //   style: TextStyle(
-                //     color: Colors.yellowAccent,
-                //     fontSize: 16,
-                //     fontWeight: FontWeight.w600,
-                //   ),
-                // ),
+                /// Backend message added here
+                Text(
+                  backendMessage,
+                  style: TextStyle(
+                    color: Colors.yellowAccent,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 18),
