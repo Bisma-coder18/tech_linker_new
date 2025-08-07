@@ -6,14 +6,12 @@ import 'package:tech_linker_new/widget/TextField_widget.dart';
 
 class studentSignUpOne extends StatefulWidget {
   const studentSignUpOne ({super.key});
-
   @override
   State<studentSignUpOne > createState() => _ScreenFiveState();
 }
 
 class _ScreenFiveState extends State<studentSignUpOne > {
 
-  @override
   TextEditingController nameCtrl=TextEditingController();
   TextEditingController emailCtrl=TextEditingController();
   TextEditingController passwordCtrl=TextEditingController();
@@ -119,7 +117,7 @@ class _ScreenFiveState extends State<studentSignUpOne > {
                     });
                   }
                   if(nameError == null && emailError == null && passwordError == null && conformPasswordError==null){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ScreenSix()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ScreenSix(email: emailCtrl.text.trim(),fullName: nameCtrl.text.trim(),password: passwordCtrl.text.trim(),)));
                   }
                 });
 

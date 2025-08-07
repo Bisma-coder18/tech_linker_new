@@ -3,10 +3,12 @@ import 'package:tech_linker_new/screens/Admin_dashboard.dart';
 import 'package:tech_linker_new/widget/Container_Widget.dart';
 import 'package:tech_linker_new/widget/CustomElevated_Button.dart';
 import 'package:tech_linker_new/widget/TextField_widget.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 
 class AdminsignupScreenone extends StatefulWidget {
   const AdminsignupScreenone({super.key});
-
   @override
   State<AdminsignupScreenone> createState() => _AdminsignupScreenoneState();
 }
@@ -20,6 +22,40 @@ class _AdminsignupScreenoneState extends State<AdminsignupScreenone> {
   String?emailError;
   String?passwordError;
   String?confirmError;
+  Future<void> registerAdmin() async {
+    final url = Uri.parse('http://10.0.2.2:3000/admins/signup');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'fullName': nameCtrl.text.trim(),
+          'email': emailCtrl.text.trim(),
+          'password': passwordCtrl.text.trim(),
+        }),
+      );
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 201) {
+        // Signup successful
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => AdminDashboard()));
+      } else {
+        // Signup failed
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(responseData['message'] ?? 'Signup failed'),
+          backgroundColor: Colors.red,
+        ));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Server error: $e'),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return  SafeArea(
@@ -105,11 +141,13 @@ class _AdminsignupScreenoneState extends State<AdminsignupScreenone> {
                         setState(() {
                           confirmError='Password Not Match';
                         });
-                      }if(nameError==null&&emailError==null&&passwordError==null&&confirmError==null){
-                        setState(() {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AdminDashboard()));
-                        });
+                      }if (nameError == null &&
+                          emailError == null &&
+                          passwordError == null &&
+                          confirmError == null) {
+                        registerAdmin(); // <-- backend call
                       }
+
                   },
                       text: 'Next', backgroundColor: Colors.white, fontsize: 20, fontWeight: FontWeight.bold, textColor: Colors.black),
                 )

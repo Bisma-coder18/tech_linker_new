@@ -3,9 +3,16 @@ import 'package:tech_linker_new/screens/Institute_Dashboard.dart';
 import 'package:tech_linker_new/widget/Container_Widget.dart';
 import 'package:tech_linker_new/widget/CustomElevated_Button.dart';
 import 'package:tech_linker_new/widget/TextField_widget.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 
 class InstitutesignupScreentwo extends StatefulWidget {
-  const InstitutesignupScreentwo({super.key});
+  final String institute;
+  final String email;
+  final String password;
+  final String business;
+  const InstitutesignupScreentwo({super.key,required this.password,required this.email,required this.business,required this.institute});
 
   @override
   State<InstitutesignupScreentwo> createState() => _InstitutesignupScreentwoState();
@@ -20,6 +27,51 @@ class _InstitutesignupScreentwoState extends State<InstitutesignupScreentwo> {
   String? addressError;
   String? selectedCity;
   List<String>CityType =['Lahore','Gujranwala','Islamabad','Gujrat','GujarKhan','Sadar','Faisalabaad','RawalPindi'];
+  Future<void> postInstituteData() async {
+    final url = Uri.parse('http://10.0.2.2:3000/institutes/signup');
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'instituteName': widget.institute,
+        'businessType': widget.business,
+        'email': widget.email,
+        'password': widget.password,
+        'phone': phoneCtrl.text.trim(),
+        'city': selectedCity ?? "",
+        'contactPerson': contactCtrl.text.trim(),
+        'address': addressCtrl.text.trim(),
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      final data = json.decode(response.body);
+      print('✅ Signup successful: ${data['message']}');
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Signup Successful! Redirecting...")),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const InstituteDashboard()),
+        );
+      }
+    } else {
+      final error = json.decode(response.body);
+      print('❌ Signup failed: ${error['message']}');
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Signup Failed: ${error['message']}")),
+        );
+      }
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -91,27 +143,35 @@ class _InstitutesignupScreentwoState extends State<InstitutesignupScreentwo> {
                          addressError==null?SizedBox.shrink():Text(addressError!,style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
                         Padding(
                           padding: const EdgeInsets.only(top:20,left: 30,right: 30,bottom: 20),
-                          child: CustomelevatedButton(onPressed: (){
-                            if(phoneCtrl.text.isEmpty){
+                          child: CustomelevatedButton(
+                            onPressed: () {
                               setState(() {
-                                phoneError='MustRequired';
+                                phoneError = phoneCtrl.text.isEmpty ? 'Must Required' : null;
+                                contactError = contactCtrl.text.isEmpty ? 'Must Required' : null;
+                                addressError = addressCtrl.text.isEmpty ? 'Must Required' : null;
                               });
-                            } if(contactCtrl.text.isEmpty){
-                              setState(() {
-                                contactError='MustRequired';
-                              });
-                            } if(addressCtrl.text.isEmpty){
-                              setState(() {
-                                addressError='MustRequired';
-                              });
-                            }
-                            if(phoneError==null && contactError==null && addressError==null){
-                              setState(() {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>InstituteDashboard()));
-                              });
-                            }
 
-                          }, text: 'NEXT', backgroundColor: Colors.white, fontsize: 20, fontWeight: FontWeight.bold, textColor: Colors.black),
+                              if (phoneError == null && contactError == null && addressError == null) {
+                                if (selectedCity == null || selectedCity!.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Please select a city')),
+                                  );
+                                } else {
+                                  print('Business: "${widget.business}"');
+                                  print('Institute: "${widget.institute}"');
+
+                                  postInstituteData();
+                                }
+                              }
+
+                            },
+                            text: 'NEXT',
+                            backgroundColor: Colors.white,
+                            fontsize: 20,
+                            fontWeight: FontWeight.bold,
+                            textColor: Colors.black,
+                          ),
+
                         )
                       ],
                     ),

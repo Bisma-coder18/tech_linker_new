@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tech_linker_new/screens/InstituteInternship_detailScreen.dart';
+import 'package:http/http.dart' as http;
 
 class Instituteinternships extends StatefulWidget {
   const Instituteinternships({super.key});
@@ -13,6 +14,10 @@ class Instituteinternships extends StatefulWidget {
 class _InstituteinternshipsState extends State<Instituteinternships> {
   List<Map<String, dynamic>> internships = [];
   File? _selectedImage;
+  final   titleController = TextEditingController();
+  final locationController = TextEditingController();
+  final   descriptionController = TextEditingController();
+  String selectedType = 'Paid';
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -25,13 +30,50 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
       _showPostForm();
     }
   }
+  Future<void> _submitInternship() async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse("http://10.0.2.2:3000/api/internships/add"),
+
+
+    );
+
+    // ✅ Add form fields
+    request.fields['title'] = titleController.text;
+    request.fields['location'] = locationController.text;
+    request.fields['description'] = descriptionController.text;
+    request.fields['type'] = selectedType; // Paid/Unpaid dropdown value
+
+    // ✅ Add image file (if picked)
+    if (_selectedImage != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'image',
+        _selectedImage!.path,
+      ));
+    }
+
+    // ✅ Send request
+    var response = await request.send();
+
+    if (response.statusCode == 201) {
+      titleController.clear();
+      locationController.clear();
+      descriptionController.clear();
+      setState(() {
+        _selectedImage = null;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Internship posted successfully')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to post internship')),
+      );
+    }
+  }
+
 
   void _showPostForm() {
-    final titleController = TextEditingController();
-    final locationController = TextEditingController();
-    final descriptionController = TextEditingController();
-    String type = 'Paid';
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -59,14 +101,16 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
                 decoration: InputDecoration(labelText: 'Description'),
               ),
               DropdownButton<String>(
-                value: type,
-                onChanged: (value) => setState(() => type = value!),
+                value: selectedType,
+                onChanged: (value) => setState(() => selectedType = value!),
                 items: ['Paid', 'Unpaid']
                     .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                     .toList(),
               ),
               ElevatedButton(
                 onPressed: () {
+                  _submitInternship(
+                  );
                   if (titleController.text.isNotEmpty &&
                       locationController.text.isNotEmpty) {
                     setState(() {
@@ -74,7 +118,7 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
                         'title': titleController.text,
                         'location': locationController.text,
                         'description': descriptionController.text,
-                        'type': type,
+                        'type': selectedType,
                         'image': _selectedImage,
                         'posted': DateTime.now().toString().substring(0, 10)
                       });

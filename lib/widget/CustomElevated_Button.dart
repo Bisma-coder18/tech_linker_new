@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 class CustomelevatedButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String text;
   final Color backgroundColor;
   final Color textColor;

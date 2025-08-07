@@ -137,7 +137,8 @@ class _InstitutesignupScreenoneState extends State<InstitutesignupScreenone> {
                             });
                           }
                           if(instituteError==null&& emailError==null&&passwordError==null&&confirmError==null ){
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>InstitutesignupScreentwo()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>InstitutesignupScreentwo(institute: instituteCtrl.text.trim(),email: emailCtrl.text.trim(),password: passwordCtrl.text.trim(),    business: selectedBusinessType ?? '',
+                                )));
                           }
                         }, text: 'NEXT', backgroundColor: Colors.white, fontsize: 20, fontWeight: FontWeight.bold, textColor: Colors.black),
                       )

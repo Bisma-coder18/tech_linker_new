@@ -5,8 +5,7 @@ import 'package:tech_linker_new/screens/SignIn_screen.dart';
 import 'package:tech_linker_new/screens/applicationReceived_institute.dart';
 import 'package:tech_linker_new/screens/instituteNotification.dart';
 import 'package:tech_linker_new/widget/list_tiles.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'dart:io';
+
 
 class InstituteDashboard extends StatefulWidget {
   const InstituteDashboard({super.key});
@@ -119,7 +118,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
                 spacing: 10,
                 runSpacing: 10,
                 children: [
-                  ActionButton(label: "Post Internship", icon: Icons.add, onTap: () {}),
+                  ActionButton(label: "Post Internship", icon: Icons.add, onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Instituteinternships()));}),
                   ActionButton(label: "View Applications", icon: Icons.remove_red_eye, onTap: () {}),
                   ActionButton(label: "Edit Profile", icon: Icons.edit, onTap: () {}),
                 ],
