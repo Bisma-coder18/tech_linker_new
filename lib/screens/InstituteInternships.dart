@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tech_linker_new/screens/InstituteInternship_detailScreen.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 
 class Instituteinternships extends StatefulWidget {
   const Instituteinternships({super.key});
@@ -71,6 +73,43 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
       );
     }
   }
+  @override
+  void initState() {
+    super.initState();
+    fetchInternships();
+  }
+  Future<void> fetchInternships() async {
+    try {
+      final response = await http.get(
+        Uri.parse("http://10.0.2.2:3000/api/internships/get"),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        setState(() {
+          internships = data.map<Map<String, dynamic>>((item) {
+            return {
+              'title': item['title'],
+              'location': item['location'],
+              'description': item['description'],
+              'type': item['type'],
+              'posted': item['createdAt']!= null
+                  ? item['createdAt'].substring(0, 10)
+                  : 'No Date',
+              'image': item['image'] != null ? "http://10.0.2.2:3000/uploads/${item['image']}" : null,
+            };
+          }).toList();
+
+        });
+      } else {
+        print('Failed to load internships');
+      }
+    } catch (e) {
+      print('Error fetching internships: $e');
+    }
+  }
+
 
 
   void _showPostForm() {
@@ -108,23 +147,10 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
                     .toList(),
               ),
               ElevatedButton(
-                onPressed: () {
-                  _submitInternship(
-                  );
-                  if (titleController.text.isNotEmpty &&
-                      locationController.text.isNotEmpty) {
-                    setState(() {
-                      internships.add({
-                        'title': titleController.text,
-                        'location': locationController.text,
-                        'description': descriptionController.text,
-                        'type': selectedType,
-                        'image': _selectedImage,
-                        'posted': DateTime.now().toString().substring(0, 10)
-                      });
-                    });
-                    Navigator.pop(context);
-                  }
+                onPressed: () async {
+                  await _submitInternship();
+                  await fetchInternships(); // ✅ refresh data from backend
+                  Navigator.pop(context);
                 },
                 child: Text('Post Internship'),
               ),
@@ -135,7 +161,6 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
     );
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -152,14 +177,23 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
             margin: EdgeInsets.all(10),
             child: ListTile(
               leading: post['image'] != null
-                  ? Image.file(post['image'], width: 50, fit: BoxFit.cover)
-                  : null,
-              title: Text(post['title']),
-              subtitle: Text("${post['location']} • ${post['type']}"),
+                  ? Image.network(
+                  post['image'], //
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover)
+                  : Icon(Icons.image),
+              title: Text(post['title'] ?? 'No Title'),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("${post['location']} • ${post['type']}"),
+                  Text(post['description'], maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
               trailing: Text(post['posted']),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>InstituteinternshipDetailscreen(post: post)));
-              },
+              onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>InstituteinternshipDetailscreen(post: post)));},
             ),
           );
         },
