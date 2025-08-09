@@ -53,6 +53,11 @@ class AppTextStyles {
     fontWeight: FontWeight.normal,
     color: AppColors.textGrey
   );
+  static const TextStyle normal14 = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.normal,
+    color: AppColors.white
+  );
   static const TextStyle normal12 = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.normal,
@@ -83,5 +88,23 @@ class AppTextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: AppColors.textPrimary,
+  );
+  static const TextStyle bold28=TextStyle(
+      color: AppColors.primary,
+      fontWeight: FontWeight.w800,
+      fontSize: 28
+  );
+  static  TextStyle regular16=TextStyle(
+        color: Colors.grey[700],
+        fontSize: 16
+  );
+  static const medium14=TextStyle(
+       color: AppColors.primary,
+       fontSize: 14
+  );
+  static const medium16l=TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    color: AppColors.white,
   );
 }

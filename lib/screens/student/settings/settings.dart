@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:tech_linker_new/config/app_assets.dart';
 import 'package:tech_linker_new/modules/controllers/profileController/profileController.dart';
-import 'package:tech_linker_new/screens/student/settings/change_password/chane_password.dart';
+import 'package:tech_linker_new/screens/student/auth/change_password.dart';
 import 'package:tech_linker_new/screens/student/settings/profile/profile.dart';
 import 'package:tech_linker_new/screens/student/settings/widget/edit_tile.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
@@ -168,7 +168,7 @@ class SettingsScreen extends StatelessWidget {
                 subtitle: "Update your account password",
                 leftIcon: AppAssetsPath.lock,
                 iconPath: AppAssetsPath.edit,
-                onTap: () => Get.to(ChangePasswordScreen()),
+                onTap: () => Get.to(()=>ChangePasswordScreen()),
                 isLast: true,
               ),
             ],

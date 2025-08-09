@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tech_linker_new/screens/InstituteSignUp_ScreenOne.dart';
 import 'package:tech_linker_new/screens/adminSignUp_ScreenOne.dart';
+import 'package:tech_linker_new/screens/student/auth/student_signup.dart';
 import 'package:tech_linker_new/screens/studentSignUp_ScreenOne.dart';
 import 'package:tech_linker_new/screens/Student_dashboard.dart';
 import 'package:tech_linker_new/widget/Container_Widget.dart';
@@ -256,10 +258,7 @@ class _SigninScreenState extends State<SigninScreen> {
                                             if (tempSelectedUserType==UserType.student) {
                                               Navigator.pop(
                                                   context); // Close the bottom sheet
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          studentSignUpOne ()));
+                                              Get.to(()=>StudentSignupScreen());
                                             }if (tempSelectedUserType==UserType.institute) {
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
