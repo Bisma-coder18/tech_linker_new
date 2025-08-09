@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tech_linker_new/screens/Admin_dashboard.dart';
+import 'package:get/get.dart';
 import 'package:tech_linker_new/screens/InstituteSignUp_ScreenOne.dart';
 import 'package:tech_linker_new/screens/Institute_Dashboard.dart';
 import 'package:tech_linker_new/screens/adminSignUp_ScreenOne.dart';
+import 'package:tech_linker_new/screens/student/auth/student_signup.dart';
 import 'package:tech_linker_new/screens/studentSignUp_ScreenOne.dart';
 import 'package:tech_linker_new/screens/Student_dashboard.dart';
 import 'package:tech_linker_new/widget/Container_Widget.dart';
@@ -30,7 +32,7 @@ class _SigninScreenState extends State<SigninScreen> {
 
   Future<void> signInStudent() async {
 
-    final url = Uri.parse('http://10.0.2.2:3000/students/login');
+    final url = Uri.parse('http://192.168.1.18:3000/students/login');
     print("Login Email: ${emailCtrl.text.trim()}");
     print("Login Password: ${passwordCtrl.text.trim()}");
     try {
@@ -79,7 +81,7 @@ class _SigninScreenState extends State<SigninScreen> {
   }
   Future<void> signInInstitute() async {
 
-    final url = Uri.parse('http://10.0.2.2:3000/institutes/login');
+    final url = Uri.parse('http://192.168.1.18:3000/institutes/login');
     print("Login Email: ${emailCtrl.text.trim()}");
     print("Login Password: ${passwordCtrl.text.trim()}");
     try {
@@ -130,8 +132,8 @@ class _SigninScreenState extends State<SigninScreen> {
     }
   }
   Future<void> signInAdmin() async {
-
-    final url = Uri.parse('http://10.0.2.2:3000/admins/login');
+ print("Lllllll");
+    final url = Uri.parse('http://192.168.1.18:3000/admins/login');
     print("Login Email: ${emailCtrl.text.trim()}");
     print("Login Password: ${passwordCtrl.text.trim()}");
 
@@ -211,7 +213,7 @@ class _SigninScreenState extends State<SigninScreen> {
                     height: 10,
                   ),
                   Text(
-                    'Welcome',
+                    'Welcomse',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 35,

@@ -19,7 +19,7 @@ class _homeScreenState extends State<homeScreen> {
   // }
   //
   // Future<void> fetchMessage() async {
-  //   var url = Uri.parse('http://10.0.2.2:3000/api/message');
+  //   var url = Uri.parse('http://192.168.1.18:3000/api/message');
   //   try {
   //     var response = await http.get(url);
   //     if (response.statusCode == 200) {

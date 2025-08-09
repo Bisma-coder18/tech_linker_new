@@ -32,7 +32,7 @@ class _ChangePasswordScreenState extends State<Institutechangepassword> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/institutes/change-password/${widget.instituteId}'),
+        Uri.parse('http://192.168.1.18:3000/institutes/change-password/${widget.instituteId}'),
         headers: {"Content-Type": "application/json"},
         body: json.encode({
           "oldPassword": oldPasswordController.text,

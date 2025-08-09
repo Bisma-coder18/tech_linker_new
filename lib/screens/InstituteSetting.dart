@@ -28,7 +28,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> fetchSettings(String instituteId) async {
     try {
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/instituteSetting/$instituteId'),
+        Uri.parse('http://192.168.1.18:3000/api/instituteSetting/$instituteId'),
       );
 
       if (response.statusCode == 200) {
@@ -50,7 +50,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> updateSettings(String instituteId) async {
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/instituteSetting/update/$instituteId'),
+        Uri.parse('http://192.168.1.18:3000/api/instituteSetting/update/$instituteId'),
         headers: {"Content-Type": "application/json"},
         body: json.encode({
           "twoStepVerification": twoStepVerification,

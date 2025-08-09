@@ -45,5 +45,21 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	    <!-- Camera permission -->
+    <key>NSCameraUsageDescription</key>
+    <string>This app needs access to camera to take profile pictures</string>
+
+    <!-- Photo library permission -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app needs access to photo library to select profile pictures</string>
+
+    <!-- Microphone permission (required for camera) -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app needs access to microphone for video recording</string>
+	<!-- file picker -->
+	<key>NSDocumentsFolderUsageDescription</key>
+    <string>Application needs access to your documents</string>
+    <key>NSDownloadsFolderUsageDescription</key>
+    <string>Application needs access to your downloads</string>
 </dict>
 </plist>

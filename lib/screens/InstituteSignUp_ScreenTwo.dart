@@ -28,7 +28,7 @@ class _InstitutesignupScreentwoState extends State<InstitutesignupScreentwo> {
   String? selectedCity;
   List<String>CityType =['Lahore','Gujranwala','Islamabad','Gujrat','GujarKhan','Sadar','Faisalabaad','RawalPindi'];
   Future<void> postInstituteData() async {
-    final url = Uri.parse('http://10.0.2.2:3000/institutes/signup');
+    final url = Uri.parse('http://192.168.1.18:3000/institutes/signup');
 
     final response = await http.post(
       url,

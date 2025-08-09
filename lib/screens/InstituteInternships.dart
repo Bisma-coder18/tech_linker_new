@@ -36,7 +36,7 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
   Future<void> _submitInternship() async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse("http://10.0.2.2:3000/api/internships/add"),
+      Uri.parse("http://192.168.1.18:3000/api/internships/add"),
     );
 
     request.fields['title'] = titleController.text;
@@ -89,7 +89,7 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
   Future<void> fetchInternships() async {
     try {
       final response = await http.get(
-        Uri.parse("http://10.0.2.2:3000/api/internships/get"),
+        Uri.parse("http://192.168.1.18:3000/api/internships/get"),
       );
 
       if (response.statusCode == 200) {
@@ -107,7 +107,7 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
                   ? item['createdAt'].substring(0, 10)
                   : 'No Date',
               'image': item['image'] != null
-                  ? "http://10.0.2.2:3000/uploads/${item['image']}"
+                  ? "http://192.168.1.18:3000/uploads/${item['image']}"
                   : null,
             };
           }).toList();
@@ -121,7 +121,7 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
   }
 
   Future<void> deleteInternship(String id) async {
-    final url = Uri.parse('http://10.0.2.2:3000/api/internships/$id');
+    final url = Uri.parse('http://192.168.1.18:3000/api/internships/$id');
     final response = await http.delete(url);
 
     if (response.statusCode == 200) {

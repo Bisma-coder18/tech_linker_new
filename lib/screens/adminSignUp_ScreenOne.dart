@@ -23,7 +23,9 @@ class _AdminsignupScreenoneState extends State<AdminsignupScreenone> {
   String?passwordError;
   String?confirmError;
   Future<void> registerAdmin() async {
-    final url = Uri.parse('http://10.0.2.2:3000/admins/signup');
+     Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => AdminDashboard()));
+    final url = Uri.parse('http://192.168.1.18:3000/admins/signup');
 
     try {
       final response = await http.post(

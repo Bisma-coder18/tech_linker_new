@@ -3,7 +3,7 @@ import 'dart:convert';
 
 class ApiService {
   static Future<String> fetchMessage() async {
-    final url = Uri.parse('http://10.0.2.2:3000/message'); //  for emulator
+    final url = Uri.parse('http://192.168.1.18:3000/message'); //  for emulator
     // final url = Uri.parse('http://192.168.9.104/message'); //  for real device
     final response = await http.get(url);
     if (response.statusCode == 200) {
