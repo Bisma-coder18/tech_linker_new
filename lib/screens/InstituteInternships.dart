@@ -5,7 +5,6 @@ import 'package:tech_linker_new/screens/InstituteInternship_detailScreen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-
 class Instituteinternships extends StatefulWidget {
   const Instituteinternships({super.key});
 
@@ -14,11 +13,12 @@ class Instituteinternships extends StatefulWidget {
 }
 
 class _InstituteinternshipsState extends State<Instituteinternships> {
+  int internshipCount = 0;
   List<Map<String, dynamic>> internships = [];
   File? _selectedImage;
-  final   titleController = TextEditingController();
+  final titleController = TextEditingController();
   final locationController = TextEditingController();
-  final   descriptionController = TextEditingController();
+  final descriptionController = TextEditingController();
   String selectedType = 'Paid';
 
   Future<void> _pickImage() async {
@@ -32,21 +32,18 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
       _showPostForm();
     }
   }
+
   Future<void> _submitInternship() async {
     var request = http.MultipartRequest(
       'POST',
       Uri.parse("http://10.0.2.2:3000/api/internships/add"),
-
-
     );
 
-    // ✅ Add form fields
     request.fields['title'] = titleController.text;
     request.fields['location'] = locationController.text;
     request.fields['description'] = descriptionController.text;
-    request.fields['type'] = selectedType; // Paid/Unpaid dropdown value
+    request.fields['type'] = selectedType;
 
-    // ✅ Add image file (if picked)
     if (_selectedImage != null) {
       request.files.add(await http.MultipartFile.fromPath(
         'image',
@@ -54,16 +51,23 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
       ));
     }
 
-    // ✅ Send request
     var response = await request.send();
 
     if (response.statusCode == 201) {
+      // Parse response body to get updated count
+      final respStr = await response.stream.bytesToString();
+      final respJson = json.decode(respStr);
+
+      setState(() {
+        internshipCount = respJson['count'];
+        print("Count updated: $internshipCount");// update count here
+      });
+
       titleController.clear();
       locationController.clear();
       descriptionController.clear();
-      setState(() {
-        _selectedImage = null;
-      });
+      _selectedImage = null;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Internship posted successfully')),
       );
@@ -73,11 +77,15 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
       );
     }
   }
+
+
   @override
   void initState() {
     super.initState();
     fetchInternships();
+    print("Count updated: $internshipCount");
   }
+
   Future<void> fetchInternships() async {
     try {
       final response = await http.get(
@@ -90,17 +98,19 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
         setState(() {
           internships = data.map<Map<String, dynamic>>((item) {
             return {
+              '_id': item['_id'],
               'title': item['title'],
               'location': item['location'],
               'description': item['description'],
               'type': item['type'],
-              'posted': item['createdAt']!= null
+              'posted': item['createdAt'] != null
                   ? item['createdAt'].substring(0, 10)
                   : 'No Date',
-              'image': item['image'] != null ? "http://10.0.2.2:3000/uploads/${item['image']}" : null,
+              'image': item['image'] != null
+                  ? "http://10.0.2.2:3000/uploads/${item['image']}"
+                  : null,
             };
           }).toList();
-
         });
       } else {
         print('Failed to load internships');
@@ -110,7 +120,26 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
     }
   }
 
+  Future<void> deleteInternship(String id) async {
+    final url = Uri.parse('http://10.0.2.2:3000/api/internships/$id');
+    final response = await http.delete(url);
 
+    if (response.statusCode == 200) {
+      final respJson = json.decode(response.body);
+      setState(() {
+        internships.removeWhere((item) => item['_id'] == id);
+        internshipCount = respJson['count'];
+        print("Count updated: $internshipCount");
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Internship deleted successfully')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete internship')),
+      );
+    }
+  }
 
   void _showPostForm() {
     showModalBottomSheet(
@@ -170,34 +199,73 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
       body: internships.isEmpty
           ? Center(child: Text("No internships yet"))
           : ListView.builder(
-        itemCount: internships.length,
-        itemBuilder: (context, index) {
-          final post = internships[index];
-          return Card(
-            margin: EdgeInsets.all(10),
-            child: ListTile(
-              leading: post['image'] != null
-                  ? Image.network(
-                  post['image'], //
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover)
-                  : Icon(Icons.image),
-              title: Text(post['title'] ?? 'No Title'),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("${post['location']} • ${post['type']}"),
-                  Text(post['description'], maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                ],
-              ),
-              trailing: Text(post['posted']),
-              onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>InstituteinternshipDetailscreen(post: post)));},
+              itemCount: internships.length,
+              itemBuilder: (context, index) {
+                final post = internships[index];
+                return Card(
+                  margin: EdgeInsets.all(10),
+                  child: ListTile(
+                    leading: post['image'] != null
+                        ? Image.network(post['image'], //
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover)
+                        : Icon(Icons.image),
+                    title: Text(post['title'] ?? 'No Title'),
+
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("${post['location']} • ${post['type']}"),
+                        Text(post['description'],
+                            maxLines: 1, overflow: TextOverflow.ellipsis),
+                      ],
+                    ),
+                    trailing: IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Confirm Delete"),
+                                content: Text(
+                                    "Are you sure you want to delete this data permanently?"),
+                                actions: [
+                                  TextButton(
+                                    child: Text("Cancel"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close dialog
+                                      deleteInternship(
+                                          post['_id']); // ✅ Call delete
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.deepPurple,
+                        )), //Text(post['posted']),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  InstituteinternshipDetailscreen(post: post)));
+                    },
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _pickImage,
         child: Icon(Icons.camera_alt),

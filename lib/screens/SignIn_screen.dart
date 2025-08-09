@@ -10,6 +10,7 @@ import 'package:tech_linker_new/widget/CustomElevated_Button.dart';
 import 'package:tech_linker_new/widget/TextField_widget.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum UserType { student, admin, institute }
 
@@ -97,6 +98,9 @@ class _SigninScreenState extends State<SigninScreen> {
       print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('instituteName', data['name'] ?? '');
+        await prefs.setString('instituteEmail', data['email'] ?? '');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => InstituteDashboard()),
