@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tech_linker_new/screens/InstituteInternships.dart';
 import 'package:tech_linker_new/screens/InstituteMessage.dart';
+import 'package:tech_linker_new/screens/InstituteSetting.dart';
 import 'package:tech_linker_new/screens/SignIn_screen.dart';
 import 'package:tech_linker_new/screens/applicationReceived_institute.dart';
 import 'package:tech_linker_new/screens/instituteNotification.dart';
@@ -77,6 +78,10 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
               CustomListTiles(icon: Icons.notifications_none,
                   title: 'Notifications',
                   onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Institutenotification()));},
+                  color: Colors.white),
+              CustomListTiles(icon: Icons.settings,
+                  title: 'Settings',
+                  onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SettingsScreen()));},
                   color: Colors.white),
               CustomListTiles(icon: Icons.logout,
                   title: 'LogOut',
