@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tech_linker_new/modules/controllers/student_internship/internship_detail.dart';
+import 'package:tech_linker_new/modules/controllers/student/internship_detail.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 import 'package:tech_linker_new/widget/cached_img.dart';
 

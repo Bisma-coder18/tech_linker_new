@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tech_linker_new/modules/controllers/auth/student_auth_controller.dart';
+import 'package:tech_linker_new/screens/institute/institute-signup.dart';
 import 'package:tech_linker_new/screens/student/auth/student_login.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 
 class OnBoardingScreen extends StatelessWidget {
-  const OnBoardingScreen({super.key});
+   OnBoardingScreen({super.key});
+    final controller = Get.put(StudentSignupController());
 
   @override
   Widget build(BuildContext context) {
@@ -70,20 +73,25 @@ class OnBoardingScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Expanded(
                           child: _buildSquareButton(
                             imagePath: "assets/search.png",
-                            label: "Find Jobs", // Updated label
-                            onTap: () {Get.to(()=>StudentLoginScreen());},
+                            label: "Students",
+                            onTap: (){
+                               controller.role.value="student";
+                               Get.to(() => StudentLoginScreen());
+                               },
                           ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
                           child: _buildSquareButton(
-                            imagePath: "assets/post.png",
-                            label: "Post a Job", // Slightly improved label
-                            onTap: () {},
+                            label: "Institute",
+                            onTap: () {
+                             controller.role.value="institute";
+                              Get.to(() => StudentLoginScreen());},
                           ),
                         ),
                       ],
@@ -96,7 +104,9 @@ class OnBoardingScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        controller.role.value="admin";
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -112,7 +122,7 @@ class OnBoardingScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: const [
                                     Text(
-                                      "Admin Dashboard", // Improved label
+                                      "Admin Dashboard",
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w800,
@@ -129,7 +139,11 @@ class OnBoardingScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              Icon(Icons.settings,size: 30,color: AppColors.backgroundColor,)
+                              Icon(
+                                Icons.settings,
+                                size: 30,
+                                color: AppColors.backgroundColor,
+                              )
                             ],
                           ),
                         ),
@@ -146,30 +160,38 @@ class OnBoardingScreen extends StatelessWidget {
   }
 
   static Widget _buildSquareButton({
-    required String imagePath,
+    String? imagePath,
     required String label,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        width: double.infinity, // Take full width of parent (Expanded)
+        height: 160, // Fixed height for square-like appearance
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColors.primaryLight,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              imagePath,
-              width: 60,
-              height: 60,
-              fit: BoxFit.contain,
-            ),
+            imagePath != null
+                ? Image.asset(
+                    imagePath,
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.contain,
+                  )
+                : const Icon(
+                    Icons.business_outlined,
+                    size: 60,
+                    color: Colors.white,
+                  ),
             const SizedBox(height: 8),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   label,
@@ -183,7 +205,7 @@ class OnBoardingScreen extends StatelessWidget {
                   Icons.arrow_forward_ios_rounded,
                   size: 16,
                   color: Colors.white,
-                )
+                ),
               ],
             ),
           ],

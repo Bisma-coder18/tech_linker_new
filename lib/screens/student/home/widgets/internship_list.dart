@@ -8,7 +8,7 @@ import 'package:tech_linker_new/widget/space.dart';
 
 class InternshipList extends StatelessWidget {
   final List<Internship> jobs;
-  final Function(Internship)? onJobApply;
+  final Function? onJobApply;
   final ScrollPhysics? physics;
   final bool shrinkWrap;
 
@@ -37,9 +37,13 @@ class InternshipList extends StatelessWidget {
         final job = jobs[index];
         return InternshipCard(
           job: job,
-          onApplyTap: ()=>Get.to(()=>StudentInternshipDetailScreen(jobId:job.id)),
-          onDetail: ()=>Get.to(()=>StudentInternshipDetailScreen(jobId:job.id)));
-          }
+          onApplyTap: onJobApply != null
+              ? () => onJobApply!()
+              : () => Get.to(() => StudentInternshipDetailScreen(jobId: job.id)),
+          onDetail: onJobApply != null
+              ? () => onJobApply!()
+              :  () => Get.to(() => StudentInternshipDetailScreen(jobId: job.id)),
         );
-  }
-}
+      }
+    );}}
+  

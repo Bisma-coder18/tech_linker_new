@@ -38,7 +38,7 @@ class _ScreenSixState extends State<ScreenSix> {
       isLoading = true;
     });
 
-    var url = Uri.parse('http://192.168.1.18:3000/students/signup');
+    var url = Uri.parse('http://10.0.2.2:3000/students/signup');
 
     var body = {
       'email': widget.email,

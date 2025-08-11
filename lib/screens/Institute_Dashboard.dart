@@ -43,7 +43,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
   Future<void> fetchActiveInternships() async {
     try {
       final response = await http.get(
-        Uri.parse("http://192.168.1.18:3000/api/internships/active-month"),
+        Uri.parse("http://10.0.2.2:3000/api/internships/active-month"),
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -61,7 +61,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
   Future<void> fetchLastPostedDate() async {
     try {
       final response = await http.get(
-        Uri.parse("http://192.168.1.18:3000/api/internships/get?limit=1"),
+        Uri.parse("http://10.0.2.2:3000/api/internships/get?limit=1"),
       );
 
       if (response.statusCode == 200) {
@@ -83,7 +83,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
   Future<void> fetchRecentInternships() async {
     try {
       final response = await http.get(
-        Uri.parse("http://192.168.1.18:3000/api/internships/get?limit=2"),
+        Uri.parse("http://10.0.2.2:3000/api/internships/get?limit=2"),
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -109,7 +109,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
   Future<void> fetchInternshipCount() async {
     try {
       final response = await http.get(
-        Uri.parse("http://192.168.1.18:3000/api/internships/count"),
+        Uri.parse("http://10.0.2.2:3000/api/internships/count"),
       );
 
       if (response.statusCode == 200) {

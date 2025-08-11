@@ -32,7 +32,7 @@ class _SigninScreenState extends State<SigninScreen> {
 
   Future<void> signInStudent() async {
 
-    final url = Uri.parse('http://192.168.1.18:3000/students/login');
+    final url = Uri.parse('http://10.0.2.2:3000/students/login');
     print("Login Email: ${emailCtrl.text.trim()}");
     print("Login Password: ${passwordCtrl.text.trim()}");
     try {
@@ -81,7 +81,7 @@ class _SigninScreenState extends State<SigninScreen> {
   }
   Future<void> signInInstitute() async {
 
-    final url = Uri.parse('http://192.168.1.18:3000/institutes/login');
+    final url = Uri.parse('http://10.0.2.2:3000/institutes/login');
     print("Login Email: ${emailCtrl.text.trim()}");
     print("Login Password: ${passwordCtrl.text.trim()}");
     try {
@@ -132,8 +132,8 @@ class _SigninScreenState extends State<SigninScreen> {
     }
   }
   Future<void> signInAdmin() async {
- print("Lllllll");
-    final url = Uri.parse('http://192.168.1.18:3000/admins/login');
+
+    final url = Uri.parse('http://10.0.2.2:3000/admins/login');
     print("Login Email: ${emailCtrl.text.trim()}");
     print("Login Password: ${passwordCtrl.text.trim()}");
 
@@ -213,7 +213,7 @@ class _SigninScreenState extends State<SigninScreen> {
                     height: 10,
                   ),
                   Text(
-                    'Welcomse',
+                    'Welcome',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 35,

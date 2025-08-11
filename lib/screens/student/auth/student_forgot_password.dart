@@ -6,7 +6,7 @@ import 'package:tech_linker_new/screens/student/auth/student_login.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 import 'package:tech_linker_new/theme/app_text_styles.dart';
 import 'package:tech_linker_new/widget/common_fill_btn.dart';
-import 'package:tech_linker_new/widget/common_textfeild.dart';
+import 'package:tech_linker_new/widget/custom-text-feild.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   ForgotPasswordScreen({super.key});

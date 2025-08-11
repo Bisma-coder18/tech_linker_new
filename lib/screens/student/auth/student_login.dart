@@ -6,7 +6,7 @@ import 'package:tech_linker_new/screens/student/auth/student_signup.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 import 'package:tech_linker_new/theme/app_text_styles.dart';
 import 'package:tech_linker_new/widget/common_fill_btn.dart';
-import 'package:tech_linker_new/widget/common_textfeild.dart';
+import 'package:tech_linker_new/widget/custom-text-feild.dart';
 
 class StudentLoginScreen extends StatelessWidget {
   StudentLoginScreen({super.key});
@@ -36,7 +36,7 @@ class StudentLoginScreen extends StatelessWidget {
                     alignment:Alignment.topLeft ,
                     child: GestureDetector(
                       onTap: ()=>Get.back(),
-                      child: Icon(Icons.arrow_back, size: 25, color: AppColors.primary))),
+                      child: Icon(Icons.arrow_back_ios, size: 25, color: AppColors.primary))),
 
                   // Logo or Icon Placeholder
                   Icon(Icons.lock, size: 80, color: AppColors.primary),
@@ -60,7 +60,7 @@ class StudentLoginScreen extends StatelessWidget {
                     ),
                     color: Colors.white.withOpacity(0.9),
                     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal:  10.0,vertical: 20),
+                    padding: const EdgeInsets.symmetric(horizontal:  10.0,vertical: 20),
                       child: Form(
                         key: controller.loginKey,
                         child: Column(
@@ -125,7 +125,7 @@ class StudentLoginScreen extends StatelessWidget {
                   // Sign Up Prompt
                   Center(
                     child: TextButton(
-                      onPressed: () => Get.off(()=>StudentSignupScreen()),
+                      onPressed:controller.onSignUp,
                       child: RichText(
                         text: TextSpan(
                           text: 'Don’t have an account? ',

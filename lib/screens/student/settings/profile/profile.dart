@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:tech_linker_new/config/app_assets.dart';
-import 'package:tech_linker_new/modules/controllers/profileController/profileController.dart';
+import 'package:tech_linker_new/modules/controllers/student/student-profile-controller.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 import 'package:tech_linker_new/theme/app_text_styles.dart';
-import 'package:tech_linker_new/util/util.dart';
 import 'package:tech_linker_new/widget/cached_img.dart';
 import 'package:get/get.dart';
 
 class PersonalProfileScreen extends StatelessWidget {
-  final PersonalProfileController controller =
-      Get.put(PersonalProfileController());
+  final PersonalProfileController controller =Get.put(PersonalProfileController());
 
   @override
   Widget build(BuildContext context) {

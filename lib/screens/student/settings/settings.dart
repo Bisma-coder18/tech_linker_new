@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:tech_linker_new/config/app_assets.dart';
-import 'package:tech_linker_new/modules/controllers/profileController/profileController.dart';
+import 'package:tech_linker_new/modules/controllers/auth/student_auth_controller.dart';
+import 'package:tech_linker_new/modules/controllers/student/student-profile-controller.dart';
+import 'package:tech_linker_new/screens/institute/hired-rejected.dart';
+import 'package:tech_linker_new/screens/institute/institute-profile.dart';
 import 'package:tech_linker_new/screens/student/auth/change_password.dart';
 import 'package:tech_linker_new/screens/student/settings/profile/profile.dart';
 import 'package:tech_linker_new/screens/student/settings/widget/edit_tile.dart';
@@ -16,40 +19,40 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        // leading: IconButton(
-        //   icon: Icon(Icons.arrow_back_ios, color: Colors.black87),
-        //   onPressed: () => Navigator.pop(context),
-        // ),
-        title: Text(
-          "Settings",
-          style: AppTextStyles.darkH4_500,
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // User Profile Card
-              _buildProfileCard(),
-              
-              const SizedBox(height: 30),
-              
-              // Settings Section
-              _buildSettingsSection(context),
-              
-              const SizedBox(height: 30),
-              
-              // Logout Section
-              _buildLogoutSection(context),
-            ],
+      
+ 
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+        
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(       
+                    "Settings",
+                    style: AppTextStyles.darkH4_500,),
+                ),
+                const Space(height: 40,),
+                // User Profile Card
+                _buildProfileCard(),
+        
+                const SizedBox(height: 30),
+        
+                // Settings Section
+                _buildSettingsSection(context),
+        
+                const SizedBox(height: 30),
+        
+                // Logout Section
+                _buildLogoutSection(context),
+              ],
+            ),
           ),
         ),
       ),
@@ -58,7 +61,9 @@ class SettingsScreen extends StatelessWidget {
 
   Widget _buildProfileCard() {
     final PersonalProfileController controller =
-      Get.put(PersonalProfileController());
+        Get.put(PersonalProfileController());
+         final StudentSignupController authController =
+        Get.put(StudentSignupController());
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -80,17 +85,16 @@ class SettingsScreen extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 3),
-            ),
-            child:Obx(() {
-  return CachedImage(
-    imageUrl: controller.selectedImage.value?.path,
-    size: 60,
-  );
-})
-          ),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 3),
+              ),
+              child: Obx(() {
+                return CachedImage(
+                  imageUrl: controller.selectedImage.value?.path,
+                  size: 60,
+                );
+              })),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -104,11 +108,13 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  "Student",
-                  style: AppTextStyles.medium16.copyWith(
-                    color: Colors.white70,
-                    fontSize: 14,
+                Obx(
+                  ()=> Text(
+                    authController.role.value.capitalize!,
+                    style: AppTextStyles.medium16.copyWith(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ],
@@ -157,20 +163,31 @@ class SettingsScreen extends StatelessWidget {
                 subtitle: "Update your personal information",
                 leftIcon: AppAssetsPath.profile,
                 iconPath: AppAssetsPath.edit,
-                onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PersonalProfileScreen()));
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => InstituteProfileScreen()));
                 },
                 isFirst: true,
               ),
               _buildDivider(),
               _buildSettingsTile(
-                title: "Change Password",
-                subtitle: "Update your account password",
-                leftIcon: AppAssetsPath.lock,
+                title: "Hired/Rejected Users",
+                subtitle: "All Hired Users",
+                leftIcon: AppAssetsPath.profile,
                 iconPath: AppAssetsPath.edit,
-                onTap: () => Get.to(()=>ChangePasswordScreen()),
+                onTap: () => Get.to(() => HiredRejectedUsersScreen()),
                 isLast: true,
               ),
+              //  _buildDivider(),
+              // _buildSettingsTile(
+              //   title: "Rejected Users",
+              //   subtitle: "All Rejected Users",
+              //   leftIcon: AppAssetsPath.profile,
+              //   iconPath: AppAssetsPath.edit,
+              //   onTap: () => Get.to(() => HiredRejectedUsersScreen()),
+              //   isLast: true,
+              // ),
+              
             ],
           ),
         ),
@@ -227,7 +244,7 @@ class SettingsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isDanger 
+                color: isDanger
                     ? Colors.red.withOpacity(0.1)
                     : AppColors.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(10),

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:tech_linker_new/config/app_assets.dart';
 import 'package:tech_linker_new/models/mock_data.dart';
 import 'package:tech_linker_new/modules/controllers/student/student-profile-controller.dart';
+import 'package:tech_linker_new/screens/institute/internship-post.dart';
 import 'package:tech_linker_new/screens/student/interships/all_interships.dart';
 import 'package:tech_linker_new/screens/student/home/widgets/internship_list.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
@@ -11,10 +12,10 @@ import 'package:tech_linker_new/theme/app_text_styles.dart';
 import 'package:tech_linker_new/widget/cached_img.dart';
 import 'package:tech_linker_new/widget/space.dart';
 
-class HomeScreen extends StatelessWidget {
+class InstituteHomeScreen extends StatelessWidget {
   String? imageUrl;
 
-  HomeScreen({super.key});
+  InstituteHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +34,8 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      Text("Hello", style: AppTextStyles.homeTop),
-                      Text("User", style: AppTextStyles.homeTop)
+                      Text("Welcome", style: AppTextStyles.homeTop),
+                      // Text("User", style: AppTextStyles.homeTop)
                     ],
                   ),
                   Obx(() {
@@ -61,8 +62,8 @@ class HomeScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SvgPicture.asset(AppAssetsPath.find),
-                          Text("4.5k", style: AppTextStyles.large),
-                          Text("Remote Jobs", style: AppTextStyles.medium),
+                          Text("4.5k", style: AppTextStyles.large,textAlign: TextAlign.center,),
+                          Text("Applications Received", style: AppTextStyles.medium,textAlign: TextAlign.center,),
                         ]),
                   ),
                   Spacer(),
@@ -80,7 +81,7 @@ class HomeScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text("4.5k", style: AppTextStyles.large),
-                              Text("Full time", style: AppTextStyles.medium),
+                              Text("Active", style: AppTextStyles.medium),
                             ]),
                       ),
                       Space(height: 15),
@@ -95,7 +96,7 @@ class HomeScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text("4.5k", style: AppTextStyles.large),
-                              Text("Onsite", style: AppTextStyles.medium),
+                              Text("Total Posts", style: AppTextStyles.medium),
                             ]),
                       )
                     ],
@@ -113,7 +114,7 @@ class HomeScreen extends StatelessWidget {
                   },
                   child: Row(
                     children: [
-                      Text("Recent Jobs", style: AppTextStyles.largeBold),
+                      Text("Recent Internships", style: AppTextStyles.largeBold),
                       Spacer(),
                       Text(
                         "See All",
@@ -133,6 +134,8 @@ class HomeScreen extends StatelessWidget {
                     ? jobsData.sublist(jobsData.length - 5)
                     : jobsData,
                 physics: NeverScrollableScrollPhysics(),
+                onJobApply:(){Get.to(()=>InternshipPostScreen(commingFrom: "edit",));} ,
+                
               )
             ]),
           ),

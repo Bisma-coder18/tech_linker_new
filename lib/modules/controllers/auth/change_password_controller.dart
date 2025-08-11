@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ChangePasswordController extends GetxController {
-  final formKey = GlobalKey<FormState>();
+  final pformKey = GlobalKey<FormState>();
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   var newPassword = ''.obs;
@@ -13,7 +13,7 @@ class ChangePasswordController extends GetxController {
   void togglePasswordVisibility() => isPasswordVisible.value = !isPasswordVisible.value;
 
   Future<void> saveChanges({required Future<dynamic> onReset}) async {
-    if (formKey.currentState!.validate()) {
+    if (pformKey.currentState!.validate()) {
       isLoading.value = true;
       try {
         await onReset; // Execute the passed future (e.g., API call)

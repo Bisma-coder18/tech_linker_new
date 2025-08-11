@@ -9,6 +9,7 @@ class CommonFillButton extends StatelessWidget {
   final RxBool isLoading;
   final double? width;
   final double? height;
+  final bgColor;
 
   const CommonFillButton({
     super.key,
@@ -17,6 +18,7 @@ class CommonFillButton extends StatelessWidget {
     required this.isLoading,
     this.width,
     this.height = 50.0,
+    this.bgColor
   });
 
   @override
@@ -27,7 +29,7 @@ class CommonFillButton extends StatelessWidget {
           child: ElevatedButton(
             onPressed: isLoading.value ? null : onPressed,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor:bgColor?? AppColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

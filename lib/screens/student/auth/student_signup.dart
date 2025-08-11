@@ -4,7 +4,7 @@ import 'package:tech_linker_new/modules/controllers/auth/student_auth_controller
 import 'package:tech_linker_new/screens/student/auth/student_login.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 import 'package:tech_linker_new/theme/app_text_styles.dart';
-import 'package:tech_linker_new/widget/common_textfeild.dart';
+import 'package:tech_linker_new/widget/custom-text-feild.dart';
 import 'package:tech_linker_new/widget/space.dart';
 
 class StudentSignupScreen extends StatelessWidget {
@@ -84,8 +84,8 @@ class StudentSignupScreen extends StatelessWidget {
   },
   focusNode: controller.nameFocusNode, // Use a separate focus node if needed
 ),
-       Space(height: 20),
-          AnimatedContainer(
+    Space(height: 20),
+    AnimatedContainer(
     duration: const Duration(milliseconds: 200),
     curve: Curves.easeInOut,
     child: Material(
