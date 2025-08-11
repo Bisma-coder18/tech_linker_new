@@ -81,7 +81,7 @@ class InstituteHomeScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text("4.5k", style: AppTextStyles.large),
-                              Text("Active", style: AppTextStyles.medium),
+                              Text("Hired", style: AppTextStyles.medium),
                             ]),
                       ),
                       Space(height: 15),

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:tech_linker_new/config/app_assets.dart';
 import 'package:tech_linker_new/modules/controllers/auth/student_auth_controller.dart';
 import 'package:tech_linker_new/modules/controllers/student/student-profile-controller.dart';
+import 'package:tech_linker_new/screens/Logout/logout.dart';
 import 'package:tech_linker_new/screens/institute/hired-rejected.dart';
 import 'package:tech_linker_new/screens/institute/institute-profile.dart';
 import 'package:tech_linker_new/screens/student/auth/change_password.dart';
@@ -213,7 +214,7 @@ class SettingsScreen extends StatelessWidget {
         subtitle: "Sign out of your account",
         leftIcon: AppAssetsPath.logout,
         iconPath: AppAssetsPath.icon,
-        onTap: () => _showLogoutDialog(context),
+        onTap: () =>  Get.to(()=>LogoutScreen()),
         isFirst: true,
         isLast: true,
         isDanger: true,

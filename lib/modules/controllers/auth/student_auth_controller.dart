@@ -5,6 +5,7 @@ import 'package:tech_linker_new/screens/institute/institute-main.dart';
 import 'package:tech_linker_new/screens/institute/institute-signup.dart';
 import 'package:tech_linker_new/screens/student/auth/student_signup.dart';
 import 'package:tech_linker_new/screens/student/main_tab.dart';
+import 'package:tech_linker_new/screens/student/onBoarding/onBoarding.dart';
 
 class StudentSignupController extends GetxController {
   final isPasswordVisible = false.obs;
@@ -65,6 +66,9 @@ class StudentSignupController extends GetxController {
       Get.snackbar('Error', e.toString());
     }
 
+  }
+  void logout(){
+    Get.offAll(()=>OnBoardingScreen());
   }
   @override
 void onClose() {
