@@ -11,4 +11,4 @@ class AppKeys{
 
   static final updateUser="/institute/update-profile/";
 
-}
+} 

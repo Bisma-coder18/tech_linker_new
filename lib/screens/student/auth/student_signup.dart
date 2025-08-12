@@ -41,12 +41,12 @@ class StudentSignupScreen extends StatelessWidget {
                         children: [
                           Text(
                             'Create Your Account',
-                            style: AppTextStyles.bold28
+                            style: AppTextStyles.bold28,
                           ),
                           const SizedBox(height: 8),
                           Text(
                             'Start your journey to find the perfect internship',
-                            style: AppTextStyles.medium16l
+                            style: AppTextStyles.medium16,
                           ),
                         ],
                       ),
@@ -55,129 +55,154 @@ class StudentSignupScreen extends StatelessWidget {
                   const SizedBox(height: 32),
                   // Form Card
                   Card(
-  elevation: 8,
-  color: Colors.white.withOpacity(0.9),
-  shadowColor: Colors.grey.withValues(alpha: 0.2),
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(16),
-  ),
-  child: Form(
-    key: controller.formKey,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal:  10.0,vertical: 20),
-      child: Column(
-        children: [
-          CustomTextField(
-  controller: controller.nameController, 
-  label: 'Name',
-  prefixIcon: Icons.person,
-  keyboardType: TextInputType.text, 
-  onChanged: (value) => controller.name.value = value, 
-  validator: (value) {
-    if (value == null || value.isEmpty) return null; 
-    value = value.trim();
-    if (value.isEmpty) return 'Name cannot be just spaces';
-    if (RegExp(r'[!@#\$%^&*(),.?":{}|<>0-9]').hasMatch(value)) {
-      return 'Only alphabets are allowed';
-    }
-    return null;
-  },
-  focusNode: controller.nameFocusNode, // Use a separate focus node if needed
-),
-    Space(height: 20),
-    AnimatedContainer(
-    duration: const Duration(milliseconds: 200),
-    curve: Curves.easeInOut,
-    child: Material(
-      color: Colors.transparent,
-      child: CustomTextField(
-            controller: controller.emailController,
-            label: 'Email Address',
-            prefixIcon: Icons.email,
-            keyboardType: TextInputType.emailAddress,
-            onChanged: (value) => controller.email.value = value,
-            validator: (value) {
-              if (value == null || value.isEmpty) return 'Please enter your email';
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                return 'Please enter a valid email';
-              }
-              return null;
-            }, 
-            focusNode: controller.emailFocusNode,
-      ),
-    ),
-  ),
-          const Space(height: 20),
-          // Password Field with validation
-                  Obx(() =>
-            AnimatedContainer(
-    duration: const Duration(milliseconds: 200),
-    curve: Curves.easeInOut,
-    child: Material(
-      color: Colors.transparent,
-      child: CustomTextField(
-            controller: controller.passwordController,
-            label: 'Password',
-            prefixIcon: Icons.lock,
-suffixIcon: IconButton(
-              icon: Icon(
-                controller.isPasswordVisible.value
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
-                color: Colors.grey[500],
-                size: 20,
-              ),
-              onPressed: controller.togglePasswordVisibility,
-            ),        
-            obscureText: !controller.isPasswordVisible.value,
-            onChanged: (value) => controller.password.value = value,
-validator: (value) {
-              if (value == null || value.isEmpty) return 'Required';
-              if (value.length < 8) return 'Minimum 8 characters';
-              return null;
-            },            focusNode: controller.passwordFocusNode,
-      ),
-    ),
-  )),
-
-      const Space(height: 24),
-          // Sign Up Button
-          Obx(() => AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: controller.isLoading.value ? null : controller.signUp,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                disabledBackgroundColor: AppColors.primary.withOpacity(0.5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 3,
-              ),
-              child: controller.isLoading.value
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2.5,
-                      ),
-                    )
-                  : Text(
-                      'Create Account',
-                      style: AppTextStyles.medium16.copyWith(
-                        color: Colors.white,
+                    elevation: 8,
+                    color: Colors.white.withOpacity(0.9),
+                    shadowColor: Colors.grey.withValues(alpha: 0.2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Form(
+                      key: controller.formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
+                        child: Column(
+                          children: [
+                            CustomTextField(
+                              controller: controller.nameController,
+                              label: 'Name',
+                              prefixIcon: Icons.person,
+                              keyboardType: TextInputType.text,
+                              onChanged: (value) => controller.name.value = value,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) return null;
+                                value = value.trim();
+                                if (value.isEmpty) return 'Name cannot be just spaces';
+                                if (RegExp(r'[!@#\$%^&*(),.?":{}|<>0-9]').hasMatch(value)) {
+                                  return 'Only alphabets are allowed';
+                                }
+                                return null;
+                              },
+                              focusNode: controller.nameFocusNode,
+                            ),
+                            Space(height: 20),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.easeInOut,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: CustomTextField(
+                                  controller: controller.emailController,
+                                  label: 'Email Address',
+                                  prefixIcon: Icons.email,
+                                  keyboardType: TextInputType.emailAddress,
+                                  onChanged: (value) => controller.email.value = value,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) return 'Please enter your email';
+                                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                                      return 'Please enter a valid email';
+                                    }
+                                    return null;
+                                  },
+                                  focusNode: controller.emailFocusNode,
+                                ),
+                              ),
+                            ),
+                            Space(height: 20),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.easeInOut,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: CustomTextField(
+                                  controller: controller.phoneController,
+                                  label: 'Phone Number',
+                                  prefixIcon: Icons.phone,
+                                  keyboardType: TextInputType.phone,
+                                  onChanged: (value) => controller.phone.value = value,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) return 'Please enter your phone number';
+                                    if (!RegExp(r'^\d+$').hasMatch(value)) {
+                                      return 'Only numbers are allowed';
+                                    }
+                                    if (value.length < 10) {
+                                      return 'Phone number must be at least 10 digits';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+                            Space(height: 20),
+                            // Password Field with validation
+                            Obx(() => AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeInOut,
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: CustomTextField(
+                                      controller: controller.passwordController,
+                                      label: 'Password',
+                                      prefixIcon: Icons.lock,
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          controller.isPasswordVisible.value
+                                              ? Icons.visibility_outlined
+                                              : Icons.visibility_off_outlined,
+                                          color: Colors.grey[500],
+                                          size: 20,
+                                        ),
+                                        onPressed: controller.togglePasswordVisibility,
+                                      ),
+                                      obscureText: !controller.isPasswordVisible.value,
+                                      onChanged: (value) => controller.password.value = value,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) return 'Required';
+                                        if (value.length < 8) return 'Minimum 8 characters';
+                                        return null;
+                                      },
+                                      focusNode: controller.passwordFocusNode,
+                                    ),
+                                  ),
+                                )),
+                            const Space(height: 24),
+                            // Sign Up Button
+                            Obx(() => AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed: controller.isLoading.value ? null : controller.signUp,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.primary,
+                                      disabledBackgroundColor: AppColors.primary.withOpacity(0.5),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      elevation: 3,
+                                    ),
+                                    child: controller.isLoading.value
+                                        ? const SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2.5,
+                                            ),
+                                          )
+                                        : Text(
+                                            'Create Account',
+                                            style: AppTextStyles.medium16.copyWith(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                  ),
+                                )),
+                          ],
+                        ),
                       ),
                     ),
-            ),
-          )),
-        ],
-      ),
-    ),
-  ),
-),const SizedBox(height: 32),
+                  ),
+                  const SizedBox(height: 32),
                   // Divider with OR
                   Row(
                     children: [
@@ -216,7 +241,7 @@ validator: (value) {
                   // Already have an account
                   Center(
                     child: TextButton(
-                     onPressed: () => Get.off(() => StudentLoginScreen()),
+                      onPressed: () => Get.off(() => StudentLoginScreen()),
                       child: RichText(
                         text: TextSpan(
                           text: 'Already have an account? ',
@@ -242,7 +267,6 @@ validator: (value) {
     );
   }
 
- 
   Widget _buildSocialButton({
     required String icon,
     required VoidCallback onPressed,

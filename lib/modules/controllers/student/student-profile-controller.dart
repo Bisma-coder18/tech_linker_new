@@ -2,25 +2,27 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tech_linker_new/models/student.dart';
+import 'package:tech_linker_new/services/local-storage.dart';
 import 'package:tech_linker_new/util/util.dart';
 
 class PersonalProfileController extends GetxController {
-  final nameController = TextEditingController(text: "John Doe");
-  final emailController = TextEditingController(text: "john.doe@email.com");
-  final phoneController = TextEditingController(text: "+1 234 567 8900");
-  final universityController = TextEditingController(text: "MIT University");
-  final majorController = TextEditingController(text: "Computer Science");
-  final yearController = TextEditingController(text: "3rd Year");
-  final gpaController = TextEditingController(text: "3.8");
-  final locationController = TextEditingController(text: "New York, USA");
-  final bioController = TextEditingController(text: "Passionate computer science student...");
-  final linkedinController = TextEditingController(text: "linkedin.com/in/johndoe");
-  final githubController = TextEditingController(text: "github.com/johndoe");
-  final portfolioController = TextEditingController(text: "johndoe.dev");
-  final textController = TextEditingController(text: "johndoe.dev");
+  final nameController = TextEditingController(text: "");
+  final emailController = TextEditingController(text: "");
+  final phoneController = TextEditingController(text: "");
+  final universityController = TextEditingController(text: "");
+  final majorController = TextEditingController(text: "");
+  final yearController = TextEditingController(text: "");
+  final gpaController = TextEditingController(text: "");
+  final locationController = TextEditingController(text: "");
+  final bioController = TextEditingController(text: "");
+  final linkedinController = TextEditingController(text: "");
+  final githubController = TextEditingController(text: "");
+  final portfolioController = TextEditingController(text: "");
+  final textController = TextEditingController(text: "");
   Rx<File?> selectedImage = Rx<File?>(null);
-  RxList<String> skills = ["Flutter", "React", "Python"].obs;
-  RxList<String> interests = ["AI/ML", "Mobile Dev", "Web Dev"].obs;
+  RxList<String> skills = [""].obs;
+  RxList<String> interests = [""].obs;
 
   final formKey = GlobalKey<FormState>();
 
@@ -64,6 +66,29 @@ class PersonalProfileController extends GetxController {
 
   void uploadResume(){
     
+  }
+
+   @override
+  void onInit() {
+    super.onInit();
+    loadUserFromStorage();
+  }
+
+  Future<void> loadUserFromStorage() async {
+    try {
+      User? user = await LocalStorage.getUser();
+      if (user != null) {
+        nameController.text = user.name ?? '';
+        emailController.text = user.email ?? '';
+        phoneController.text=user.phone??"";
+        locationController.text=user.location??"";
+        bioController.text=user.bio??"";
+update();
+        // set other controllers if you want like phone, university, etc.
+      }
+    } catch (e) {
+      print('Error loading user from storage: $e');
+    }
   }
 
   // Show skill input dialog

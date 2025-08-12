@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:tech_linker_new/models/api-model.dart';
 import 'package:tech_linker_new/models/institute-model.dart';
+import 'package:tech_linker_new/models/student.dart';
 import 'package:tech_linker_new/screens/Admin_dashboard.dart';
 import 'package:tech_linker_new/screens/Institute_Dashboard.dart';
 import 'package:tech_linker_new/screens/institute/institute-main.dart';
@@ -9,6 +10,7 @@ import 'package:tech_linker_new/screens/institute/institute-signup.dart';
 import 'package:tech_linker_new/screens/student/auth/student_signup.dart';
 import 'package:tech_linker_new/screens/student/main_tab.dart';
 import 'package:tech_linker_new/screens/student/onBoarding/onBoarding.dart';
+import 'package:tech_linker_new/services/api.dart';
 import 'package:tech_linker_new/services/api_services.dart';
 import 'package:tech_linker_new/services/apis/institute/institute-apis.dart';
 import 'package:tech_linker_new/services/apis/student/auth.dart';
@@ -19,6 +21,7 @@ class StudentSignupController extends GetxController {
   final InstituteApiService instituteService=InstituteApiService();
   final isPasswordVisible = false.obs;
   final email = ''.obs;
+  final phone = ''.obs;
   final password = ''.obs;
   final role = ''.obs;
   final name = ''.obs;
@@ -26,26 +29,52 @@ class StudentSignupController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final nameController = TextEditingController();
+  final phoneController = TextEditingController();
   final FocusNode emailFocusNode = FocusNode();
   final FocusNode passwordFocusNode = FocusNode();
   final FocusNode nameFocusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
   final loginKey = GlobalKey<FormState>();
   void togglePasswordVisibility() => isPasswordVisible.toggle();
-
-  Future<void> signUp() async {
-    if (formKey.currentState?.validate() ?? false) {
-      // Get.snackbar('Error', 'Please fill all fields');
+Future<void> signUp() async {
+  if (formKey.currentState?.validate() ?? false) {
     try {
-      // TODO: Implement signup API call
-    Get.to(()=>MainTabScreen());
-      Get.snackbar('Success', 'Account created successfully');
+      isLoading.value = true;
+
+      final response = await GetConnect().post(
+        "${AppKeys.baseUrl}/student/signup",
+        {
+          "name": nameController.text.trim(),
+          "email": emailController.text.trim(),
+          "password": passwordController.text.trim(),
+          "phone": phoneController.text.trim(),
+          "role": role.value, // student / institute etc.
+        },
+      );
+
+      if (response.body['success'] == true) {
+      
+        try{
+clearInputs();
+        await LocalStorage.saveUser(User.fromJson(response.body['data']));
+        }catch(e){
+          print(e);
+        }
+        Get.offAll(() => MainTabScreen()); // Navigate to main screen
+      } else {
+        Get.snackbar(
+          'Error',
+          response.body['message'] ?? 'Signup failed',
+        );
+      }
     } catch (e) {
       Get.snackbar('Error', e.toString());
+    } finally {
+      isLoading.value = false;
     }
-    }
-
   }
+}
+
   Future<void> login() async {
   if (!(loginKey.currentState?.validate() ?? false)) return;
 
@@ -76,6 +105,7 @@ class StudentSignupController extends GetxController {
       Get.snackbar('Error', 'Server returned no user data');
       return;
     }
+    clearInputs();
     if (role.value == 'student') {
           await LocalStorage.saveUser(user!);
       Get.offAll(() => MainTabScreen());
@@ -109,6 +139,18 @@ class StudentSignupController extends GetxController {
   void logout(){
     Get.offAll(()=>OnBoardingScreen());
   }
+  void clearInputs() {
+  emailController.clear();
+  passwordController.clear();
+  nameController.clear();
+  phoneController.clear();
+
+  email.value = '';
+  password.value = '';
+  name.value = '';
+  phone.value = '';
+}
+
   @override
 void onClose() {
   emailController.dispose();
@@ -117,10 +159,7 @@ void onClose() {
   emailFocusNode.dispose();
   passwordFocusNode.dispose();
   nameFocusNode.dispose();
-
-  // Clear keys
-  // (Not strictly "dispose", but reset so Flutter doesn't think it's reused)
-  // Avoids duplicate global key
+ phoneController.dispose();
   formKey.currentState?.dispose();
   loginKey.currentState?.dispose();
 

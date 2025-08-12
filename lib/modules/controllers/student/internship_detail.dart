@@ -2,6 +2,10 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:tech_linker_new/models/student.dart';
+import 'package:tech_linker_new/services/api.dart';
+import 'package:tech_linker_new/services/local-storage.dart';
 
 class InternshipDetailController extends GetxController {
   final String jobId;
@@ -39,32 +43,52 @@ class InternshipDetailController extends GetxController {
     }
   }
 
-  Future<void> applyForJob() async {
-    if (cvFile.value == null) {
+  Future<void> applyForJob(String jobxId) async {
+  isApplying.value = true;
+  try {
+   final User? users=await LocalStorage.getUser();
+    final uri = Uri.parse('${AppKeys.baseUrl}/internship/apply');
+
+    // Prepare the form data
+    final body = {
+      'studentId': users!.id,
+      'internshipId': jobxId,
+    };
+
+    final response = await http.post(uri, body: body);
+
+    if (response.statusCode == 200) {
+      Get.back(); // Close modal if any
+      Get.snackbar(
+        'Success',
+        'Application submitted successfully!',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } else {
       Get.snackbar(
         'Error',
-        'Please upload your CV first',
+        'Failed to submit application: ${response.body}',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-      return;
     }
-
-    isApplying.value = true;
-    
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 2));
-    
-    isApplying.value = false;
-    Get.back(); // Close the modal
+  } catch (e) {
     Get.snackbar(
-      'Success',
-      'Application submitted successfully!',
+      'Error',
+      'Error submitting application: ${e.toString()}',
       snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.green,
+      backgroundColor: Colors.red,
       colorText: Colors.white,
     );
+  } finally {
+    isApplying.value = false;
   }
+}
+
+   
+  
   void saveJob(){}
 }

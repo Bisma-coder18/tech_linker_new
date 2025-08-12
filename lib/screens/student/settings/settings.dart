@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:tech_linker_new/config/app_assets.dart';
+import 'package:tech_linker_new/models/student.dart';
 import 'package:tech_linker_new/modules/controllers/auth/student_auth_controller.dart';
 import 'package:tech_linker_new/modules/controllers/student/student-profile-controller.dart';
 import 'package:tech_linker_new/screens/Logout/logout.dart';
@@ -10,6 +11,7 @@ import 'package:tech_linker_new/screens/institute/institute-profile.dart';
 import 'package:tech_linker_new/screens/student/auth/change_password.dart';
 import 'package:tech_linker_new/screens/student/settings/profile/profile.dart';
 import 'package:tech_linker_new/screens/student/settings/widget/edit_tile.dart';
+import 'package:tech_linker_new/services/local-storage.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 import 'package:tech_linker_new/theme/app_text_styles.dart';
 import 'package:tech_linker_new/widget/cached_img.dart';
@@ -20,7 +22,6 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       backgroundColor: Colors.grey[50],
       
@@ -102,7 +103,7 @@ class SettingsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "John Doe",
+                  controller.nameController.text,
                   style: AppTextStyles.medium16.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
