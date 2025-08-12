@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tech_linker_new/models/aaplied-users.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 import 'package:tech_linker_new/theme/app_text_styles.dart';
 import 'package:tech_linker_new/widget/cached_img.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InternshipUserDetailScreen extends StatelessWidget {
-  final String jobId;
-  final String userId;
-  
-  InternshipUserDetailScreen({super.key, required this.jobId, required this.userId});
+  final Applicant applicant;
+  final RxList<Internship> jobDetail;
+  final int index;
+  InternshipUserDetailScreen({super.key, required this.applicant,required this.jobDetail,required this.index});
 
   @override
   Widget build(BuildContext context) {
-    // Mock data - replace with your API calls later
-    final jobData = _getMockJobData();
-    final userData = _getMockUserData();
     
-    return Scaffold(
+    
+    return Scaffold( 
       backgroundColor: Colors.grey[50],
       body: CustomScrollView(
         slivers: [
@@ -62,30 +61,7 @@ class InternshipUserDetailScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 
                 // User Profile Card
-                _buildUserProfileCard(userData),
-                const SizedBox(height: 16),
-                
-                // Contact Actions
-                _buildContactActions(userData),
-                const SizedBox(height: 16),
-                
-                // Job Details Card
-                _buildJobDetailsCard(jobData),
-                const SizedBox(height: 16),
-                
-                // CV and Documents
-                _buildDocumentsCard(userData),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildUserProfileCard(Map<String, dynamic> userData) {
-    return Container(
+                  Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -106,16 +82,16 @@ class InternshipUserDetailScreen extends StatelessWidget {
             children: [
               Stack(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [AppColors.primary, AppColors.primary.withOpacity(0.7)],
-                      ),
-                    ),
-                    child: CachedImage(imageUrl:userData['profileImage'],size: 60  ,) 
-                  ),
+                  // Container(
+                  //   padding: const EdgeInsets.all(3),
+                  //   decoration: BoxDecoration(
+                  //     shape: BoxShape.circle,
+                  //     gradient: LinearGradient(
+                  //       colors: [AppColors.primary, AppColors.primary.withOpacity(0.7)],
+                  //     ),
+                  //   ),
+                  //   child: CachedImage(imageUrl:a,size: 60  ,) 
+                  // ),
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -137,12 +113,12 @@ class InternshipUserDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      userData['name'],
+                      applicant.student.name,
                       style: AppTextStyles.darkH4_500.copyWith(fontSize: 20),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      userData['title'],
+                      applicant.student.email,
                       style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.w500,
@@ -150,16 +126,16 @@ class InternshipUserDetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(Icons.location_on, size: 16, color: Colors.grey[600]),
-                        const SizedBox(width: 4),
-                        Text(
-                          userData['location'],
-                          style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Icon(Icons.location_on, size: 16, color: Colors.grey[600]),
+                    //     const SizedBox(width: 4),
+                    //     Text(
+                    //       jobDetail,
+                    //       style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
@@ -179,34 +155,11 @@ class InternshipUserDetailScreen extends StatelessWidget {
           // ),
         ],
       ),
-    );
-  }
-
-  Widget _buildStatItem(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: AppColors.primary,
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey[600],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildContactActions(Map<String, dynamic> userData) {
-    return Container(
+    ),
+                const SizedBox(height: 16),
+                
+                // Contact Actions
+                   Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
@@ -215,7 +168,7 @@ class InternshipUserDetailScreen extends StatelessWidget {
               icon: Icons.email,
               label: "Email",
               color: Colors.blue,
-              onTap: () => _launchEmail(userData['email']),
+              onTap: () => _launchEmail(applicant.student.email),
             ),
           ),
           const SizedBox(width: 12),
@@ -224,7 +177,7 @@ class InternshipUserDetailScreen extends StatelessWidget {
               icon: Icons.phone,
               label: "Call",
               color: Colors.green,
-              onTap: () => _launchPhone(userData['phone']),
+              onTap: () => _launchPhone(applicant.student.phone!),
             ),
           ),
           const SizedBox(width: 12),
@@ -233,49 +186,17 @@ class InternshipUserDetailScreen extends StatelessWidget {
               icon: Icons.message,
               label: "Message",
               color: Colors.orange,
-              onTap: () => _launchMessage(userData['phone']),
+              onTap: () => _launchMessage(applicant.student.phone!),
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withOpacity(0.3)),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 24),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildJobDetailsCard(Map<String, dynamic> jobData) {
-    return Container(
+    ),
+ 
+                const SizedBox(height: 16),
+                
+                // Job Details Card
+                   Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -321,19 +242,152 @@ class InternshipUserDetailScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-                    _buildSummaryItem(Icons.school, 'Education', 'Masters in any discipline'),
-          _buildSummaryItem(Icons.attach_money, 'Salary', '\$2600 - \$3400/yr'),
-          _buildSummaryItem(Icons.work, 'Job type', 'Full Time'),
-          _buildSummaryItem(Icons.update, 'Updated', '10/01/2023'),
-          _buildSummaryItem(Icons.bar_chart, 'Job level', 'Mid Level'),
-          _buildSummaryItem(Icons.person, 'Age', 'Age at least 24 years'),
-          _buildSummaryItem(Icons.work_history, 'Experience', '1 - 3 Years'),
-          _buildSummaryItem(Icons.schedule, 'Deadline', '08/02/2023'),
-          _buildSummaryItem(Icons.location_on, 'Location', 'New York, USA'),
+                    // _buildSummaryItem(Icons.school, 'Education', jobDetail[index].title),
+          _buildSummaryItem(Icons.work, 'Job type', jobDetail[index].type),
+          _buildSummaryItem(
+            Icons.update,
+            'Posted',
+            jobDetail[index].datePosted is DateTime
+                ? "${jobDetail[index].datePosted.day.toString().padLeft(2, '0')}/${jobDetail[index].datePosted.month.toString().padLeft(2, '0')}/${jobDetail[index].datePosted.year}"
+                : jobDetail[index].datePosted.toString(),
+          ),
+          _buildSummaryItem(Icons.bar_chart, 'Job level', jobDetail[index].jobLevel!),
+          _buildSummaryItem(Icons.schedule, 'Deadline', jobDetail[index].deadline!.toString()),
+          _buildSummaryItem(Icons.location_on, 'Location',  jobDetail[index].location??""),
+        ],
+      ),
+    ),
+                const SizedBox(height: 16),
+                
+                // CV and Documents
+//    Container(
+//       margin: const EdgeInsets.symmetric(horizontal: 16),
+//       padding: const EdgeInsets.all(20),
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(16),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.black.withOpacity(0.1),
+//             blurRadius: 10,
+//             offset: const Offset(0, 5),
+//           ),
+//         ],
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Text(
+//             "Documents & Portfolio",
+//             style: AppTextStyles.darkH4_500.copyWith(fontSize: 18),
+//           ),
+//           const SizedBox(height: 16),
+          
+//           // CV Download
+//           GestureDetector(
+//             onTap: () => _downloadCV(applicant.student.cv),
+//             child: Container(
+//               padding: const EdgeInsets.all(16),
+//               decoration: BoxDecoration(
+//                 gradient: LinearGradient(
+//                   colors: [
+//                     Colors.red.withOpacity(0.1),
+//                     Colors.red.withOpacity(0.05),
+//                   ],
+//                 ),
+//                 borderRadius: BorderRadius.circular(12),
+//                 border: Border.all(color: Colors.red.withOpacity(0.2)),
+//               ),
+//               child: Row(
+//                 children: [
+//                   Container(
+//                     padding: const EdgeInsets.all(8),
+//                     decoration: BoxDecoration(
+//                       color: Colors.red.withOpacity(0.1),
+//                       borderRadius: BorderRadius.circular(8),
+//                     ),
+//                     child: Icon(Icons.picture_as_pdf, color: Colors.red),
+//                   ),
+//                   const SizedBox(width: 12),
+//                   Expanded(
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text(
+//                           "Resume/CV",
+//                           style: TextStyle(
+//                             fontWeight: FontWeight.w600,
+//                             fontSize: 14,
+//                           ),
+//                         ),
+//                         Text(
+//                           "Download PDF • ${applicant.student.cv}",
+//                           style: TextStyle(
+//                             color: Colors.grey[600],
+//                             fontSize: 12,
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                   Icon(Icons.download, color: Colors.red),
+//                 ],
+//               ),
+//             ),
+//           ),
+          
+//           const SizedBox(height: 12),
+          
+//           // Portfolio Links
+//  ],
+//       ),
+//     ),
+                    
+                    
+                    const SizedBox(height: 20),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
+
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withOpacity(0.3)),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 24),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
  Widget _buildSummaryItem(IconData icon, String title, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -369,90 +423,7 @@ class InternshipUserDetailScreen extends StatelessWidget {
   }
 
 
-  Widget _buildDocumentsCard(Map<String, dynamic> userData) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Documents & Portfolio",
-            style: AppTextStyles.darkH4_500.copyWith(fontSize: 18),
-          ),
-          const SizedBox(height: 16),
-          
-          // CV Download
-          GestureDetector(
-            onTap: () => _downloadCV(userData['cvUrl']),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.red.withOpacity(0.1),
-                    Colors.red.withOpacity(0.05),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.red.withOpacity(0.2)),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(Icons.picture_as_pdf, color: Colors.red),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Resume/CV",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                          ),
-                        ),
-                        Text(
-                          "Download PDF • ${userData['cvSize']}",
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Icon(Icons.download, color: Colors.red),
-                ],
-              ),
-            ),
-          ),
-          
-          const SizedBox(height: 12),
-          
-          // Portfolio Links
- ],
-      ),
-    );
-  }
+ 
 
   Widget _buildActionButtons(Map<String, dynamic> userData) {
     return Container(
@@ -510,40 +481,7 @@ class InternshipUserDetailScreen extends StatelessWidget {
       ),
     );
   }
-
-  // Mock Data - Replace with your API calls
-  Map<String, dynamic> _getMockJobData() {
-    return {
-      'title': 'UI/UX Designer Intern',
-      'jobType': 'Full Time',
-      'jobLevel': 'Entry Level',
-      'salary': '\$1200 - \$1800/month',
-      'location': 'San Francisco, CA',
-      'deadline': '15 Mar 2024',
-      'description': 'We are looking for a talented UI/UX Designer intern to join our team...',
-    };
-  }
-
-  Map<String, dynamic> _getMockUserData() {
-    return {
-      'name': 'Sarah Johnson',
-      'email': 'sarah.johnson@email.com',
-      'phone': '+1 (555) 123-4567',
-      'address': '123 Main St, San Francisco, CA',
-      'title': 'UI/UX Design Student',
-      'location': 'San Francisco, CA',
-      'experience': '2 Years',
-      'rating': '4.8',
-      'appliedDate': '2 days ago',
-      'profileImage': 'https://example.com/profile.jpg', // Replace with actual URL
-      'cvUrl': 'https://example.com/cv.pdf',
-      'cvSize': '2.3 MB',
-      'portfolioUrl': 'https://sarahjohnson.portfolio.com',
-      'skills': ['UI Design', 'UX Research', 'Figma', 'Adobe XD', 'Prototyping'],
-    };
-  }
-
-  // Action Methods
+ // Action Methods
   void _launchEmail(String email) async {
     final Uri emailUri = Uri(scheme: 'mailto', path: email);
     if (await canLaunchUrl(emailUri)) {

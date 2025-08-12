@@ -91,7 +91,6 @@ class InternshipCard extends StatelessWidget {
       spacing: 12, 
       runSpacing: 12,
       children: [
-        _buildCard(job.joblevel!, AppColors.grey_20),
         _buildCard(job.jobtype, AppColors.grey_20),
         // _buildCard(job., AppColors.grey_20),
       ],

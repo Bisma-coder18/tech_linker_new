@@ -72,7 +72,7 @@ class InstituteHomeScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SvgPicture.asset(AppAssetsPath.find),
-                            Text("4.5k", style: AppTextStyles.large),
+                            // Text("4.5k", style: AppTextStyles.large),
                             Text(
                               "Applications Received",
                               style: AppTextStyles.medium,
@@ -94,8 +94,8 @@ class InstituteHomeScreen extends StatelessWidget {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("4.5k", style: AppTextStyles.large),
-                                Text("Hired", style: AppTextStyles.medium),
+                                // Text("4.5k", style: AppTextStyles.large),
+                                Text("Applicants", style: AppTextStyles.medium),
                               ],
                             ),
                           ),
@@ -110,8 +110,8 @@ class InstituteHomeScreen extends StatelessWidget {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("4.5k", style: AppTextStyles.large),
-                                Text("Total Posts", style: AppTextStyles.medium),
+                                // Text("4.5k", style: AppTextStyles.large),
+                                Text("Posts", style: AppTextStyles.medium),
                               ],
                             ),
                           ),

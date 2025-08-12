@@ -6,6 +6,7 @@ import 'package:tech_linker_new/screens/institute/applied-student-detail.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 import 'package:tech_linker_new/theme/app_text_styles.dart';
 import 'package:tech_linker_new/widget/cached_img.dart';
+import 'package:tech_linker_new/widget/empty_widgets.dart';
 
 class AppliedUsersScreen extends StatelessWidget {
   AppliedUsersScreen({super.key});
@@ -29,35 +30,17 @@ class AppliedUsersScreen extends StatelessWidget {
               alignment: Alignment.center,
               child: Center(child: CircularProgressIndicator(color: AppColors.primary)));
           }
-          if (controller.posts.isEmpty) {
-            return Center(
-              child: Text(
-                "No applications yet",
-                style: AppTextStyles.medium16l.copyWith(color: Colors.grey[600]),
-              ),
-            );
+          if (controller.internships.isEmpty) {
+            return EmptyWidget(title: "No Applications Yet", description: "");
           }
-          return ListView.builder(
+          return 
+          ListView.builder(
             shrinkWrap: true,
             padding: const EdgeInsets.all(16),
-            itemCount: controller.posts.length,
+            itemCount: controller.internships.length,
             itemBuilder: (context, index) {
-              final post = controller.posts[index];
-              final appliedUsers = controller.appliedUsers[post.id] ?? [];
-              return _buildPostSection(post.title, appliedUsers);
-            },
-          );
-        }),
-            
-        
-          ],
-        ),
-      ));
-      
-  }
-
-  Widget _buildPostSection(String postTitle, List<User> users) {
-    return Container(
+              final post = controller.internships[index];
+              return   Container(
       // elevation: 4,
       // surfaceTintColor: AppColors.backgroundColor,
       decoration: BoxDecoration(
@@ -77,7 +60,7 @@ class AppliedUsersScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              postTitle,
+              controller.internships[index].title,
               style: AppTextStyles.darkH4_500.copyWith(
                 fontSize: 18,
                 color: AppColors.primary,
@@ -85,7 +68,7 @@ class AppliedUsersScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            if (users.isEmpty)
+            if (controller.internships[index].applicants.isEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
@@ -97,9 +80,9 @@ class AppliedUsersScreen extends StatelessWidget {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: users.length,
+                itemCount: controller.internships[index].applicants.length,
                 itemBuilder: (context, index) {
-                  final user = users[index];
+                  final user = controller.internships[index].applicants[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Row(
@@ -107,21 +90,21 @@ class AppliedUsersScreen extends StatelessWidget {
                         CircleAvatar(
                           radius: 20,
                           backgroundColor: Colors.grey[200],
-                          child: CachedImage(imageUrl: user.avatar ),
+                          child: CachedImage(),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              user.name != null && user.name!.isNotEmpty
+                              user.student.name != null && user.student.name.isNotEmpty
                               ? Text(
-                                user.name!,
+                                user.student.name,
                                 style: AppTextStyles.mediumBold,
                               )
                               : const SizedBox.shrink(),
                               Text(
-                                user.email,
+                                user.student.email,
                                 style: AppTextStyles.medium14.copyWith(color: Colors.grey),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -132,7 +115,7 @@ class AppliedUsersScreen extends StatelessWidget {
                         IconButton(
                           icon: Icon(Icons.info_outline, color: AppColors.primary, size: 20),
                           onPressed: () {
-                            Get.to(()=>InternshipUserDetailScreen(jobId: '1',userId: "1",));
+                            Get.to(()=>InternshipUserDetailScreen(applicant: controller.internships[index].applicants[index],jobDetail:controller.internships,index: index,));
                           },
                         ),
                       ],
@@ -144,5 +127,16 @@ class AppliedUsersScreen extends StatelessWidget {
         ),
       ),
     );
+            },
+          );
+        }),
+            
+        
+          ],
+        ),
+      ));
+      
   }
+
+ 
 }

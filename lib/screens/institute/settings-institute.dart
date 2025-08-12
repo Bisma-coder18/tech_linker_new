@@ -83,17 +83,17 @@ class InstituteSettingsScreen extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
-          Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 3),
-              ),
-              child: Obx(() {
-                return CachedImage(
-                  imageUrl: controller.selectedImage.value?.path,
-                  size: 60,
-                );
-              })),
+          // Container(
+          //     decoration: BoxDecoration(
+          //       shape: BoxShape.circle,
+          //       border: Border.all(color: Colors.white, width: 3),
+          //     ),
+          //     child: Obx(() {
+          //       return CachedImage(
+          //         imageUrl: controller.selectedImage.value?.path,
+          //         size: 60,
+          //       );
+          //     })),
           const SizedBox(width: 16),
           Expanded(
             child: Column(

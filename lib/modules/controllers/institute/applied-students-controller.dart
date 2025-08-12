@@ -1,20 +1,12 @@
 import 'package:get/get.dart';
-import 'package:tech_linker_new/models/student.dart';
-import 'package:tech_linker_new/modules/controllers/institute/applied-student-detail.dart';
-
-class Post {
-  final String id;
-  final String title;
-
-  Post({required this.id, required this.title});
-}
-
-
+import 'package:tech_linker_new/models/institute-model.dart';
+import 'package:tech_linker_new/models/aaplied-users.dart';
+import 'package:tech_linker_new/services/api.dart';
+import 'package:tech_linker_new/services/local-storage.dart';
 
 class AppliedUsersController extends GetxController {
-  var posts = <Post>[].obs;
-  var appliedUsers = <String, List<User>>{}.obs;
-  var isLoading = true.obs;
+  var isLoading = false.obs;
+  var internships = <Internship>[].obs;
 
   @override
   void onInit() {
@@ -22,22 +14,29 @@ class AppliedUsersController extends GetxController {
     fetchAppliedUsers();
   }
 
-  void fetchAppliedUsers() async {
-    // Simulate API call or data fetch
-    await Future.delayed(Duration(seconds: 2));
-    posts.value = [
-      Post(id: '1', title: 'UI/UX Designer Internship'),
-      Post(id: '2', title: 'Software Developer Internship'),
-    ];
-    appliedUsers.value = {
-      '1': [
-        User (id: "1", name: 'John Doe', email: 'john@example.com', avatar: 'path/to/image',role: "institute"),
-        User(id: "1", name: 'Jane Smith', email: 'jane@example.com', avatar: 'path/to/image',role: "institute"),
-      ],
-      '2': [
-        User(id: "1", name: 'Alice Johnson', email: 'alice@example.com', avatar: 'path/to/image',role: "institute"),
-      ],
-    };
-    isLoading.value = false;
+  Future<void> fetchAppliedUsers() async {
+    try {
+      isLoading.value = true;
+      final InstituteModel? userdetails=await LocalStorage.getInsUser();
+      final response = await GetConnect().get(
+        "${AppKeys.baseUrl}/nternship/institute/${userdetails!.id}",
+      );
+
+      if (response.statusCode == 200 && response.body['success'] == true) {
+        final data = response.body['data'] ?? {};
+        final list = data['internships'] ?? [];
+
+        internships.assignAll(
+          (list as List).map((i) => Internship.fromJson(i)).toList(),
+        );
+      } else {
+        internships.clear();
+      }
+    } catch (e) {
+      internships.clear();
+      print("Error fetching internships: $e");
+    } finally {
+      isLoading.value = false;
+    }
   }
 }
