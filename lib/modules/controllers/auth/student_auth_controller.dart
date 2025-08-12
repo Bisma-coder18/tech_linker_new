@@ -17,8 +17,8 @@ import 'package:tech_linker_new/services/apis/student/auth.dart';
 import 'package:tech_linker_new/services/local-storage.dart';
 
 class StudentSignupController extends GetxController {
-  final AuthService authService=AuthService();
-  final InstituteApiService instituteService=InstituteApiService();
+  final AuthService authService = AuthService();
+  final InstituteApiService instituteService = InstituteApiService();
   final isPasswordVisible = false.obs;
   final email = ''.obs;
   final phone = ''.obs;
@@ -36,36 +36,84 @@ class StudentSignupController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final loginKey = GlobalKey<FormState>();
   void togglePasswordVisibility() => isPasswordVisible.toggle();
-Future<void> signUp() async {
-  if (formKey.currentState?.validate() ?? false) {
+  Future<void> signUp() async {
+    if (formKey.currentState?.validate() ?? false) {
+      try {
+        isLoading.value = true;
+
+        final response = await GetConnect().post(
+          "${AppKeys.baseUrl}/student/signup",
+          {
+            "name": nameController.text.trim(),
+            "email": emailController.text.trim(),
+            "password": passwordController.text.trim(),
+            "phone": phoneController.text.trim(),
+            "role": role.value, // student / institute etc.
+          },
+        );
+
+        if (response.body['success'] == true) {
+          try {
+            clearInputs();
+            await LocalStorage.saveUser(User.fromJson(response.body['data']));
+          } catch (e) {
+            print(e);
+          }
+          Get.offAll(() => MainTabScreen()); // Navigate to main screen
+        } else {
+          Get.snackbar(
+            'Error',
+            response.body['message'] ?? 'Signup failed',
+          );
+        }
+      } catch (e) {
+        Get.snackbar('Error', e.toString());
+      } finally {
+        isLoading.value = false;
+      }
+    }
+  }
+
+  Future<void> login() async {
+    if (!(loginKey.currentState?.validate() ?? false)) return;
+
     try {
       isLoading.value = true;
-
-      final response = await GetConnect().post(
-        "${AppKeys.baseUrl}/student/signup",
-        {
-          "name": nameController.text.trim(),
-          "email": emailController.text.trim(),
-          "password": passwordController.text.trim(),
-          "phone": phoneController.text.trim(),
-          "role": role.value, // student / institute etc.
-        },
-      );
-
-      if (response.body['success'] == true) {
-      
-        try{
-clearInputs();
-        await LocalStorage.saveUser(User.fromJson(response.body['data']));
-        }catch(e){
-          print(e);
-        }
-        Get.offAll(() => MainTabScreen()); // Navigate to main screen
-      } else {
-        Get.snackbar(
-          'Error',
-          response.body['message'] ?? 'Signup failed',
+      final ApiResponse resp;
+      if (role.value == "student") {
+        resp = await instituteService.loginInstitute(
+          email: emailController.text,
+          password: passwordController.text,
         );
+      } else if (role.value == "institute") {
+        resp = await instituteService.loginInstitute(
+            email: emailController.text, password: passwordController.text);
+      } else {
+        resp = await instituteService.loginInstitute(
+            email: emailController.text, password: passwordController.text);
+      }
+      if (!resp.success) {
+        Get.snackbar(
+            'Error', resp.message.isNotEmpty ? resp.message : 'Login failed');
+        return;
+      }
+
+      final user = resp.data;
+      if (user == null) {
+        // success flag true but no data -> treat as error
+        Get.snackbar('Error', 'Server returned no user data');
+        return;
+      }
+      clearInputs();
+      if (role.value == 'student') {
+        await LocalStorage.saveUser(user!);
+        Get.offAll(() => MainTabScreen());
+      } else if (role.value == 'institute') {
+        await LocalStorage.saveInstUser(user);
+
+        Get.offAll(() => InstituteMainScreen());
+      } else {
+        Get.offAll(() => AdminDashboard());
       }
     } catch (e) {
       Get.snackbar('Error', e.toString());
@@ -73,97 +121,49 @@ clearInputs();
       isLoading.value = false;
     }
   }
-}
 
-  Future<void> login() async {
-  if (!(loginKey.currentState?.validate() ?? false)) return;
-
-  try {
-    isLoading.value = true;
-    final ApiResponse resp;
-    if(role.value=="student"){
-      resp = await instituteService.loginInstitute(
-      email: emailController.text,
-      password: passwordController.text,
-    );
-    }else if(role.value=="institute"){
-     resp = await instituteService.loginInstitute(
-      email: emailController.text,
-      password: passwordController.text);}else{
-      resp = await instituteService.loginInstitute(
-      email: emailController.text,
-      password: passwordController.text);
-    }
-    if (!resp.success) {
-      Get.snackbar('Error', resp.message.isNotEmpty ? resp.message : 'Login failed');
-      return;
-    }
-
-    final user = resp.data;
-    if (user == null) {
-      // success flag true but no data -> treat as error
-      Get.snackbar('Error', 'Server returned no user data');
-      return;
-    }
-    clearInputs();
-    if (role.value == 'student') {
-          await LocalStorage.saveUser(user!);
-      Get.offAll(() => MainTabScreen());
-    } else if (role.value == 'institute') {
-          await LocalStorage.saveInstUser(user);
-
-      Get.offAll(() => InstituteMainScreen());
-    }else{
-      Get.offAll(() => AdminDashboard());
-    }
-  } catch (e) {    
-    Get.snackbar('Error', e.toString());
-  } finally {
-    isLoading.value = false;
-  }
-}
- Future<void> onSignUp() async {
-      // Get.snackbar('Error', 'Please fill all fields');
+  Future<void> onSignUp() async {
+    // Get.snackbar('Error', 'Please fill all fields');
     try {
       // TODO: Implement signup API cal
-      if(role.value=="student"){
-      Get.off(()=>StudentSignupScreen());
-      }else{
-        Get.off(()=>InstituteSignupScreen());
+      if (role.value == "student") {
+        Get.off(() => StudentSignupScreen());
+      } else {
+        Get.off(() => InstituteSignupScreen());
       }
     } catch (e) {
       Get.snackbar('Error', e.toString());
     }
+  }
 
+  void logout() {
+    Get.offAll(() => OnBoardingScreen());
   }
-  void logout(){
-    Get.offAll(()=>OnBoardingScreen());
-  }
+
   void clearInputs() {
-  emailController.clear();
-  passwordController.clear();
-  nameController.clear();
-  phoneController.clear();
+    emailController.clear();
+    passwordController.clear();
+    nameController.clear();
+    phoneController.clear();
 
-  email.value = '';
-  password.value = '';
-  name.value = '';
-  phone.value = '';
-}
+    email.value = '';
+    password.value = '';
+    name.value = '';
+    phone.value = '';
+  }
 
   @override
-void onClose() {
-  emailController.dispose();
-  passwordController.dispose();
-  nameController.dispose();
-  emailFocusNode.dispose();
-  passwordFocusNode.dispose();
-  nameFocusNode.dispose();
- phoneController.dispose();
-  formKey.currentState?.dispose();
-  loginKey.currentState?.dispose();
+  void onClose() {
+    emailController.dispose();
+    passwordController.dispose();
+    nameController.dispose();
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    nameFocusNode.dispose();
+    phoneController.dispose();
+    formKey.currentState?.dispose();
+    loginKey.currentState?.dispose();
 
-  super.onClose();
-}
-
+    super.onClose();
+  }
 }
