@@ -1,7 +1,7 @@
 class Internship {
   final String id;
   final String role;
-  final String instituteId;
+  final Map<String, dynamic> instituteId;
   final String image;
   final String title;
   final String jobtype;
@@ -34,10 +34,12 @@ class Internship {
   });
 
   factory Internship.fromJson(Map<String, dynamic> json) {
+    print(json['instituteId']);
+    print("alallalal");
     return Internship(
       id: json['_id'] ?? '',
       role: json['role'] ?? '',
-      instituteId: json['instituteId'] ?? '',
+      instituteId: json['instituteId'] ,
       image: json['image'] ?? '',
       title: json['title'] ?? '',
       jobtype: json['type'] ?? '',

@@ -24,75 +24,75 @@ class PersonalProfileScreen extends StatelessWidget {
           style: AppTextStyles.darkH4_500,
         ),
         centerTitle: true,
-        actions: [
-          TextButton(
-            onPressed: () {
-              controller.saveProfile(context);
-            },
-            child: Text(
-              "Save",
-              style: TextStyle(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
+        // actions: [
+        //   TextButton(
+        //     onPressed: () {
+        //       controller.saveProfile(context);
+        //     },
+        //     child: Text(
+        //       "Save",
+        //       style: TextStyle(
+        //         color: AppColors.primary,
+        //         fontWeight: FontWeight.w600,
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
       body: SingleChildScrollView(
         child: Form(
           key: controller.formKey,
           child: Column(
             children: [
-              // Profile Header
-               Container(
-      width: double.infinity,
-      color: Colors.white,
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.primary, width: 3),
-                ),
-                child: Obx(() {
-  return CachedImage(
-    imageUrl: controller.selectedImage.value?.path,
-  );
-})
-              ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: GestureDetector(
-                  onTap:(){
-                      _changeProfilePicture(context);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
-                    ),
-                    child: Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
+//               // Profile Header
+//                Container(
+//       width: double.infinity,
+//       color: Colors.white,
+//       padding: const EdgeInsets.all(20),
+//       child: Column(
+//         children: [
+//           Stack(
+//             children: [
+//               Container(
+//                 decoration: BoxDecoration(
+//                   shape: BoxShape.circle,
+//                   border: Border.all(color: AppColors.primary, width: 3),
+//                 ),
+//                 child: Obx(() {
+//   return CachedImage(
+//     imageUrl: controller.selectedImage.value?.path,
+//   );
+// })
+//               ),
+//               Positioned(
+//                 bottom: 0,
+//                 right: 0,
+//                 child: GestureDetector(
+//                   onTap:(){
+//                       _changeProfilePicture(context);
+//                   },
+//                   child: Container(
+//                     padding: const EdgeInsets.all(8),
+//                     decoration: BoxDecoration(
+//                       color: AppColors.primary,
+//                       shape: BoxShape.circle,
+//                       border: Border.all(color: Colors.white, width: 2),
+//                     ),
+//                     child: Icon(
+//                       Icons.camera_alt,
+//                       color: Colors.white,
+//                       size: 16,
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ],
+//       ),
+//     ),
 
-              const SizedBox(height: 20),
+//               const SizedBox(height: 20),
 
               // Profile Sections
               _buildBasicInfoSection(),
@@ -106,7 +106,7 @@ class PersonalProfileScreen extends StatelessWidget {
               //     _buildChipSection("Areas of Interest", controller.interests, Colors.orange,context),
               //   ],
               // ),
-              _buildDocumentsSection(),
+              // _buildDocumentsSection(),
               const SizedBox(height: 30),
             ],
           ),
@@ -247,6 +247,7 @@ class PersonalProfileScreen extends StatelessWidget {
         controller: controller,
         keyboardType: keyboardType,
         maxLines: maxLines,
+        enabled: false,
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: Icon(icon, color: AppColors.primary),

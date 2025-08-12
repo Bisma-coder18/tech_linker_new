@@ -10,12 +10,10 @@ class StudentHomeController extends GetxController {
 
   Future<void> fetchInternships() async {
     try {
-            final localUser = await LocalStorage.getInsUser();
+      final localUser = await LocalStorage.getInsUser();
 
       isLoading.value = true;
-      final url = Uri.parse(
-        "${AppKeys.baseUrl}/internship/",
-      ); // Use your PC IP instead of localhost
+      final url = Uri.parse("${AppKeys.baseUrl}/internship/"); // Use your PC IP instead of localhost
 
       final response = await http.get(url);
 
