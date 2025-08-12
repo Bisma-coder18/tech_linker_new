@@ -214,7 +214,7 @@ class InstituteSettingsScreen extends StatelessWidget {
         iconPath: AppAssetsPath.icon,
         onTap: () { 
           // LocalStorage.clearAll();
-           Get.to(()=>LogoutScreen());},
+           Get.offAll(()=>LogoutScreen());},
         isFirst: true,
         isLast: true,
         isDanger: true,

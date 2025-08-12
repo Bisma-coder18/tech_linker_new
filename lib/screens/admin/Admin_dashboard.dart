@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
+import 'package:get/get.dart';
 import 'package:tech_linker_new/screens/AboutUs_SettingScreen.dart';
 import 'package:tech_linker_new/screens/admin/ManageInstitute.dart';
 import 'package:tech_linker_new/screens/admin/ManageInterships.dart';
@@ -8,6 +9,8 @@ import 'package:tech_linker_new/screens/admin/Supports_feedbackAdmin.dart';
 import 'package:tech_linker_new/screens/admin/ManageStudents.dart';
 import 'package:tech_linker_new/screens/admin/admin_login.dart';
 import 'package:tech_linker_new/screens/admin/admin_main_screen.dart';
+import 'package:tech_linker_new/screens/student/onBoarding/onBoarding.dart';
+import 'package:tech_linker_new/services/local-storage.dart';
 import 'package:tech_linker_new/widget/list_tiles.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 import 'package:tech_linker_new/theme/app_text_styles.dart';
@@ -153,11 +156,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
             title: 'Sign Out',
             color: Colors.white,
             onTap: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (_) => AdminLoginScreen()),
-                (route) => false,
-              );
+              LocalStorage.clearAll();
+              Get.offAll(()=>OnBoardingScreen());
             },
           ),
         ],

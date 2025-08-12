@@ -207,7 +207,7 @@ class SettingsScreen extends StatelessWidget {
         subtitle: "Sign out of your account",
         leftIcon: AppAssetsPath.logout,
         iconPath: AppAssetsPath.icon,
-        onTap: () =>  Get.to(()=>LogoutScreen()),
+        onTap: () =>  Get.offAll(()=>LogoutScreen()),
         isFirst: true,
         isLast: true,
         isDanger: true,

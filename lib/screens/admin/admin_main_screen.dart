@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:tech_linker_new/screens/student/onBoarding/onBoarding.dart';
+import 'package:tech_linker_new/services/local-storage.dart';
 import 'package:tech_linker_new/theme/app_text_styles.dart';
 import 'package:tech_linker_new/services/admin/admin_dashboard_apis.dart';
 import 'package:tech_linker_new/screens/AboutUs_SettingScreen.dart';
@@ -990,11 +993,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             title: 'Sign Out',
             color: Colors.white,
             onTap: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (_) => AdminLoginScreen()),
-                (route) => false,
-              );
+              LocalStorage.clearAll();
+              Get.offAll(()=>OnBoardingScreen());
             },
           ),
         ],
