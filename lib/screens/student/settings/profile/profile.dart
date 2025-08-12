@@ -131,8 +131,8 @@ class PersonalProfileScreen extends StatelessWidget {
             keyboardType: TextInputType.phone),
         _buildTextField("Location", controller.locationController,
             Icons.location_on_outlined),
-        _buildTextField("Bio", controller.bioController, Icons.info_outline,
-            maxLines: 3),
+        // _buildTextField("Bio", controller.bioController, Icons.info_outline,
+        //     maxLines: 3),
       ],
     );
   }

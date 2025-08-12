@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class InternshipDetailController extends GetxController {
   isApplying.value = true;
   try {
    final User? users=await LocalStorage.getUser();
-    final uri = Uri.parse('${AppKeys.baseUrl}/internship/apply');
+    final uri = Uri.parse('${AppKeys.baseUrl}/internship/apply/${users!.id}/${jobxId}');
 
     // Prepare the form data
     final body = {
@@ -55,26 +56,33 @@ class InternshipDetailController extends GetxController {
       'internshipId': jobxId,
     };
 
-    final response = await http.post(uri, body: body);
-
-    if (response.statusCode == 200) {
-      Get.back(); // Close modal if any
-      Get.snackbar(
-        'Success',
-        'Application submitted successfully!',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
-    } else {
-      Get.snackbar(
-        'Error',
-        'Failed to submit application: ${response.body}',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
+    final response = await http.post(uri,);
+if (response.statusCode == 200 || response.statusCode == 201) {
+  Get.back(); // Close modal if any
+  Get.snackbar(
+    'Success',
+    'Application submitted successfully!',
+    snackPosition: SnackPosition.BOTTOM,
+  );
+} else if (response.statusCode == 400) {
+  try{
+ final data = jsonDecode(response.body);
+  Get.snackbar(
+    'Failure',
+    data["message"] ?? 'Unknown error',
+    snackPosition: SnackPosition.BOTTOM,
+  );
+  }catch(e){
+    print(e);
+  }
+ 
+} else {
+  Get.snackbar(
+    'Error',
+    'Failed to submit application.',
+    snackPosition: SnackPosition.BOTTOM,
+  );
+}
   } catch (e) {
     Get.snackbar(
       'Error',

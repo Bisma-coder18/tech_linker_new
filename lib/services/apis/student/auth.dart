@@ -26,6 +26,7 @@ class AuthService {
 
       if (userData != null) {
         final user = User.fromJson(userData);
+        print("smmsmsm");
         await LocalStorage.saveUser(user);
       }
     }

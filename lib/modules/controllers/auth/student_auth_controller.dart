@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:tech_linker_new/models/api-model.dart';
@@ -81,8 +83,9 @@ class StudentSignupController extends GetxController {
       isLoading.value = true;
       final ApiResponse resp;
       if (role.value == "student") {
-        resp = await instituteService.loginInstitute(
+        resp = await authService.loginService(       
           email: emailController.text,
+          role: role.value,
           password: passwordController.text,
         );
       } else if (role.value == "institute") {
@@ -106,10 +109,12 @@ class StudentSignupController extends GetxController {
       }
       clearInputs();
       if (role.value == 'student') {
-        await LocalStorage.saveUser(user!);
+
+        await LocalStorage.saveUser(User.fromJson(user));
+        print("user");
         Get.offAll(() => MainTabScreen());
       } else if (role.value == 'institute') {
-        await LocalStorage.saveInstUser(user);
+        await LocalStorage.saveInstUser(InstituteModel.fromJson(user));
 
         Get.offAll(() => InstituteMainScreen());
       } else {
