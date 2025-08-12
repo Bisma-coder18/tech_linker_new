@@ -3,20 +3,19 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:tech_linker_new/config/app_assets.dart';
 import 'package:tech_linker_new/modules/controllers/auth/student_auth_controller.dart';
+import 'package:tech_linker_new/modules/controllers/institute/institute-controller.dart';
 import 'package:tech_linker_new/modules/controllers/student/student-profile-controller.dart';
 import 'package:tech_linker_new/screens/Logout/logout.dart';
 import 'package:tech_linker_new/screens/institute/hired-rejected.dart';
 import 'package:tech_linker_new/screens/institute/institute-profile.dart';
-import 'package:tech_linker_new/screens/student/auth/change_password.dart';
-import 'package:tech_linker_new/screens/student/settings/profile/profile.dart';
-import 'package:tech_linker_new/screens/student/settings/widget/edit_tile.dart';
+import 'package:tech_linker_new/services/local-storage.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 import 'package:tech_linker_new/theme/app_text_styles.dart';
 import 'package:tech_linker_new/widget/cached_img.dart';
 import 'package:tech_linker_new/widget/space.dart';
 
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+class InstituteSettingsScreen extends StatelessWidget {
+  const InstituteSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +60,7 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildProfileCard() {
-    final PersonalProfileController controller =
-        Get.put(PersonalProfileController());
+      final InstituteProfileController controller = Get.put(InstituteProfileController());
          final StudentSignupController authController =
         Get.put(StudentSignupController());
     return Container(
@@ -102,7 +100,7 @@ class SettingsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "John Doe",
+                  controller.instituteNameController.text,
                   style: AppTextStyles.medium16.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -166,11 +164,19 @@ class SettingsScreen extends StatelessWidget {
                 iconPath: AppAssetsPath.edit,
                 onTap: () {
                   //  
-                  Get.to(()=> PersonalProfileScreen());
+                  Get.to(()=> InstituteProfileScreen());
                 },
                 isFirst: true,
               ),
               // _buildDivider(),
+              // _buildSettingsTile(
+              //   title: "Hired/Rejected Users",
+              //   subtitle: "All Hired Users",
+              //   leftIcon: AppAssetsPath.profile,
+              //   iconPath: AppAssetsPath.edit,
+              //   onTap: () => Get.to(() => HiredRejectedUsersScreen()),
+              //   isLast: true,
+              // ),
               //  _buildDivider(),
               // _buildSettingsTile(
               //   title: "Rejected Users",
@@ -206,7 +212,9 @@ class SettingsScreen extends StatelessWidget {
         subtitle: "Sign out of your account",
         leftIcon: AppAssetsPath.logout,
         iconPath: AppAssetsPath.icon,
-        onTap: () =>  Get.to(()=>LogoutScreen()),
+        onTap: () { 
+          // LocalStorage.clearAll();
+           Get.to(()=>LogoutScreen());},
         isFirst: true,
         isLast: true,
         isDanger: true,

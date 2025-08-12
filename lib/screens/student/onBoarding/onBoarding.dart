@@ -106,6 +106,7 @@ class OnBoardingScreen extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         controller.role.value="admin";
+                        Get.to(()=>StudentLoginScreen());
                       },
                       child: Container(
                         padding: const EdgeInsets.all(16),

@@ -5,6 +5,7 @@ import 'package:tech_linker_new/screens/student/auth/student_signup.dart';
 import 'package:tech_linker_new/screens/student/main_tab.dart';
 import 'package:tech_linker_new/screens/student/onBoarding/onBoarding.dart';
 import 'package:tech_linker_new/screens/student/settings/settings.dart';
+import 'package:tech_linker_new/services/local-storage.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 import 'package:tech_linker_new/widget/common_fill_btn.dart';
 
@@ -23,7 +24,7 @@ class LogoutScreen extends StatelessWidget {
         foregroundColor: AppColors.backgroundColor,
         elevation: 0,
         title: const Text(
-          'Hired & Rejected Users',
+          '',
           style: TextStyle(
             color: AppColors.white,
             fontSize: 18,
@@ -93,7 +94,9 @@ class LogoutScreen extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: 
-                 CommonFillButton(onPressed: (){authController.logout();}, text: "Logout", isLoading: authController.isLoading)
+                 CommonFillButton(onPressed: (){
+                  LocalStorage.clearAll();
+                  authController.logout();}, text: "Logout", isLoading: authController.isLoading)
                 )
               ],
             ),

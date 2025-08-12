@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tech_linker_new/screens/institute/applied-students.dart';
 import 'package:tech_linker_new/screens/institute/institute-home.dart';
 import 'package:tech_linker_new/screens/institute/internship-post.dart';
-import 'package:tech_linker_new/screens/student/home/home.dart';
-import 'package:tech_linker_new/screens/student/interships/all_interships.dart';
-import 'package:tech_linker_new/screens/student/interships/applied_internship.dart';
-import 'package:tech_linker_new/screens/student/settings/settings.dart';
+import 'package:tech_linker_new/screens/institute/settings-institute.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 
 class InstituteMainScreen extends StatefulWidget {
@@ -24,7 +21,7 @@ class _InstituteMainScreenState extends State<InstituteMainScreen> {
     InstituteHomeScreen(),
     InternshipPostScreen(),
     AppliedUsersScreen(),
-    SettingsScreen()
+    InstituteSettingsScreen()
   ];
 
   @override

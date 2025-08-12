@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart'; // For MediaType
+import 'package:tech_linker_new/screens/institute/institute-main.dart';
+import 'dart:convert';
+
+import 'package:tech_linker_new/services/api.dart';
+import 'package:tech_linker_new/services/local-storage.dart';
 
 class InternshipPostController extends GetxController {
   final formKey = GlobalKey<FormState>();
-  
+
   // Text Controllers
   final jobTitleController = TextEditingController();
   final salaryController = TextEditingController();
@@ -18,10 +25,10 @@ class InternshipPostController extends GetxController {
   var location = ''.obs;
   var deadline = ''.obs;
   var description = ''.obs;
-  var jobType = 'Full Time'.obs; // Default value
-  var locationType = 'Onsite'.obs; // Default value
-  var jobLevel = 'Mid Level'.obs; // Default value
-  var selectedImage = Rx<XFile?>(null); // For job image
+  var jobType = 'Full Time'.obs;
+  var locationType = 'Onsite'.obs;
+  var jobLevel = 'Mid Level'.obs;
+  var selectedImage = Rx<XFile?>(null);
   var isLoading = false.obs;
 
   final ImagePicker _picker = ImagePicker();
@@ -30,46 +37,69 @@ class InternshipPostController extends GetxController {
   void pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      selectedImage.value = image; // Update reactive image
+      selectedImage.value = image;
     }
   }
 
-  // Post internship
-  void postInternship(BuildContext context) {
-    if (formKey.currentState!.validate()) {
-      isLoading.value = true;
-      try {
-        // Update observables with controller values
-        jobTitle.value = jobTitleController.text;
-        salary.value = salaryController.text;
-        location.value = locationController.text;
-        deadline.value = deadlineController.text;
-        description.value = descriptionController.text;
+  // Post internship to API
+  Future<void> postInternship(BuildContext context) async {
+    if (!formKey.currentState!.validate()) return;
 
-        // Simulate API call or save logic
-        print("Internship Posted:");
-        print("Title: ${jobTitle.value}");
-        print("Salary: ${salary.value}");
-        print("Location: ${location.value}");
-        print("Deadline: ${deadline.value}");
-        print("Description: ${description.value}");
-        print("Job Type: ${jobType.value}");
-        print("Location Type: ${locationType.value}");
-        print("Job Level: ${jobLevel.value}");
-        print("Image: ${selectedImage.value?.path}");
+    isLoading.value = true;
 
-        Get.snackbar('Success', 'Internship posted successfully');
-        _clearForm();
-        Get.back();
-      } catch (e) {
-        Get.snackbar('Error', 'Failed to post internship');
-      } finally {
-        isLoading.value = false;
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('${AppKeys.baseUrl}/internship/add'), // Change if needed
+      );
+      final localUser = await LocalStorage.getInsUser();
+
+      // Map variables to API fields
+      request.fields['title'] = jobTitleController.text;
+      request.fields['location'] = locationController.text;
+      request.fields['locationType'] = locationType.value;
+      request.fields['description'] = descriptionController.text;
+      request.fields['type'] = jobType.value;
+      request.fields['stipend'] = salaryController.text; // using salaryController as experience
+      request.fields['deadline'] = deadlineController.text;
+      request.fields['joblevel'] = jobLevel.value;
+      request.fields['instituteId'] = localUser!.id; // Replace with actual ID
+
+      // Attach image with proper content type
+      if (selectedImage.value != null) {
+        final fileExt = selectedImage.value!.path.split('.').last.toLowerCase();
+        final mimeType = (fileExt == 'png')
+            ? MediaType('image', 'png')
+            : (fileExt == 'webp')
+                ? MediaType('image', 'webp')
+                : MediaType('image', 'jpeg');
+
+        request.files.add(await http.MultipartFile.fromPath(
+          'image',
+          selectedImage.value!.path,
+          contentType: mimeType,
+        ));
       }
+
+      var response = await request.send();
+      var responseData = await http.Response.fromStream(response);
+      var jsonResponse = json.decode(responseData.body);
+
+      if (jsonResponse['success'] == true) {
+        print(jsonResponse['message']);
+        Get.snackbar('Success', jsonResponse['message'] ?? 'Internship posted successfully');
+        _clearForm();
+      } else {
+        Get.snackbar('Error', jsonResponse['message'] ?? 'Something went wrong');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to post internship: $e');
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  // Clear form after successful post
+  // Clear form after success
   void _clearForm() {
     jobTitleController.clear();
     salaryController.clear();
@@ -80,6 +110,8 @@ class InternshipPostController extends GetxController {
     locationType.value = 'Onsite';
     jobLevel.value = 'Mid Level';
     selectedImage.value = null;
+    update();
+
   }
 
   @override

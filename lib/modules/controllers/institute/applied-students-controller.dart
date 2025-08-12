@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:tech_linker_new/models/student.dart';
+import 'package:tech_linker_new/modules/controllers/institute/applied-student-detail.dart';
 
 class Post {
   final String id;
@@ -7,13 +9,7 @@ class Post {
   Post({required this.id, required this.title});
 }
 
-class User {
-  final String name;
-  final String email;
-  final String profileImage;
 
-  User({required this.name, required this.email, this.profileImage = ''});
-}
 
 class AppliedUsersController extends GetxController {
   var posts = <Post>[].obs;
@@ -35,11 +31,11 @@ class AppliedUsersController extends GetxController {
     ];
     appliedUsers.value = {
       '1': [
-        User(name: 'John Doe', email: 'john@example.com', profileImage: 'path/to/image'),
-        User(name: 'Jane Smith', email: 'jane@example.com', profileImage: 'path/to/image'),
+        User (id: "1", name: 'John Doe', email: 'john@example.com', avatar: 'path/to/image',role: "institute"),
+        User(id: "1", name: 'Jane Smith', email: 'jane@example.com', avatar: 'path/to/image',role: "institute"),
       ],
       '2': [
-        User(name: 'Alice Johnson', email: 'alice@example.com', profileImage: 'path/to/image'),
+        User(id: "1", name: 'Alice Johnson', email: 'alice@example.com', avatar: 'path/to/image',role: "institute"),
       ],
     };
     isLoading.value = false;

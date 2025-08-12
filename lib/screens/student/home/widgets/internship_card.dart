@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:tech_linker_new/models/internship_model.dart';
 import 'package:tech_linker_new/screens/student/home/widgets/horizontal_cards.dart';
 import 'package:tech_linker_new/screens/student/interships/intership_detail.dart';
+import 'package:tech_linker_new/services/api.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 import 'package:tech_linker_new/theme/app_text_styles.dart';
 import 'package:tech_linker_new/widget/cached_img.dart';
@@ -20,8 +23,21 @@ class InternshipCard extends StatelessWidget {
     this.onApplyTap,
   });
 
+  Widget _buildCard(String title, Color color) {
+    return Container(
+      padding:EdgeInsets.symmetric(horizontal: 8,vertical: 2),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: Text(title, style: AppTextStyles.normal12),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
+    print(AppKeys.baseUrl+ job.image,);
     return GestureDetector(
       onTap: onDetail,
       child: Container(
@@ -43,7 +59,7 @@ class InternshipCard extends StatelessWidget {
                 CachedImage(
                   size: 40,
                   isCircular:false,
-                  imageUrl: job.imageUrl,
+                  imageUrl:"http://192.168.1.13:3000"+job.image,
                 ),
                 const Space(width: 10),
                 Expanded(
@@ -57,7 +73,7 @@ class InternshipCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        job.location,
+                        job.location??"",
                         style: AppTextStyles.normalLight,
                       ),
                     ],
@@ -71,7 +87,15 @@ class InternshipCard extends StatelessWidget {
             // Tags Row
             Row(
               children: [
-                HorizontalCards(),
+               Wrap(
+      spacing: 12, 
+      runSpacing: 12,
+      children: [
+        _buildCard(job.joblevel!, AppColors.grey_20),
+        _buildCard(job.jobtype, AppColors.grey_20),
+        // _buildCard(job., AppColors.grey_20),
+      ],
+    )
               ],
             ),
             const Space(height: 10),
@@ -80,13 +104,13 @@ class InternshipCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
       Text(
-        job.salary,
+        job.stipend??"Free",
         style: AppTextStyles.bold,
       ),
-      Text(
-        job.timeAgo,
-        style: AppTextStyles.normal12,
-      ),
+      // Text(
+      //   job.timeAgo,
+      //   style: AppTextStyles.normal12,
+      // ),
       buttonVisible == true
           ? GestureDetector(
               onTap: onApplyTap,

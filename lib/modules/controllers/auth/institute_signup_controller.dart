@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tech_linker_new/modules/controllers/auth/student_auth_controller.dart';
 import 'package:tech_linker_new/screens/Institute_Dashboard.dart';
+import 'package:tech_linker_new/screens/institute/institute-main.dart';
+import 'package:tech_linker_new/services/apis/institute/institute-apis.dart';
+import 'package:tech_linker_new/services/local-storage.dart';
 
 class InstituteSignupController extends GetxController {
   final formKey = GlobalKey<FormState>();
+  InstituteApiService instituteApiService=InstituteApiService();
   final studentRole = Get.find<StudentSignupController>().role;
   final instituteNameController = TextEditingController();
   final addressController = TextEditingController();
@@ -25,11 +29,35 @@ class InstituteSignupController extends GetxController {
       isLoading.value = true;
       try {
          
-        await onSignup; // Execute the passed future (e.g., API call)
-        Get.snackbar('Success', 'Account created successfully');
-        Get.off(()=>InstituteDashboard()); // Navigate to login on success
+    isLoading.value = true;
+    final resp = await instituteApiService.signUpInstitute(
+      email: emailController.text,
+      password: passwordController.text,
+      name: instituteNameController.text,
+      contact: contactController.text,
+      address: addressController.text
+
+    );
+      if(!resp.success){
+        Get.snackbar(
+        'Error',
+        resp.message,
+        // snackPosition: SnackPosition.BOTTOM,
+        // backgroundColor: Colors.red,
+        // colorText: Colors.white,
+      );
+       return;
+      }print(resp.data);
+      await LocalStorage.saveInstUser(resp.data!);
+      Get.offAll(() => InstituteMainScreen());
       } catch (e) {
-        Get.snackbar('Error', 'Failed to create account');
+        Get.snackbar(
+        'Error',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       } finally {
         isLoading.value = false;
       }

@@ -165,22 +165,23 @@ class InstituteSignupScreen extends StatelessWidget {
                               onChanged: (value) =>
                                   controller.instituteName.value = value,
                               validator: (value) {
-                                // Allow empty or null values
-                                if (value == null || value.trim().isEmpty) {
-                                  return null; // Valid if field is empty or null
-                                }
+  if (value == null || value.trim().isEmpty) {
+    return 'Address is required';
+  }
 
-                                // Apply validation only if a value is provided
-                                if (RegExp(r'[!@#\$%^&*(),.?":{}|<>0-9]')
-                                    .hasMatch(value)) {
-                                  return 'Address should not contain special characters or numbers';
-                                }
-                                if (value.trim().isEmpty) {
-                                  return 'Address cannot be just spaces';
-                                }
+  // Disallow address that is only numbers
+  if (RegExp(r'^\d+$').hasMatch(value.trim())) {
+    return 'Address cannot be only numbers';
+  }
 
-                                return null; // Valid if all checks pass
-                              },
+  // Disallow address that is only special characters
+  if (RegExp(r'^[!@#\$%^&*(),.?":{}|<>]+$').hasMatch(value.trim())) {
+    return 'Address cannot be only special characters';
+  }
+
+  return null; // Valid if it has words and can include numbers/special chars
+},
+
                             ),
                             
                           ],

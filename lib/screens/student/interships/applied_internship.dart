@@ -40,7 +40,7 @@ class AppliedInternshipScreen extends StatelessWidget {
         return InternshipCard(
           job: job,
           buttonVisible:false,
-          onDetail: ()=>Get.to(()=>StudentInternshipDetailScreen(jobId: job.id,)));
+          onDetail: ()=>Get.to(()=>StudentInternshipDetailScreen(jobId: job,)));
           }
         ),
           )

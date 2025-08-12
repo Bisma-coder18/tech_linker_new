@@ -11,101 +11,71 @@ class InstituteProfileScreen extends StatelessWidget {
   final InstituteProfileController controller = Get.put(InstituteProfileController());
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black87),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          "Institute Profile",
-          style: AppTextStyles.darkH4_500,
-        ),
-        centerTitle: true,
-        actions: [
-          TextButton(
-            onPressed: () {
-              controller.saveProfile(context);
-            },
-            child: Text(
-              "Save",
-              style: TextStyle(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w600,
-              ),
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Colors.grey[50],
+    appBar: AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back_ios, color: Colors.black87),
+        onPressed: () => Navigator.pop(context),
+      ),
+      title: Text(
+        "Institute Profile",
+        style: AppTextStyles.darkH4_500,
+      ),
+      centerTitle: true,
+      actions: [
+        TextButton(
+          onPressed: () {
+            controller.saveProfile(context);
+          },
+          child: Text(
+            "Save",
+            style: TextStyle(
+              color: AppColors.primary,
+              fontWeight: FontWeight.w600,
             ),
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: controller.formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min, // Shrink-wrap the column
-            children: [
-              // Profile Header
-              Container(
-                width: double.infinity,
-                color: Colors.white,
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.primary, width: 3),
-                          ),
-                          child: Obx(() {
-                            return CachedImage(
-                              imageUrl: controller.selectedImage.value?.path,
-                            );
-                          }),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: GestureDetector(
-                            onTap: () {
-                              _changeProfilePicture(context);
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white, width: 2),
-                              ),
-                              child: Icon(
-                                Icons.camera_alt,
-                                color: Colors.white,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              // Profile Sections
-              _buildBasicInfoSection(),
-              _buildContactSection(),
-              // _buildDocumentsSection(),
-              const SizedBox(height: 30),
-            ],
+        ),
+      ],
+    ),
+    body: Stack(
+      children: [
+        // Your existing body
+        SingleChildScrollView(
+          child: Form(
+            key: controller.formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // _changeProfilePicture(context),
+                const SizedBox(height: 20),
+                _buildBasicInfoSection(),
+                _buildContactSection(),
+                const SizedBox(height: 30),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+
+        // Loader overlay
+        Obx(() {
+          if (controller.isLoading.value) {
+            return Container(
+              color: Colors.black.withOpacity(0.3),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        }),
+      ],
+    ),
+  );
+}
 
   Widget _buildBasicInfoSection() {
     return _buildSection(
@@ -170,29 +140,29 @@ class InstituteProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDocumentsSection() {
-    return _buildSection(
-      title: "Documents",
-      children: [
-        _buildDocumentTile(
-          title: "Registration Certificate",
-          subtitle: "Upload institute registration",
-          icon: Icons.verified_user_outlined,
-          onTap: controller.uploadRegistrationCertificate,
-          hasFile: true,
-          fileName: "Registration_Cert.pdf",
-        ),
-        const SizedBox(height: 12),
-        _buildDocumentTile(
-          title: "Accreditation Certificate",
-          subtitle: "Upload accreditation proof",
-          icon: Icons.badge_outlined,
-          onTap: controller.uploadAccreditationCertificate,
-          hasFile: false,
-        ),
-      ],
-    );
-  }
+  // Widget _buildDocumentsSection() {
+  //   return _buildSection(
+  //     title: "Documents",
+  //     children: [
+  //       _buildDocumentTile(
+  //         title: "Registration Certificate",
+  //         subtitle: "Upload institute registration",
+  //         icon: Icons.verified_user_outlined,
+  //         onTap: controller.uploadRegistrationCertificate,
+  //         hasFile: true,
+  //         fileName: "Registration_Cert.pdf",
+  //       ),
+  //       const SizedBox(height: 12),
+  //       _buildDocumentTile(
+  //         title: "Accreditation Certificate",
+  //         subtitle: "Upload accreditation proof",
+  //         icon: Icons.badge_outlined,
+  //         onTap: controller.uploadAccreditationCertificate,
+  //         hasFile: false,
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildSection({required String title, required List<Widget> children}) {
     return Container(

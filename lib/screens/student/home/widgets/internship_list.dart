@@ -39,10 +39,10 @@ class InternshipList extends StatelessWidget {
           job: job,
           onApplyTap: onJobApply != null
               ? () => onJobApply!()
-              : () => Get.to(() => StudentInternshipDetailScreen(jobId: job.id)),
+              : () => Get.to(() => StudentInternshipDetailScreen(jobId: job)),
           onDetail: onJobApply != null
               ? () => onJobApply!()
-              :  () => Get.to(() => StudentInternshipDetailScreen(jobId: job.id)),
+              :  () => Get.to(() => StudentInternshipDetailScreen(jobId: job)),
         );
       }
     );}}

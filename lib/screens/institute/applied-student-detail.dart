@@ -81,7 +81,6 @@ class InternshipUserDetailScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: _buildActionButtons(userData),
     );
   }
 
@@ -369,47 +368,6 @@ class InternshipUserDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildJobInfoItem(String label, String value, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 16, color: AppColors.primary),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildDocumentsCard(Map<String, dynamic> userData) {
     return Container(

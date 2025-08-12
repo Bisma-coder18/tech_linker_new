@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tech_linker_new/models/student.dart';
 import 'package:tech_linker_new/modules/controllers/institute/applied-students-controller.dart';
 import 'package:tech_linker_new/screens/institute/applied-student-detail.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
@@ -106,17 +107,19 @@ class AppliedUsersScreen extends StatelessWidget {
                         CircleAvatar(
                           radius: 20,
                           backgroundColor: Colors.grey[200],
-                          child: CachedImage(imageUrl: user.profileImage.isNotEmpty ? user.profileImage : ''),
+                          child: CachedImage(imageUrl: user.avatar ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                user.name,
+                              user.name != null && user.name!.isNotEmpty
+                              ? Text(
+                                user.name!,
                                 style: AppTextStyles.mediumBold,
-                              ),
+                              )
+                              : const SizedBox.shrink(),
                               Text(
                                 user.email,
                                 style: AppTextStyles.medium14.copyWith(color: Colors.grey),

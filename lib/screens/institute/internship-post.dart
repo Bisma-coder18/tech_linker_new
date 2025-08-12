@@ -217,7 +217,7 @@ class InternshipPostScreen extends StatelessWidget {
                 borderSide: BorderSide(color:AppColors.primary), // Change purple to blue when focused
                 ),
               ),
-              items: ['Onsite', 'Remote'].map((String type) {
+              items: ['Onsite', 'Remote', 'Hybrid'].map((String type) {
                 return DropdownMenuItem<String>(
                   value: type,
                   child: Text(type),
@@ -227,7 +227,7 @@ class InternshipPostScreen extends StatelessWidget {
               validator: (value) => value == null ? 'Please select location type' : null,
             )),
         Obx(() {
-          if (controller.locationType.value == 'Onsite') {
+          if (controller.locationType.value != 'Remote') {
             return 
             Column(
            children: [

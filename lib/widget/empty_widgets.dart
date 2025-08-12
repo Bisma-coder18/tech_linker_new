@@ -14,7 +14,7 @@ class EmptyWidget extends StatelessWidget {
     this.icon,
     required this.title,
     required this.description,
-  }) : assert(svgAsset != null || icon != null, 'Provide either svgAsset or icon.'),
+  }) :
        super(key: key);
 
   @override
