@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tech_linker_new/modules/controllers/auth/student_auth_controller.dart';
+import 'package:tech_linker_new/screens/admin/admin_login.dart';
 import 'package:tech_linker_new/screens/institute/institute-signup.dart';
 import 'package:tech_linker_new/screens/student/auth/student_login.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
@@ -106,7 +107,7 @@ class OnBoardingScreen extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         controller.role.value="admin";
-                        Get.to(()=>StudentLoginScreen());
+                        Get.to(()=>AdminLoginScreen());
                       },
                       child: Container(
                         padding: const EdgeInsets.all(16),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:tech_linker_new/services/api.dart';
+
 class Instituteeditprofile extends StatefulWidget {
   final String instituteId;
 
@@ -26,7 +28,7 @@ class _EditProfileScreenState extends State<Instituteeditprofile> {
 
   Future<void> fetchProfile() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.18:3000/institutes/${widget.instituteId}'));
+      final response = await http.get(Uri.parse('${AppKeys.admin}/institutes/${widget.instituteId}'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
@@ -48,7 +50,7 @@ class _EditProfileScreenState extends State<Instituteeditprofile> {
     });
     try {
       final response = await http.put(
-        Uri.parse('http://192.168.1.18:3000/institutes/update-profile/${widget.instituteId}'),
+        Uri.parse('${AppKeys.admin}/institutes/update-profile/${widget.instituteId}'),
         headers: {"Content-Type": "application/json"},
         body: json.encode({
           "name": nameController.text,

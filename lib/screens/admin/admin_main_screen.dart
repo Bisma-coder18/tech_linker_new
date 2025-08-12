@@ -706,35 +706,36 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             color: Color(0xFF2A0845),
           ),
         ),
-        GestureDetector(
-          onTap: onSeeAllTap,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: const Color(0xFF6750A4).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  "See All",
-                  style: TextStyle(
-                    color: Color(0xFF6750A4),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  color: Color(0xFF6750A4),
-                  size: 14,
-                ),
-              ],
-            ),
-          ),
-        ),
+        // GestureDetector(
+        //   onTap: onSeeAllTap,
+        //   child: Container(
+        //     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        //     decoration: BoxDecoration(
+        //       color: const Color(0xFF6750A4).withOpacity(0.1),
+        //       borderRadius: BorderRadius.circular(15),
+        //     ),
+        //     child: Row(
+        //       mainAxisSize: MainAxisSize.min,
+        //       children: [
+        //         const Text(
+        //           "See All",
+        //           style: TextStyle(
+        //             color: Color(0xFF6750A4),
+        //             fontWeight: FontWeight.w600,
+        //             fontSize: 14,
+        //           ),
+        //         ),
+        //         const SizedBox(width: 4),
+        //         const Icon(
+        //           Icons.arrow_forward_ios,
+        //           color: Color(0xFF6750A4),
+        //           size: 14,
+        //         ),
+        //       ],
+        //     ),
+          
+        //   ),
+        // ),
       ],
     );
   }

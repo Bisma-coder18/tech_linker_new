@@ -5,6 +5,8 @@ import 'package:tech_linker_new/screens/InstituteInternship_detailScreen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:tech_linker_new/services/api.dart';
+
 class Instituteinternships extends StatefulWidget {
   const Instituteinternships({super.key});
 
@@ -36,7 +38,7 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
   Future<void> _submitInternship() async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse("http://192.168.1.18:3000/api/internships/add"),
+      Uri.parse("${AppKeys.admin}/api/internships/add"),
     );
 
     request.fields['title'] = titleController.text;
@@ -89,7 +91,7 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
   Future<void> fetchInternships() async {
     try {
       final response = await http.get(
-        Uri.parse("http://192.168.1.18:3000/api/internships/get"),
+        Uri.parse("${AppKeys.admin}/api/internships/get"),
       );
 
       if (response.statusCode == 200) {
@@ -107,7 +109,7 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
                   ? item['createdAt'].substring(0, 10)
                   : 'No Date',
               'image': item['image'] != null
-                  ? "http://192.168.1.18:3000/uploads/${item['image']}"
+                  ? "${AppKeys.admin}/uploads/${item['image']}"
                   : null,
             };
           }).toList();
@@ -121,7 +123,7 @@ class _InstituteinternshipsState extends State<Instituteinternships> {
   }
 
   Future<void> deleteInternship(String id) async {
-    final url = Uri.parse('http://192.168.1.18:3000/api/internships/$id');
+    final url = Uri.parse('${AppKeys.admin}/api/internships/$id');
     final response = await http.delete(url);
 
     if (response.statusCode == 200) {

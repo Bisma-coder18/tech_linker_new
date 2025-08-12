@@ -6,6 +6,7 @@ import 'package:tech_linker_new/screens/InstituteSetting.dart';
 import 'package:tech_linker_new/screens/SignIn_screen.dart';
 import 'package:tech_linker_new/screens/applicationReceived_institute.dart';
 import 'package:tech_linker_new/screens/instituteNotification.dart';
+import 'package:tech_linker_new/services/api.dart';
 import 'package:tech_linker_new/widget/list_tiles.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -43,7 +44,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
   Future<void> fetchActiveInternships() async {
     try {
       final response = await http.get(
-        Uri.parse("http://10.0.2.2:3000/api/internships/active-month"),
+        Uri.parse("${AppKeys.admin}/api/internships/active-month"),
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -61,7 +62,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
   Future<void> fetchLastPostedDate() async {
     try {
       final response = await http.get(
-        Uri.parse("http://10.0.2.2:3000/api/internships/get?limit=1"),
+        Uri.parse("${AppKeys.admin}/api/internships/get?limit=1"),
       );
 
       if (response.statusCode == 200) {
@@ -83,7 +84,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
   Future<void> fetchRecentInternships() async {
     try {
       final response = await http.get(
-        Uri.parse("http://10.0.2.2:3000/api/internships/get?limit=2"),
+        Uri.parse("${AppKeys.admin}/api/internships/get?limit=2"),
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -109,7 +110,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
   Future<void> fetchInternshipCount() async {
     try {
       final response = await http.get(
-        Uri.parse("http://10.0.2.2:3000/api/internships/count"),
+        Uri.parse("${AppKeys.admin}/api/internships/count"),
       );
 
       if (response.statusCode == 200) {

@@ -111,7 +111,7 @@ class _ManageInternshipsState extends State<ManageInternships> {
                                 text: internship['title'] ?? 'Untitled',
                                 posted: formatDate(
                                     internship['datePosted'] ?? 'Unknown'),
-                                institute: internship['instituteId']?['name'] ??
+                                institute: internship['instituteId']?['name'].toString() ??
                                     'Unknown Institute',
                                 location: internship['location'] ?? 'Unknown',
                                 onTap: () {
@@ -304,11 +304,11 @@ class InternCard extends StatelessWidget {
                 ),
               ),
               // Delete Button
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: onDeleteTap,
-                tooltip: 'Delete Internship',
-              ),
+              // IconButton(
+              //   icon: const Icon(Icons.delete, color: Colors.red),
+              //   onPressed: onDeleteTap,
+              //   tooltip: 'Delete Internship',
+              // ),
             ],
           ),
         ),

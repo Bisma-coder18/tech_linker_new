@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:tech_linker_new/models/internship_model.dart';
 import 'package:tech_linker_new/modules/controllers/auth/student_auth_controller.dart';
 import 'package:tech_linker_new/modules/controllers/student/internship_detail.dart';
+import 'package:tech_linker_new/services/api.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 
 class StudentInternshipDetailScreen extends StatelessWidget {
@@ -55,7 +56,7 @@ class StudentInternshipDetailScreen extends StatelessWidget {
                                 color: Colors.grey.shade300,
                                 child: jobId.image.isNotEmpty
                                     ? CachedNetworkImage(
-                                        imageUrl: "http://192.168.1.13:3000" +
+                                        imageUrl: "${AppKeys.admin}" +
                                             jobId.image,
                                         fit: BoxFit.cover,
                                         placeholder: (context, url) => Center(
@@ -129,7 +130,7 @@ class StudentInternshipDetailScreen extends StatelessWidget {
                                                     maxScale: 5,
                                                     child: CachedNetworkImage(
                                                       imageUrl:
-                                                          "http://192.168.1.13:3000" +
+                                                          "${AppKeys.admin}" +
                                                               jobId.image,
                                                       fit: BoxFit.contain,
                                                       placeholder:

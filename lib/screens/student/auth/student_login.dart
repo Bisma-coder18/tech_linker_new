@@ -103,16 +103,16 @@ class StudentLoginScreen extends StatelessWidget {
                               },
                             )),
                             const SizedBox(height: 10),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                onPressed: () => Get.to(()=>ForgotPasswordScreen()),
-                                child: Text(
-                                  'Forgot Password?',
-                                  style: AppTextStyles.med14,
-                                ),
-                              ),
-                            ),
+                            // Align(
+                            //   alignment: Alignment.centerRight,
+                            //   child: TextButton(
+                            //     onPressed: () => Get.to(()=>ForgotPasswordScreen()),
+                            //     child: Text(
+                            //       'Forgot Password?',
+                            //       style: AppTextStyles.med14,
+                            //     ),
+                            //   ),
+                            // ),
                             const SizedBox(height: 20),
                             
                             CommonFillButton(onPressed: controller.isLoading.value ? null : controller.login, text: 'Log In', isLoading: controller.isLoading)

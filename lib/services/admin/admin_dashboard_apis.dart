@@ -176,7 +176,7 @@ class AdminApiService {
   static Future<Map<String, dynamic>> fetchInternships() async {
     try {
       final response = await http.get(
-        Uri.parse('${AppKeys.baseUrl}/api/internship'),
+        Uri.parse('${AppKeys.admin}/api/internship/all'),
       );
 
       if (response.statusCode == 200) {
@@ -206,7 +206,7 @@ class AdminApiService {
   static Future<Map<String, dynamic>> fetchInstitutes() async {
     try {
       final response = await http.get(
-        Uri.parse('${AppKeys.baseUrl}/api/admin/all-institutes'),
+        Uri.parse('${AppKeys.admin}/api/admin/all-institutes'),
       );
 
       if (response.statusCode == 200) {
@@ -236,7 +236,7 @@ class AdminApiService {
   static Future<Map<String, dynamic>> fetchStudents() async {
     try {
       final response = await http.get(
-        Uri.parse('${AppKeys.baseUrl}/api/admin/all-students'),
+        Uri.parse('${AppKeys.admin}/api/admin/all-students'),
       );
 
       if (response.statusCode == 200) {

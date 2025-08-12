@@ -59,7 +59,7 @@ class InternshipCard extends StatelessWidget {
                 CachedImage(
                   size: 40,
                   isCircular:false,
-                  imageUrl:"http://192.168.1.13:3000"+job.image,
+                  imageUrl:"${AppKeys.admin}"+job.image,
                 ),
                 const Space(width: 10),
                 Expanded(

@@ -1,7 +1,7 @@
 class Internship {
   final String id;
   final String role;
-  final Map<String, dynamic> instituteId;
+  final String instituteId;
   final String image;
   final String title;
   final String jobtype;

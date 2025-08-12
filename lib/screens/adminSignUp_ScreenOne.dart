@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tech_linker_new/screens/Admin_dashboard.dart';
+import 'package:tech_linker_new/services/api.dart';
 import 'package:tech_linker_new/widget/Container_Widget.dart';
 import 'package:tech_linker_new/widget/CustomElevated_Button.dart';
 import 'package:tech_linker_new/widget/TextField_widget.dart';
@@ -25,7 +26,7 @@ class _AdminsignupScreenoneState extends State<AdminsignupScreenone> {
   Future<void> registerAdmin() async {
      Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => AdminDashboard()));
-    final url = Uri.parse('http://192.168.1.18:3000/admins/signup');
+    final url = Uri.parse('${AppKeys.admin}/admins/signup');
 
     try {
       final response = await http.post(

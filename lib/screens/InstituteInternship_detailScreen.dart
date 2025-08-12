@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tech_linker_new/services/api.dart';
 
 class InstituteinternshipDetailscreen extends StatelessWidget {
   final Map post;
@@ -29,7 +30,7 @@ class InstituteinternshipDetailscreen extends StatelessWidget {
                     builder: (_) => FullImageScreen(
                       imageUrl: post['image'].startsWith('http')
                           ? post['image']
-                          : 'http://192.168.1.18:3000/uploads/${post['image']}',
+                          : '${AppKeys.admin}/uploads/${post['image']}',
                     ),
                   ),
                 );
@@ -39,7 +40,7 @@ class InstituteinternshipDetailscreen extends StatelessWidget {
                 ? Image.network(
               post['image'].startsWith('http')
                   ? post['image']
-                  : 'http://192.168.1.18:3000/uploads/${post['image']}',
+                  : '${AppKeys.admin}/uploads/${post['image']}',
               height: screenHeight * 0.45,
               width: double.infinity,
               fit: BoxFit.cover,

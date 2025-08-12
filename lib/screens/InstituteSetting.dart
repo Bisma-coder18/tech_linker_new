@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:tech_linker_new/screens/InstituteChangePassword.dart';
 import 'package:tech_linker_new/screens/InstituteEditProfile.dart';
 import 'package:tech_linker_new/screens/InstituteSecurityTips.dart';
+import 'package:tech_linker_new/services/api.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -28,7 +29,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> fetchSettings(String instituteId) async {
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.1.18:3000/api/instituteSetting/$instituteId'),
+        Uri.parse('${AppKeys.admin}/api/instituteSetting/$instituteId'),
       );
 
       if (response.statusCode == 200) {
@@ -50,7 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> updateSettings(String instituteId) async {
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.18:3000/api/instituteSetting/update/$instituteId'),
+        Uri.parse('${AppKeys.admin}/api/instituteSetting/update/$instituteId'),
         headers: {"Content-Type": "application/json"},
         body: json.encode({
           "twoStepVerification": twoStepVerification,

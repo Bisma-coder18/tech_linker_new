@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:tech_linker_new/services/api.dart';
+
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
 
@@ -24,7 +26,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
     required String receiverId,
     required String message,
   }) async {
-    final url = Uri.parse('http://192.168.1.18:3000/api/messages/send');
+    final url = Uri.parse('${AppKeys.admin}/api/messages/send');
 
     try {
       final response = await http.post(
@@ -50,7 +52,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
   Future<List<Map<String, dynamic>>> fetchMessages(
       String senderId, String receiverId) async {
     final url =
-    Uri.parse('http://192.168.1.18:3000/api/messages/chat/$senderId/$receiverId');
+    Uri.parse('${AppKeys.admin}/api/messages/chat/$senderId/$receiverId');
 
     try {
       final response = await http.get(url);

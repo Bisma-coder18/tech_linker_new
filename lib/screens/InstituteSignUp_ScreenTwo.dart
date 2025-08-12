@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tech_linker_new/screens/Institute_Dashboard.dart';
+import 'package:tech_linker_new/services/api.dart';
 import 'package:tech_linker_new/widget/Container_Widget.dart';
 import 'package:tech_linker_new/widget/CustomElevated_Button.dart';
 import 'package:tech_linker_new/widget/TextField_widget.dart';
@@ -28,7 +29,7 @@ class _InstitutesignupScreentwoState extends State<InstitutesignupScreentwo> {
   String? selectedCity;
   List<String>CityType =['Lahore','Gujranwala','Islamabad','Gujrat','GujarKhan','Sadar','Faisalabaad','RawalPindi'];
   Future<void> postInstituteData() async {
-    final url = Uri.parse('http://192.168.1.18:3000/institutes/signup');
+    final url = Uri.parse('${AppKeys.admin}/institutes/signup');
 
     final response = await http.post(
       url,
