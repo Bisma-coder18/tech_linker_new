@@ -75,6 +75,32 @@ class _ManageinstituteState extends State<Manageinstitute>
     });
   }
 
+  Future<void> _createInstitute() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CreateEditInstituteScreen(),
+      ),
+    );
+
+    if (result == true) {
+      fetchInstitutes();
+    }
+  }
+
+  Future<void> _editInstitute(dynamic institute) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CreateEditInstituteScreen(institute: institute),
+      ),
+    );
+
+    if (result == true) {
+      fetchInstitutes();
+    }
+  }
+
   Future<void> _deleteInstitute(dynamic institute) async {
     final bool? confirmed = await showDialog<bool>(
       context: context,
@@ -117,17 +143,16 @@ class _ManageinstituteState extends State<Manageinstitute>
 
     if (confirmed == true) {
       try {
-        final response = await http.delete(
-          Uri.parse('${AppKeys.baseUrl}/institutes/${institute['_id']}'),
-        );
-        if (response.statusCode == 200) {
+        final result = await AdminApiService.deleteInstitute(institute['_id']);
+        if (result['success']) {
           setState(() {
             allInstitutes.remove(institute);
             _filterInstitutes(searchController.text);
           });
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Institute deleted successfully'),
+              content:
+                  Text(result['message'] ?? 'Institute deleted successfully'),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -135,7 +160,7 @@ class _ManageinstituteState extends State<Manageinstitute>
             ),
           );
         } else {
-          throw Exception('Failed to delete');
+          throw Exception(result['message'] ?? 'Failed to delete institute');
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -162,11 +187,15 @@ class _ManageinstituteState extends State<Manageinstitute>
         title: const Text(
           'Manage Institutes',
           style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add, color: Colors.white),
+            onPressed: _createInstitute,
+            tooltip: 'Add Institute',
+          ),
+        ],
       ),
       body: isLoading
           ? const Center(
@@ -174,18 +203,14 @@ class _ManageinstituteState extends State<Manageinstitute>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Color(0xFF6750A4)),
-                  ),
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Color(0xFF6750A4))),
                   SizedBox(height: 16),
-                  Text(
-                    'Loading institutes...',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  Text('Loading institutes...',
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500)),
                 ],
               ),
             )
@@ -194,29 +219,19 @@ class _ManageinstituteState extends State<Manageinstitute>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 64,
-                        color: Colors.grey[400],
-                      ),
+                      Icon(Icons.error_outline,
+                          size: 64, color: Colors.grey[400]),
                       const SizedBox(height: 16),
-                      Text(
-                        'Error Loading Institutes',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey[700],
-                        ),
-                      ),
+                      Text('Error Loading Institutes',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey[700])),
                       const SizedBox(height: 8),
-                      Text(
-                        errorMessage!,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                      Text(errorMessage!,
+                          style:
+                              TextStyle(fontSize: 14, color: Colors.grey[600]),
+                          textAlign: TextAlign.center),
                       const SizedBox(height: 24),
                       ElevatedButton(
                         onPressed: fetchInstitutes,
@@ -226,8 +241,7 @@ class _ManageinstituteState extends State<Manageinstitute>
                           padding: const EdgeInsets.symmetric(
                               horizontal: 24, vertical: 12),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                         child: const Text('Retry'),
                       ),
@@ -244,9 +258,8 @@ class _ManageinstituteState extends State<Manageinstitute>
                         decoration: const BoxDecoration(
                           color: Color(0xFF6750A4),
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30),
-                          ),
+                              bottomLeft: Radius.circular(30),
+                              bottomRight: Radius.circular(30)),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
@@ -259,11 +272,10 @@ class _ManageinstituteState extends State<Manageinstitute>
                                   borderRadius: BorderRadius.circular(15),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
-                                      spreadRadius: 0,
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 2),
-                                    ),
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 0,
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 2))
                                   ],
                                 ),
                                 child: TextField(
@@ -292,9 +304,7 @@ class _ManageinstituteState extends State<Manageinstitute>
                                     filled: true,
                                     fillColor: Colors.white,
                                     contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 16,
-                                    ),
+                                        horizontal: 20, vertical: 16),
                                   ),
                                 ),
                               ),
@@ -305,17 +315,15 @@ class _ManageinstituteState extends State<Manageinstitute>
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   _buildStatCard(
-                                    'Total',
-                                    allInstitutes.length.toString(),
-                                    Icons.business_outlined,
-                                    Colors.white.withOpacity(0.9),
-                                  ),
+                                      'Total',
+                                      allInstitutes.length.toString(),
+                                      Icons.business_outlined,
+                                      Colors.white.withOpacity(0.9)),
                                   _buildStatCard(
-                                    'Showing',
-                                    filteredInstitutes.length.toString(),
-                                    Icons.visibility_outlined,
-                                    Colors.white.withOpacity(0.9),
-                                  ),
+                                      'Showing',
+                                      filteredInstitutes.length.toString(),
+                                      Icons.visibility_outlined,
+                                      Colors.white.withOpacity(0.9)),
                                 ],
                               ),
                             ],
@@ -343,10 +351,9 @@ class _ManageinstituteState extends State<Manageinstitute>
                                           ? 'No Institutes Available'
                                           : 'No Results Found',
                                       style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.grey[700],
-                                      ),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey[700]),
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
@@ -354,9 +361,8 @@ class _ManageinstituteState extends State<Manageinstitute>
                                           ? 'There are no institutes to display at the moment.'
                                           : 'Try adjusting your search terms.',
                                       style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey[600],
-                                      ),
+                                          fontSize: 14,
+                                          color: Colors.grey[600]),
                                       textAlign: TextAlign.center,
                                     ),
                                   ],
@@ -367,230 +373,42 @@ class _ManageinstituteState extends State<Manageinstitute>
                                 itemCount: filteredInstitutes.length,
                                 itemBuilder: (context, index) {
                                   final institute = filteredInstitutes[index];
-                                  return AnimatedContainer(
-                                    duration: Duration(
-                                        milliseconds: 200 + (index * 100)),
-                                    curve: Curves.easeOutBack,
-                                    child: Container(
-                                      margin: const EdgeInsets.only(bottom: 16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(16),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.08),
-                                            spreadRadius: 0,
-                                            blurRadius: 15,
-                                            offset: const Offset(0, 4),
+                                  return InstituteCard(
+                                    institute: institute,
+                                    onTap: () async {
+                                      await Navigator.push(
+                                        context,
+                                        PageRouteBuilder(
+                                          pageBuilder: (context, animation,
+                                                  secondaryAnimation) =>
+                                              Institutedetailscreeen(
+                                            institute: institute,
+                                            onDelete: () =>
+                                                _deleteInstitute(institute),
+                                            Notification: () => null,
                                           ),
-                                        ],
-                                      ),
-                                      child: InkWell(
-                                        onTap: () async {
-                                          await Navigator.push(
-                                            context,
-                                            PageRouteBuilder(
-                                              pageBuilder: (context, animation,
-                                                      secondaryAnimation) =>
-                                                  Institutedetailscreeen(
-                                                institute: institute,
-                                                onDelete: () =>
-                                                    _deleteInstitute(institute),
-                                                Notification: () => null,
+                                          transitionsBuilder: (context,
+                                              animation,
+                                              secondaryAnimation,
+                                              child) {
+                                            return SlideTransition(
+                                              position: animation.drive(
+                                                Tween(
+                                                        begin: const Offset(
+                                                            1.0, 0.0),
+                                                        end: Offset.zero)
+                                                    .chain(CurveTween(
+                                                        curve:
+                                                            Curves.easeInOut)),
                                               ),
-                                              transitionsBuilder: (context,
-                                                  animation,
-                                                  secondaryAnimation,
-                                                  child) {
-                                                return SlideTransition(
-                                                  position: animation.drive(
-                                                    Tween(
-                                                            begin: const Offset(
-                                                                1.0, 0.0),
-                                                            end: Offset.zero)
-                                                        .chain(CurveTween(
-                                                            curve: Curves
-                                                                .easeInOut)),
-                                                  ),
-                                                  child: child,
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        },
-                                        borderRadius: BorderRadius.circular(16),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(20),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              // Institute Avatar
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color:
-                                                        const Color(0xFF6750A4)
-                                                            .withOpacity(0.2),
-                                                    width: 2,
-                                                  ),
-                                                ),
-                                                child: CircleAvatar(
-                                                  radius: 28,
-                                                  backgroundColor:
-                                                      const Color(0xFF6750A4)
-                                                          .withOpacity(0.1),
-                                                  child: const Icon(
-                                                    Icons.business,
-                                                    color: Color(0xFF6750A4),
-                                                    size: 28,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 16),
-
-                                              // Institute Info
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      institute['name'] ??
-                                                          'Unknown Institute',
-                                                      style: const TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color:
-                                                            Color(0xFF2A0845),
-                                                      ),
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                    const SizedBox(height: 8),
-                                                    Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.email,
-                                                          size: 16,
-                                                          color:
-                                                              Colors.grey[600],
-                                                        ),
-                                                        const SizedBox(
-                                                            width: 6),
-                                                        Expanded(
-                                                          child: Text(
-                                                            institute[
-                                                                    'email'] ??
-                                                                'No email',
-                                                            style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors
-                                                                  .grey[700],
-                                                            ),
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 4),
-                                                    Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.location_on,
-                                                          size: 16,
-                                                          color:
-                                                              Colors.grey[600],
-                                                        ),
-                                                        const SizedBox(
-                                                            width: 6),
-                                                        Expanded(
-                                                          child: Text(
-                                                            institute[
-                                                                    'location'] ??
-                                                                'Unknown Location',
-                                                            style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: Colors
-                                                                  .grey[600],
-                                                            ),
-                                                            maxLines: 2,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 8),
-                                                    Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 10,
-                                                          vertical: 4),
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(
-                                                                0xFF6750A4)
-                                                            .withOpacity(0.1),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(12),
-                                                        border: Border.all(
-                                                          color: const Color(
-                                                                  0xFF6750A4)
-                                                              .withOpacity(0.3),
-                                                        ),
-                                                      ),
-                                                      child: Text(
-                                                        '${institute['internshipsCount'] ?? 0} Internships',
-                                                        style: const TextStyle(
-                                                          fontSize: 11,
-                                                          color:
-                                                              Color(0xFF6750A4),
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-
-                                              // Action Button
-                                              IconButton(
-                                                icon: const Icon(
-                                                    Icons.arrow_forward_ios),
-                                                color: Colors.grey[400],
-                                                iconSize: 20,
-                                                onPressed: () async {
-                                                  await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          Institutedetailscreeen(
-                                                        institute: institute,
-                                                        onDelete: () =>
-                                                            _deleteInstitute(
-                                                                institute),
-                                                        Notification: () =>
-                                                            null,
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ],
-                                          ),
+                                              child: child,
+                                            );
+                                          },
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                    },
+                                    // onEdit: () => _editInstitute(institute),
+                                    onDelete: () => _deleteInstitute(institute),
                                   );
                                 },
                               ),
@@ -598,6 +416,11 @@ class _ManageinstituteState extends State<Manageinstitute>
                     ],
                   ),
                 ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF6750A4),
+        onPressed: _createInstitute,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
     );
   }
 
@@ -610,11 +433,10 @@ class _ManageinstituteState extends State<Manageinstitute>
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 0,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 0,
+              blurRadius: 8,
+              offset: const Offset(0, 2))
         ],
       ),
       child: Row(
@@ -626,25 +448,400 @@ class _ManageinstituteState extends State<Manageinstitute>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF6750A4),
-                ),
-              ),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              Text(value,
+                  style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF6750A4))),
+              Text(label,
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500)),
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class InstituteCard extends StatelessWidget {
+  final dynamic institute;
+  final VoidCallback onTap;
+  // final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  const InstituteCard({
+    super.key,
+    required this.institute,
+    required this.onTap,
+    // required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOutBack,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                spreadRadius: 0,
+                blurRadius: 15,
+                offset: const Offset(0, 4))
+          ],
+        ),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Institute Avatar
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                        color: const Color(0xFF6750A4).withOpacity(0.2),
+                        width: 2),
+                  ),
+                  child: const CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Color(0xFF6750A4),
+                    child: Icon(Icons.business, color: Colors.white, size: 28),
+                  ),
+                ),
+                const SizedBox(width: 16),
+
+                // Institute Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        institute['name'] ?? 'Unknown Institute',
+                        style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2A0845)),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.email, size: 16, color: Colors.grey[600]),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              institute['email'] ?? 'No email',
+                              style: TextStyle(
+                                  fontSize: 14, color: Colors.grey[700]),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(Icons.location_on,
+                              size: 16, color: Colors.grey[600]),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              institute['location'] ?? 'Unknown Location',
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.grey[600]),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF6750A4).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              color: const Color(0xFF6750A4).withOpacity(0.3)),
+                        ),
+                        child: Text(
+                          '${institute['internshipsCount'] ?? 0} Internships',
+                          style: const TextStyle(
+                              fontSize: 11,
+                              color: Color(0xFF6750A4),
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Action Buttons
+                Column(
+                  children: [
+                    // IconButton(
+                    //   icon:
+                    //       const Icon(Icons.edit, color: Colors.blue, size: 20),
+                    //   onPressed: onEdit,
+                    //   tooltip: 'Edit Institute',
+                    // ),
+                    IconButton(
+                      icon:
+                          const Icon(Icons.delete, color: Colors.red, size: 20),
+                      onPressed: onDelete,
+                      tooltip: 'Delete Institute',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Create/Edit Institute Screen
+class CreateEditInstituteScreen extends StatefulWidget {
+  final dynamic institute;
+
+  const CreateEditInstituteScreen({super.key, this.institute});
+
+  @override
+  State<CreateEditInstituteScreen> createState() =>
+      _CreateEditInstituteScreenState();
+}
+
+class _CreateEditInstituteScreenState extends State<CreateEditInstituteScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _locationController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _websiteController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  bool isLoading = false;
+  bool get isEditing => widget.institute != null;
+
+  @override
+  void initState() {
+    super.initState();
+    if (isEditing) {
+      _nameController.text = widget.institute['name'] ?? '';
+      _emailController.text = widget.institute['email'] ?? '';
+      _locationController.text = widget.institute['location'] ?? '';
+      _phoneController.text = widget.institute['phone'] ?? '';
+      _websiteController.text = widget.institute['website'] ?? '';
+      _descriptionController.text = widget.institute['description'] ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _locationController.dispose();
+    _phoneController.dispose();
+    _websiteController.dispose();
+    _descriptionController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveInstitute() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => isLoading = true);
+
+    try {
+      final data = {
+        'name': _nameController.text,
+        'email': _emailController.text,
+        'location': _locationController.text,
+        'phone': _phoneController.text,
+        'website': _websiteController.text,
+        'description': _descriptionController.text,
+        if (!isEditing && _passwordController.text.isNotEmpty)
+          'password': _passwordController.text,
+      };
+
+      http.Response response;
+
+      if (isEditing) {
+        response = await http.put(
+          Uri.parse('${AppKeys.baseUrl}/institutes/${widget.institute['_id']}'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(data),
+        );
+      } else {
+        response = await http.post(
+          Uri.parse('${AppKeys.baseUrl}/institutes'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(data),
+        );
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Institute ${isEditing ? 'updated' : 'created'} successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pop(context, true);
+      } else {
+        throw Exception(
+            'Failed to ${isEditing ? 'update' : 'create'} institute');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+      );
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF6750A4),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(
+          isEditing ? 'Edit Institute' : 'Create Institute',
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Institute Name',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.business),
+              ),
+              validator: (value) =>
+                  value?.isEmpty ?? true ? 'Institute name is required' : null,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.email),
+              ),
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value?.isEmpty ?? true) return 'Email is required';
+                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
+                    .hasMatch(value!)) {
+                  return 'Enter a valid email';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _locationController,
+              decoration: const InputDecoration(
+                labelText: 'Location/Address',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.location_on),
+              ),
+              validator: (value) =>
+                  value?.isEmpty ?? true ? 'Location is required' : null,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _phoneController,
+              decoration: const InputDecoration(
+                labelText: 'Phone Number',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.phone),
+              ),
+              keyboardType: TextInputType.phone,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _websiteController,
+              decoration: const InputDecoration(
+                labelText: 'Website URL',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.web),
+              ),
+              keyboardType: TextInputType.url,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _descriptionController,
+              decoration: const InputDecoration(
+                labelText: 'Description',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.description),
+              ),
+              maxLines: 4,
+            ),
+            const SizedBox(height: 16),
+            if (!isEditing)
+              Column(
+                children: [
+                  TextFormField(
+                    controller: _passwordController,
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.lock),
+                    ),
+                    obscureText: true,
+                    validator: isEditing
+                        ? null
+                        : (value) => value?.isEmpty ?? true
+                            ? 'Password is required'
+                            : null,
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: isLoading ? null : _saveInstitute,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6750A4),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : Text(isEditing ? 'Update Institute' : 'Create Institute'),
+            ),
+          ],
+        ),
       ),
     );
   }

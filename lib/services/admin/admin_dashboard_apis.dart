@@ -82,6 +82,8 @@ class AdminApiService {
     }
   }
 
+// ====================
+
   // Get Dashboard Statistics
   static Future<Map<String, dynamic>> getDashboardStats() async {
     try {
@@ -172,6 +174,79 @@ class AdminApiService {
     }
   }
 
+// ==============  Internships apis ==================
+
+// create internship
+  static Future<Map<String, dynamic>> createInternship({
+    required Map<String, dynamic> internshipData,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${AppKeys.baseUrl}/internship/admin/add'),
+        headers: await _getHeaders(),
+        body: jsonEncode(internshipData),
+      );
+
+      if (response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return {
+          'success': data['success'] ?? true,
+          'message': data['message'] ?? 'Internship created successfully',
+          'data': data['data'] ?? {},
+        };
+      } else {
+        return {
+          'success': false,
+          'message': 'Failed to create internship: ${response.statusCode}',
+          'data': {},
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Error: ${e.toString()}',
+        'data': {},
+      };
+    }
+  }
+
+// ✅ Edit Internship
+  static Future<Map<String, dynamic>> editInternship({
+    required String id,
+    required Map<String, dynamic> updatedData,
+  }) async {
+    try {
+      final response = await http.put(
+        Uri.parse('${AppKeys.baseUrl}/internship/$id'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(updatedData),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return {
+          'success': data['success'] ?? false,
+          'message': data['message'] ?? '',
+          'data': data['data'] ?? {},
+        };
+      } else {
+        return {
+          'success': false,
+          'message': 'Failed to update internship: ${response.statusCode}',
+          'data': {},
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Error: ${e.toString()}',
+        'data': {},
+      };
+    }
+  }
+
 // ✅ Fetch All Internships
   static Future<Map<String, dynamic>> fetchInternships() async {
     try {
@@ -202,7 +277,38 @@ class AdminApiService {
     }
   }
 
-// ✅ Fetch All Internships
+// Delete
+  static Future<Map<String, dynamic>> deleteInternship(String id) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('${AppKeys.baseUrl}/internship/$id'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return {
+          'success': data['success'] ?? false,
+          'message': data['message'] ?? '',
+          'data': data['data'] ?? [],
+        };
+      } else {
+        return {
+          'success': false,
+          'message': 'Failed to delete internship: ${response.statusCode}',
+          'data': [],
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Error: ${e.toString()}',
+        'data': [],
+      };
+    }
+  }
+
+//====================== Institutes apis ========
+// ✅ Fetch All Institutes
   static Future<Map<String, dynamic>> fetchInstitutes() async {
     try {
       final response = await http.get(
@@ -232,7 +338,43 @@ class AdminApiService {
     }
   }
 
-// ✅ Fetch All Internships
+// Delete institute
+  static Future<Map<String, dynamic>> deleteInstitute(
+      String instituteId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('${AppKeys.baseUrl}/institute/$instituteId'),
+        headers: await _getHeaders(),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return {
+          'success': data['success'] ?? true,
+          'message': data['message'] ?? 'Institute deleted successfully',
+          'data': data['data'] ?? null,
+        };
+      } else {
+        final data = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': data['message'] ??
+              'Failed to delete institute: ${response.statusCode}',
+          'data': null,
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Error: ${e.toString()}',
+        'data': null,
+      };
+    }
+  }
+
+//====================== Students apis ========
+
+// ✅ Fetch All Students
   static Future<Map<String, dynamic>> fetchStudents() async {
     try {
       final response = await http.get(
@@ -258,6 +400,39 @@ class AdminApiService {
         'success': false,
         'message': 'Error: ${e.toString()}',
         'data': [],
+      };
+    }
+  }
+
+  // Delete Student
+  static Future<Map<String, dynamic>> deleteStudent(String studentId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('${AppKeys.baseUrl}/student/$studentId'),
+        headers: await _getHeaders(),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return {
+          'success': data['success'] ?? true,
+          'message': data['message'] ?? 'Student deleted successfully',
+          'data': data['data'] ?? null,
+        };
+      } else {
+        final data = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': data['message'] ??
+              'Failed to delete student: ${response.statusCode}',
+          'data': null,
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Error: ${e.toString()}',
+        'data': null,
       };
     }
   }
