@@ -83,13 +83,13 @@ class StudentSignupController extends GetxController {
       isLoading.value = true;
       final ApiResponse resp;
       if (role.value == "student") {
-        resp = await authService.loginService(       
+        resp = await authService.loginService(
           email: emailController.text,
-          role: role.value,
+          // role: role.value,
           password: passwordController.text,
         );
       } else if (role.value == "institute") {
-        resp = await instituteService.loginInstitute(
+        resp = await authService.institueLoginService(
             email: emailController.text, password: passwordController.text);
       } else {
         resp = await instituteService.loginInstitute(
@@ -109,7 +109,6 @@ class StudentSignupController extends GetxController {
       }
       clearInputs();
       if (role.value == 'student') {
-
         await LocalStorage.saveUser(User.fromJson(user));
         print("user");
         Get.offAll(() => MainTabScreen());

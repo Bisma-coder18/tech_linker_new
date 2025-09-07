@@ -132,11 +132,11 @@ class _ManageInternshipsState extends State<ManageInternships> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: _createInternship,
-            tooltip: 'Add Internship',
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.add, color: Colors.white),
+          //   onPressed: _createInternship,
+          //   tooltip: 'Add Internship',
+          // ),
         ],
       ),
       body: isLoading
@@ -280,11 +280,11 @@ class _ManageInternshipsState extends State<ManageInternships> {
                     ),
                   ],
                 ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF6750A4),
-        onPressed: _createInternship,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: const Color(0xFF6750A4),
+      //   onPressed: _createInternship,
+      //   child: const Icon(Icons.add, color: Colors.white),
+      // ),
     );
   }
 }

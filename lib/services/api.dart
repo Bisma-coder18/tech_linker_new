@@ -1,10 +1,14 @@
 class AppKeys {
-  // urls
-  static final baseUrl = "http://10.127.103.58:3000/api";
-  static final admin = "http://10.127.103.58:3000";
+  // urls\
+
+  static final appUrl = "http://192.168.0.104:3000";
+  // static final appUrl = "https://techlinker-backend-8ood.vercel.app";
+
+  static final baseUrl = '${appUrl}/api';
+  static final admin = '${appUrl}';
   static final institeSignUp = "/institute/signup";
   static final institeLogin = "/institute/login";
-  static final profile = "/institute/profile";
+  static final profile = "/institute/";
   // storge keys
   static final userkey = "user";
   static final userToken = "userToken";

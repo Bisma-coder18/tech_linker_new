@@ -19,11 +19,8 @@ class InstituteSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      
- 
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -31,24 +28,26 @@ class InstituteSettingsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-        
                 Align(
                   alignment: Alignment.center,
-                  child: Text(       
+                  child: Text(
                     "Settings",
-                    style: AppTextStyles.darkH4_500,),
+                    style: AppTextStyles.darkH4_500,
+                  ),
                 ),
-                const Space(height: 40,),
+                const Space(
+                  height: 40,
+                ),
                 // User Profile Card
                 _buildProfileCard(),
-        
+
                 const SizedBox(height: 30),
-        
+
                 // Settings Section
                 _buildSettingsSection(context),
-        
+
                 const SizedBox(height: 30),
-        
+
                 // Logout Section
                 _buildLogoutSection(context),
               ],
@@ -60,8 +59,9 @@ class InstituteSettingsScreen extends StatelessWidget {
   }
 
   Widget _buildProfileCard() {
-      final InstituteProfileController controller = Get.put(InstituteProfileController());
-         final StudentSignupController authController =
+    final InstituteProfileController controller =
+        Get.put(InstituteProfileController());
+    final StudentSignupController authController =
         Get.put(StudentSignupController());
     return Container(
       width: double.infinity,
@@ -108,7 +108,7 @@ class InstituteSettingsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Obx(
-                  ()=> Text(
+                  () => Text(
                     authController.role.value.capitalize!,
                     style: AppTextStyles.medium16.copyWith(
                       color: Colors.white70,
@@ -163,8 +163,8 @@ class InstituteSettingsScreen extends StatelessWidget {
                 leftIcon: AppAssetsPath.profile,
                 iconPath: AppAssetsPath.edit,
                 onTap: () {
-                  //  
-                  Get.to(()=> InstituteProfileScreen());
+                  //
+                  Get.to(() => InstituteProfileScreen());
                 },
                 isFirst: true,
               ),
@@ -186,7 +186,6 @@ class InstituteSettingsScreen extends StatelessWidget {
               //   onTap: () => Get.to(() => HiredRejectedUsersScreen()),
               //   isLast: true,
               // ),
-              
             ],
           ),
         ),
@@ -212,9 +211,10 @@ class InstituteSettingsScreen extends StatelessWidget {
         subtitle: "Sign out of your account",
         leftIcon: AppAssetsPath.logout,
         iconPath: AppAssetsPath.icon,
-        onTap: () { 
+        onTap: () {
           // LocalStorage.clearAll();
-           Get.offAll(()=>LogoutScreen());},
+          Get.offAll(() => LogoutScreen());
+        },
         isFirst: true,
         isLast: true,
         isDanger: true,

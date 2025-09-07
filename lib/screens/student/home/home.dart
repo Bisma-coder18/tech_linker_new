@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
   final StudentHomeController controller = Get.put(StudentHomeController());
 
   HomeScreen({super.key});
-Future<void> _refreshData() async {
+  Future<void> _refreshData() async {
     await controller.fetchInternships();
   }
 
@@ -35,9 +35,9 @@ Future<void> _refreshData() async {
         backgroundColor: Colors.white,
         body: SafeArea(
             child: RefreshIndicator(
-               onRefresh: _refreshData,
-              child: SingleChildScrollView(
-                        child: Padding(
+          onRefresh: _refreshData,
+          child: SingleChildScrollView(
+            child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 25),
               child: Column(children: [
                 // color boxes
@@ -141,39 +141,41 @@ Future<void> _refreshData() async {
                     )),
                 Space(height: 15),
                 // In your main screen:
-                 Obx(() {
-                      if (controller.isLoading.value) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (controller.internships.isEmpty) {
-                        return EmptyWidget(
-                          title: "",
-                          description: "Not found",
-                          svgAsset: 'assets/svg/search.svg',
+                Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (controller.internships.isEmpty) {
+                    return EmptyWidget(
+                      title: "",
+                      description: "Not found",
+                      svgAsset: 'assets/svg/search.svg',
+                    );
+                  }
+                  final jobs = controller.internships
+                      .map((job) => Internship.fromJson(job))
+                      .toList();
+
+                  return ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: jobs.length,
+                      separatorBuilder: (context, index) =>
+                          const Space(height: 16),
+                      itemBuilder: (context, index) {
+                        final job = jobs[index];
+                        return InternshipCard(
+                          job: job,
+                          onApplyTap: () => Get.to(
+                              () => StudentInternshipDetailScreen(jobId: job)),
+                          onDetail: () => Get.to(
+                              () => StudentInternshipDetailScreen(jobId: job)),
                         );
-                      }
-                      final jobs = controller.internships.map((job) => Internship.fromJson(job)).toList();
-              
-                      return ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-              
-                    itemCount:jobs.length,
-                    separatorBuilder: (context, index) => const Space(height: 16),
-                    itemBuilder: (context, index) {
-                      final job = jobs[index];
-                      return InternshipCard(
-                        job: job,
-                        onApplyTap: () => Get.to(() => StudentInternshipDetailScreen(jobId: job)),
-                        onDetail: ()=> Get.to(() => StudentInternshipDetailScreen(jobId:job)),
-                      );
-                    }
-                  );
-                    
-                    }),
+                      });
+                }),
               ]),
-                        ),
-                      ),
-            )));
+            ),
+          ),
+        )));
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -17,3 +19,19 @@ class ApiService {
   }
 }
 
+class HealthService {
+  static Future<String> checkHealth() async {
+    try {
+      final response = await http.get(Uri.parse('${AppKeys.appUrl}/health'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        return "Health Check Success: ${data}";
+      } else {
+        return "Health Check Failed: Status Code ${response.statusCode}";
+      }
+    } catch (e) {
+      return "Health Check Error: $e";
+    }
+  }
+}

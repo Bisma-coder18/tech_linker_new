@@ -18,6 +18,7 @@ class InstituteDashboard extends StatefulWidget {
   @override
   State<InstituteDashboard> createState() => _InstituteDashboardState();
 }
+
 class _InstituteDashboardState extends State<InstituteDashboard> {
   List<Map<String, dynamic>> recentInternships = [];
   String instituteName = "";
@@ -34,6 +35,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
     fetchActiveInternships();
     loadInstituteData();
   }
+
   Future<void> loadInstituteData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -41,6 +43,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
       instituteEmail = prefs.getString('instituteEmail') ?? "Institute Email";
     });
   }
+
   Future<void> fetchActiveInternships() async {
     try {
       final response = await http.get(
@@ -91,12 +94,14 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
         setState(() {
           recentInternships = data.map<Map<String, dynamic>>((item) {
             return {
-            '_id': item['_id'],
-            'title': item['title'],
-            'posted': item['createdAt'] != null ? item['createdAt'].substring(0, 10) : 'No Date',
-            'image': item['image'],          // include image
-            'description': item['description'],
-            'location': item['location'],
+              '_id': item['_id'],
+              'title': item['title'],
+              'posted': item['createdAt'] != null
+                  ? item['createdAt'].substring(0, 10)
+                  : 'No Date',
+              'image': item['image'], // include image
+              'description': item['description'],
+              'location': item['location'],
             };
           }).toList();
         });
@@ -107,6 +112,7 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
       print("Error fetching recent internships: $e");
     }
   }
+
   Future<void> fetchInternshipCount() async {
     try {
       final response = await http.get(
@@ -122,136 +128,209 @@ class _InstituteDashboardState extends State<InstituteDashboard> {
       }
     } catch (e) {
       print("Error fetching count: $e");
-
     }
   }
 
   @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.deepPurple,
-          title: Text('Welcome,$instituteName',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
-          iconTheme: IconThemeData(color: Colors.white),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        title: Text(
+          'Welcome,$instituteName',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        drawer: Drawer(
-          backgroundColor: Colors.deepPurple,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              UserAccountsDrawerHeader(
-                  currentAccountPicture: GestureDetector(
-                    // onTap: _pickImage,
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.white,
-                      child: Icon(Icons.settings_applications_rounded),
-                    ),
-                  ),
-                  accountName: Text(instituteName),
-                  accountEmail: Text(instituteEmail),
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
+      drawer: Drawer(
+        backgroundColor: Colors.deepPurple,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              currentAccountPicture: GestureDetector(
+                // onTap: _pickImage,
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.settings_applications_rounded),
+                ),
               ),
-              CustomListTiles(icon: Icons.dashboard,
-                  title: 'Dashboard',
-                  onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>InstituteDashboard()));},
-                  color: Colors.white),
-              CustomListTiles(icon: Icons.work_outline,
-                  title: 'Internships',
-                  onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Instituteinternships()))
-                  .then((_){fetchInternshipCount();
-                            fetchActiveInternships();
-                            fetchRecentInternships();
-                  });},
-                  color: Colors.white),
-              CustomListTiles(icon: Icons.assignment_outlined,
-                  title: 'Applications Received',
-                  onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ApplicationsReceivedScreen()));},
-                  color: Colors.white),
-              CustomListTiles(icon: Icons.message_outlined,
-                  title: 'Messages',
-                  onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>MessagesScreen()));},
-                  color: Colors.white),
-              CustomListTiles(icon: Icons.notifications_none,
-                  title: 'Notifications',
-                  onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Institutenotification()));},
-                  color: Colors.white),
-              CustomListTiles(icon: Icons.settings,
-                  title: 'Settings',
-                  onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SettingsScreen()));},
-                  color: Colors.white),
-              CustomListTiles(icon: Icons.logout,
-                  title: 'LogOut',
-                  onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SigninScreen()));},
-                  color: Colors.white),
-            ],
-          ),
+              accountName: Text(instituteName),
+              accountEmail: Text(instituteEmail),
+            ),
+            CustomListTiles(
+                icon: Icons.dashboard,
+                title: 'Dashboard',
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => InstituteDashboard()));
+                },
+                color: Colors.white),
+            CustomListTiles(
+                icon: Icons.work_outline,
+                title: 'Internships',
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                          builder: (context) => Instituteinternships()))
+                      .then((_) {
+                    fetchInternshipCount();
+                    fetchActiveInternships();
+                    fetchRecentInternships();
+                  });
+                },
+                color: Colors.white),
+            CustomListTiles(
+                icon: Icons.assignment_outlined,
+                title: 'Applications Received',
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ApplicationsReceivedScreen()));
+                },
+                color: Colors.white),
+            CustomListTiles(
+                icon: Icons.message_outlined,
+                title: 'Messages',
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MessagesScreen()));
+                },
+                color: Colors.white),
+            CustomListTiles(
+                icon: Icons.notifications_none,
+                title: 'Notifications',
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Institutenotification()));
+                },
+                color: Colors.white),
+            CustomListTiles(
+                icon: Icons.settings,
+                title: 'Settings',
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => SettingsScreen()));
+                },
+                color: Colors.white),
+            CustomListTiles(
+                icon: Icons.logout,
+                title: 'LogOut',
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => SigninScreen()));
+                },
+                color: Colors.white),
+          ],
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Dashboard Overview",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                children: [
-                  DashboardCard(title: "Applications Received", count: "24", icon: Icons.mail_outline,onTap: (){},),
-                  DashboardCard(title: "Internships Posted", icon: Icons.post_add, count: internshipCount.toString(), onTap: (){},),
-                  DashboardCard(title: "Active Internships", icon: Icons.work_outline,  count: activeInternshipCount.toString(),onTap: (){},),
-                  DashboardCard(title: "Last Posted", icon: Icons.calendar_today, count:lastPostedDate,onTap: (){},),
-                ],
-              ),
-              SizedBox(height: 30),
-              Text(
-                "Quick Actions",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-              ),
-              SizedBox(height: 10),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: [
-                  ActionButton(label: "Post Internship", icon: Icons.add, onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Instituteinternships()));}),
-                  ActionButton(label: "View Applications", icon: Icons.remove_red_eye, onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ApplicationsReceivedScreen()));}),
-                  ActionButton(label: "Edit Profile", icon: Icons.edit, onTap: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SettingsScreen()));}),
-                ],
-              ),
-              SizedBox(height: 30),
-              Text(
-                "Recent Internships",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-              ),
-              SizedBox(height: 10),
-              Column(
-                children: recentInternships.map((internship) {
-                  final post = internship;
-                  return ListTile(
-                    leading: Icon(Icons.work_outline),
-                    title: Text(internship['title'] ?? 'No Title'),
-                    subtitle: Text("Posted on ${internship['posted']}",style: TextStyle(fontSize: 13),),
-
-                    trailing: Icon(Icons.arrow_forward_ios),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Dashboard Overview",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              children: [
+                DashboardCard(
+                  title: "Applications Received",
+                  count: "24",
+                  icon: Icons.mail_outline,
+                  onTap: () {},
+                ),
+                DashboardCard(
+                  title: "Internships Posted",
+                  icon: Icons.post_add,
+                  count: internshipCount.toString(),
+                  onTap: () {},
+                ),
+                DashboardCard(
+                  title: "Active Internships",
+                  icon: Icons.work_outline,
+                  count: activeInternshipCount.toString(),
+                  onTap: () {},
+                ),
+                DashboardCard(
+                  title: "Last Posted",
+                  icon: Icons.calendar_today,
+                  count: lastPostedDate,
+                  onTap: () {},
+                ),
+              ],
+            ),
+            SizedBox(height: 30),
+            Text(
+              "Quick Actions",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            ),
+            SizedBox(height: 10),
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                ActionButton(
+                    label: "Post Internship",
+                    icon: Icons.add,
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>InstituteinternshipDetailscreen(post: post)));
-                    },
-                  );
-                }).toList(),
-              ),
-
-            ],
-          ),
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Instituteinternships()));
+                    }),
+                ActionButton(
+                    label: "View Applications",
+                    icon: Icons.remove_red_eye,
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ApplicationsReceivedScreen()));
+                    }),
+                ActionButton(
+                    label: "Edit Profile",
+                    icon: Icons.edit,
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SettingsScreen()));
+                    }),
+              ],
+            ),
+            SizedBox(height: 30),
+            Text(
+              "Recent Internships",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            ),
+            SizedBox(height: 10),
+            Column(
+              children: recentInternships.map((internship) {
+                final post = internship;
+                return ListTile(
+                  leading: Icon(Icons.work_outline),
+                  title: Text(internship['title'] ?? 'No Title'),
+                  subtitle: Text(
+                    "Posted on ${internship['posted']}",
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            InstituteinternshipDetailscreen(post: post)));
+                  },
+                );
+              }).toList(),
+            ),
+          ],
         ),
-      );
-    }
+      ),
+    );
+  }
 }
 
 class DashboardCard extends StatelessWidget {
@@ -260,12 +339,17 @@ class DashboardCard extends StatelessWidget {
   final String count;
   final VoidCallback onTap;
 
-  const DashboardCard({super.key, required this.title, required this.icon, required this.count,required this.onTap});
+  const DashboardCard(
+      {super.key,
+      required this.title,
+      required this.icon,
+      required this.count,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){},
+      onTap: () {},
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         elevation: 6,
@@ -278,7 +362,8 @@ class DashboardCard extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 count,
-                style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 5),
               Text(
@@ -299,7 +384,11 @@ class ActionButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const ActionButton({super.key, required this.label, required this.icon, required this.onTap});
+  const ActionButton(
+      {super.key,
+      required this.label,
+      required this.icon,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -310,10 +399,15 @@ class ActionButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
-      icon: Icon(icon, size: 20,color: Colors.white,),
-      label: Text(label,style: TextStyle(color: Colors.white),),
+      icon: Icon(
+        icon,
+        size: 20,
+        color: Colors.white,
+      ),
+      label: Text(
+        label,
+        style: TextStyle(color: Colors.white),
+      ),
     );
   }
 }
-
-

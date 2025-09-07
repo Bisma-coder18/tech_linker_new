@@ -14,9 +14,10 @@ class InstituteApiService extends BaseApiService {
     return post<InstituteModel>(
       url: AppKeys.institeLogin,
       body: data,
-      fromJson: (json) => InstituteModel.fromJson(json), // expects json == the user object
+      fromJson: (json) => InstituteModel.fromJson(json),
     );
   }
+
   Future<ApiResponse<InstituteModel>> signUpInstitute({
     required String email,
     required String password,
@@ -27,24 +28,24 @@ class InstituteApiService extends BaseApiService {
     final data = {
       'email': email,
       'password': password,
-      "name":name,
-      "phone":contact,
+      "name": name,
+      "phone": contact,
       'address': address,
-      };
+    };
 
     return post<InstituteModel>(
       url: AppKeys.institeSignUp,
       body: data,
-      fromJson: (json) => InstituteModel.fromJson(json), // expects json == the user object
+      fromJson: (json) =>
+          InstituteModel.fromJson(json), // expects json == the user object
     );
   }
-   Future<ApiResponse<InstituteModel>> getProfileById({
+
+  Future<ApiResponse<InstituteModel>> getProfileById({
     required String id,
   }) {
-   
-
     return get<InstituteModel>(
-      url: AppKeys.profile+id,
+      url: AppKeys.profile + id,
       fromJson: (json) => InstituteModel.fromJson(json),
     );
   }
@@ -64,13 +65,11 @@ class InstituteApiService extends BaseApiService {
       "phone": contact,
       'address': address,
     };
-print( AppKeys.updateUser+id);
+    print(AppKeys.updateUser + id);
     return post<InstituteModel>(
-      url: AppKeys.updateUser+id, // <-- make sure this key exists in AppKeys
+      url: AppKeys.updateUser + id, // <-- make sure this key exists in AppKeys
       body: data,
       fromJson: (json) => InstituteModel.fromJson(json),
     );
   }
-
-
 }

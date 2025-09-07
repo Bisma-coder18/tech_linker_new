@@ -100,7 +100,7 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
     }
   }
 
-  Future<void> _deleteStudent(dynamic student) async {
+  Future<void> _toggleStudentActiveStatus(dynamic student) async {
     final bool? confirmed = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -108,34 +108,88 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
         return AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Row(
+          title: Row(
+            mainAxisSize:
+                MainAxisSize.min, // Ensures row takes only needed width
             children: [
               Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 28),
-              SizedBox(width: 12),
-              Text('Confirm Delete',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Confirm Inactivation',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18, // Base size, will scale with media query
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
-          content: Text(
-            'Are you sure you want to delete "${student['name']}"?\n\nThis action cannot be undone.',
-            style: const TextStyle(fontSize: 16),
+          content: Container(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width *
+                  0.8, // 80% of screen width
+              maxHeight:
+                  MediaQuery.of(context).size.height * 0.3, // Limit height
+            ),
+            child: SingleChildScrollView(
+              child: Text(
+                'Are you sure you want to mark "${student['name']}" as inactive?\n\nThis action cannot be undone.',
+                style: TextStyle(
+                  fontSize: 16 *
+                      MediaQuery.of(context)
+                          .textScaleFactor, // Responsive text size
+                  color: Colors.black87,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16 * MediaQuery.of(context).textScaleFactor,
+                ),
+              ),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: Colors.orange,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0 *
+                      MediaQuery.of(context)
+                          .textScaleFactor, // Responsive padding
+                ),
               ),
-              child: const Text('Delete'),
+              child: Text(
+                'Inactivate',
+                style: TextStyle(
+                  fontSize: 16 * MediaQuery.of(context).textScaleFactor,
+                ),
+              ),
             ),
           ],
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: 16.0 *
+                MediaQuery.of(context).textScaleFactor, // Responsive padding
+          ),
+          actionsPadding: EdgeInsets.only(
+            right: 20.0,
+            bottom: 16.0 *
+                MediaQuery.of(context).textScaleFactor, // Responsive padding
+          ),
         );
       },
     );
@@ -150,8 +204,7 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
           });
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content:
-                  Text(result['message'] ?? 'Student deleted successfully'),
+              content: Text(result['message'] ?? 'Student marked as inactive'),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -159,7 +212,7 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
             ),
           );
         } else {
-          throw Exception(result['message'] ?? 'Failed to delete student');
+          throw Exception(result['message'] ?? 'Failed to inactivate student');
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -390,7 +443,8 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
                                               Studentdetailscreen(
                                             student: student,
                                             onDelete: () =>
-                                                _deleteStudent(student),
+                                                _toggleStudentActiveStatus(
+                                                    student),
                                             Notification: () => null,
                                           ),
                                           transitionsBuilder: (context,
@@ -413,8 +467,8 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
                                         ),
                                       );
                                     },
-                                    // onEdit: () => _editStudent(student),
-                                    onDelete: () => _deleteStudent(student),
+                                    onToggleActive: () =>
+                                        _toggleStudentActiveStatus(student),
                                   );
                                 },
                               ),
@@ -422,11 +476,11 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
                     ],
                   ),
                 ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF6750A4),
-        onPressed: _createStudent,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: const Color(0xFF6750A4),
+      //   onPressed: _createStudent,
+      //   child: const Icon(Icons.add, color: Colors.white),
+      // ),
     );
   }
 
@@ -475,15 +529,13 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
 class StudentCard extends StatelessWidget {
   final dynamic student;
   final VoidCallback onTap;
-  // final VoidCallback onEdit;
-  final VoidCallback onDelete;
+  final VoidCallback onToggleActive;
 
   const StudentCard({
     super.key,
     required this.student,
     required this.onTap,
-    // required this.onEdit,
-    required this.onDelete,
+    required this.onToggleActive,
   });
 
   @override
@@ -614,22 +666,13 @@ class StudentCard extends StatelessWidget {
                   ),
                 ),
 
-                // Action Buttons
-                Column(
-                  children: [
-                    // IconButton(
-                    //   icon:
-                    //       const Icon(Icons.edit, color: Colors.blue, size: 20),
-                    //   onPressed: onEdit,
-                    //   tooltip: 'Edit Student',
-                    // ),
-                    IconButton(
-                      icon:
-                          const Icon(Icons.delete, color: Colors.red, size: 20),
-                      onPressed: onDelete,
-                      tooltip: 'Delete Student',
-                    ),
-                  ],
+                // Action Switch
+                Switch(
+                  value: student['active'] ?? true,
+                  onChanged: (value) => onToggleActive(),
+                  activeColor: const Color(0xFF6750A4),
+                  inactiveThumbColor: Colors.grey,
+                  inactiveTrackColor: Colors.grey[300],
                 ),
               ],
             ),
@@ -640,7 +683,7 @@ class StudentCard extends StatelessWidget {
   }
 }
 
-// Create/Edit Student Screen
+// Create/Edit Student Screen (unchanged)
 class CreateEditStudentScreen extends StatefulWidget {
   final dynamic student;
 

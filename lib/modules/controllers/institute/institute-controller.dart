@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:mime/mime.dart';import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tech_linker_new/models/institute-model.dart';
 import 'package:tech_linker_new/services/api.dart';
 import 'package:tech_linker_new/services/apis/institute/institute-apis.dart';
+import 'package:tech_linker_new/services/http-service.dart';
 import 'package:tech_linker_new/services/local-storage.dart';
 
 class InstituteProfileController extends GetxController {
@@ -33,32 +35,34 @@ class InstituteProfileController extends GetxController {
     fetchProfileData();
   }
 
-  /// 📌 Load user from LocalStorage and fetch latest from API
-  Future<void> fetchProfileData() async {
+  Future<void> fetchProfileData({bool forceRefresh = false}) async {
     isLoading.value = true;
     try {
-      // 1️⃣ Get saved institute from local storage
       final localUser = await LocalStorage.getInsUser();
-       
       if (localUser == null || localUser.id == null) {
         Get.snackbar("Error", "No saved institute found");
+        Get.offNamed('/login');
         isLoading.value = false;
         return;
       }
-       instituteNameController.text = localUser.name ?? '';
-        addressController.text =localUser.address ?? '';
+
+      // Use local data unless forceRefresh is true
+      if (!forceRefresh) {
+        instituteNameController.text = localUser.name ?? '';
+        addressController.text = localUser.address ?? '';
         emailController.text = localUser.email ?? '';
         phoneController.text = localUser.phone ?? '';
         websiteController.text = localUser.website ?? '';
         aboutController.text = localUser.about ?? '';
+        profile.value = localUser;
+        isLoading.value = false;
         return;
-      // 2️⃣ Fetch latest profile from API
+      }
+
+      // Fetch latest profile from API
       final resp = await instituteApi.getProfileById(id: localUser.id!);
       if (resp.success && resp.data != null) {
         profile.value = resp.data;
-  print(resp.data);
-  print(",llsllsl");
-        // 3️⃣ Fill controllers
         instituteNameController.text = resp.data!.name ?? '';
         addressController.text = resp.data!.address ?? '';
         emailController.text = resp.data!.email ?? '';
@@ -66,11 +70,12 @@ class InstituteProfileController extends GetxController {
         websiteController.text = resp.data!.website ?? '';
         aboutController.text = resp.data!.about ?? '';
 
-        // 4️⃣ Set image if exists
         if (resp.data!.image != null && resp.data!.image!.isNotEmpty) {
-          // Here we keep URL as string, actual file will be picked later if updated
-          selectedImage.value = XFile(resp.data!.image!);
+          profile.value = resp.data; // Store image URL
         }
+
+        // Update local storage
+        await LocalStorage.saveInstUser(resp.data!);
       } else {
         Get.snackbar("Error", resp.message);
       }
@@ -80,6 +85,57 @@ class InstituteProfileController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  /// 📌 Load user from LocalStorage and fetch latest from API
+  // Future<void> fetchProfileData() async {
+  //   isLoading.value = true;
+  //   try {
+  //     // 1️⃣ Get saved institute from local storage
+  //     final localUser = await LocalStorage.getInsUser();
+  //     print('========================================');
+  //     print(localUser?.name);
+  //     print('========================================');
+  //     if (localUser == null || localUser.id == null) {
+  //       Get.snackbar("Error", "No saved institute found");
+  //       isLoading.value = false;
+  //       return;
+  //     }
+  //     instituteNameController.text = localUser.name ?? '';
+  //     addressController.text = localUser.address ?? '';
+  //     emailController.text = localUser.email ?? '';
+  //     phoneController.text = localUser.phone ?? '';
+  //     websiteController.text = localUser.website ?? '';
+  //     aboutController.text = localUser.about ?? '';
+  //     return;
+
+  //     // 2️⃣ Fetch latest profile from API
+  //     // final resp = await instituteApi.getProfileById(id: localUser.id!);
+  //     // if (resp.success && resp.data != null) {
+  //     //   profile.value = resp.data;
+  //     //   print(resp.data);
+  //     //   print(",llsllsl");
+  //     //   // 3️⃣ Fill controllers
+  //     //   instituteNameController.text = resp.data!.name ?? '';
+  //     //   addressController.text = resp.data!.address ?? '';
+  //     //   emailController.text = resp.data!.email ?? '';
+  //     //   phoneController.text = resp.data!.phone ?? '';
+  //     //   websiteController.text = resp.data!.website ?? '';
+  //     //   aboutController.text = resp.data!.about ?? '';
+
+  //     //   // 4️⃣ Set image if exists
+  //     //   if (resp.data!.image != null && resp.data!.image!.isNotEmpty) {
+  //     //     // Here we keep URL as string, actual file will be picked later if updated
+  //     //     selectedImage.value = XFile(resp.data!.image!);
+  //     //   }
+  //     // } else {
+  //     //   Get.snackbar("Error", resp.message);
+  //     // }
+  //   } catch (e) {
+  //     Get.snackbar("Error", e.toString());
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   /// 📌 Pick from camera
   void pickFromCamera() async {
@@ -92,64 +148,63 @@ class InstituteProfileController extends GetxController {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) selectedImage.value = image;
   }
-Future<void> saveProfile(BuildContext context) async {
-  final localUser = await LocalStorage.getInsUser();
 
-  if (!formKey.currentState!.validate()) return;
+  Future<void> saveProfile(BuildContext context) async {
+    final localUser = await LocalStorage.getInsUser();
 
-  isLoading.value = true;
-  try {
-    final url = "${AppKeys.baseUrl}${AppKeys.updateUser}${localUser!.id}";
-    print("📡 API URL: $url");
+    if (!formKey.currentState!.validate()) return;
 
-    var request = http.MultipartRequest('PUT', Uri.parse(url));
+    isLoading.value = true;
+    try {
+      final url = "${AppKeys.updateUser}${localUser!.id}";
+      print("📡 API URL: $url");
 
-    // Add text fields
-    request.fields['name'] = instituteNameController.text.trim();
-    request.fields['address'] = addressController.text.trim();
-    request.fields['email'] = emailController.text.trim();
-    request.fields['phone'] = phoneController.text.trim();
-    request.fields['website'] = websiteController.text.trim();
-    request.fields['about'] = aboutController.text.trim();
+      // Use a regular POST request instead of MultipartRequest since no image is supported
+      final body = {
+        'name': instituteNameController.text.trim(),
+        'address': addressController.text.trim(),
+        'email': emailController.text.trim(),
+        'phone': phoneController.text.trim(),
+        'website': websiteController.text.trim(),
+        'about': aboutController.text.trim(),
+      };
 
-    print("📦 Request Fields: ${request.fields}");
+      final response =
+          await HttpService.put(url, body); // Use a custom put method
 
-    // Add image if selected
-    if (selectedImage.value != null &&
-        File(selectedImage.value!.path).existsSync()) {
-      request.files.add(await http.MultipartFile.fromPath(
-        'image',
-        selectedImage.value!.path,
-      ));
-      print("🖼 Image Path: ${selectedImage.value!.path}");
-    } else {
-      print("⚠️ No image selected or file doesn't exist");
+      print("📬 Response Status Code: ${response.statusCode}");
+      print("📨 Response Body: ${response.data}");
+
+      if (response.success && response.data != null) {
+        // Parse the updated institute data
+        final updatedInstitute = InstituteModel.fromJson(response.data);
+        // profile.value = response.data; // Update reactive profile
+        await LocalStorage.saveInstUser(
+            updatedInstitute); // Update local storage
+
+        // Update text controllers to reflect the latest data
+        instituteNameController.text = updatedInstitute.name ?? '';
+        addressController.text = updatedInstitute.address ?? '';
+        emailController.text = updatedInstitute.email ?? '';
+        phoneController.text = updatedInstitute.phone ?? '';
+        websiteController.text = updatedInstitute.website ?? '';
+        aboutController.text = updatedInstitute.about ?? '';
+
+        Get.snackbar("Success", "Profile updated successfully");
+        Navigator.pop(context);
+      } else {
+        Get.snackbar("Error", response.message ?? "Failed to update profile");
+      }
+    } catch (e, stack) {
+      print("❌ Exception: $e");
+      print("📌 Stack Trace: $stack");
+      Get.snackbar("Error", "Something went wrong: $e");
+    } finally {
+      isLoading.value = false;
     }
-
-    // Send request
-    var response = await request.send();
-
-    // Read response
-    var responseBody = await response.stream.bytesToString();
-
-    print("📬 Response Status Code: ${response.statusCode}");
-    print("📨 Response Body: $responseBody");
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      Get.snackbar("Success", "Profile updated successfully");
-      Navigator.pop(context);
-    } else {
-      Get.snackbar("Error", "Failed to update profile");
-    }
-  } catch (e, stack) {
-    print("❌ Exception: $e");
-    print("📌 Stack Trace: $stack");
-    Get.snackbar("Error", "Something went wrong: $e");
-  } finally {
-    isLoading.value = false;
   }
-}
- @override
+
+  @override
   void onClose() {
     instituteNameController.dispose();
     addressController.dispose();

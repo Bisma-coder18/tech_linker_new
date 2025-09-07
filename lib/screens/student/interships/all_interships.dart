@@ -51,7 +51,8 @@ class _AllInternshipsState extends State<AllInternships> {
   }
 
   void _filterInternships(String query) {
-    final allJobs = controller.internships.map((job) => Internship.fromJson(job)).toList();
+    final allJobs =
+        controller.internships.map((job) => Internship.fromJson(job)).toList();
 
     if (query.isEmpty) {
       filteredInternships.value = allJobs;
@@ -133,13 +134,16 @@ class _AllInternshipsState extends State<AllInternships> {
                       shrinkWrap: true,
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemCount: filteredInternships.length,
-                      separatorBuilder: (context, index) => const SizedBox(height: 16),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 16),
                       itemBuilder: (context, index) {
                         final job = filteredInternships[index];
                         return InternshipCard(
                           job: job,
-                          onApplyTap: () => Get.to(() => StudentInternshipDetailScreen(jobId: job)),
-                          onDetail: () => Get.to(() => StudentInternshipDetailScreen(jobId: job)),
+                          onApplyTap: () => Get.to(
+                              () => StudentInternshipDetailScreen(jobId: job)),
+                          onDetail: () => Get.to(
+                              () => StudentInternshipDetailScreen(jobId: job)),
                         );
                       },
                     );

@@ -190,11 +190,11 @@ class _ManageinstituteState extends State<Manageinstitute>
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: _createInstitute,
-            tooltip: 'Add Institute',
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.add, color: Colors.white),
+          //   onPressed: _createInstitute,
+          //   tooltip: 'Add Institute',
+          // ),
         ],
       ),
       body: isLoading
@@ -416,11 +416,11 @@ class _ManageinstituteState extends State<Manageinstitute>
                     ],
                   ),
                 ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF6750A4),
-        onPressed: _createInstitute,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: const Color(0xFF6750A4),
+      //   onPressed: _createInstitute,
+      //   child: const Icon(Icons.add, color: Colors.white),
+      // ),
     );
   }
 

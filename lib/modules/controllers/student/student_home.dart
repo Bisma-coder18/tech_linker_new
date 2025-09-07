@@ -13,7 +13,8 @@ class StudentHomeController extends GetxController {
       final localUser = await LocalStorage.getInsUser();
 
       isLoading.value = true;
-      final url = Uri.parse("${AppKeys.baseUrl}/internship/"); // Use your PC IP instead of localhost
+      final url = Uri.parse(
+          "${AppKeys.baseUrl}/internship/"); // Use your PC IP instead of localhost
 
       final response = await http.get(url);
 

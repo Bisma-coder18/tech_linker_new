@@ -19,6 +19,8 @@ class _ScreenOneState extends State<ScreenOne> {
   void initState() {
     super.initState();
     getMessageFromBackend();
+    // Call checkHealth when the screen loads
+    checkHealthAndShowAlert();
   }
 
   void getMessageFromBackend() async {
@@ -26,6 +28,26 @@ class _ScreenOneState extends State<ScreenOne> {
     setState(() {
       backendMessage = msg;
     });
+  }
+
+  // New method to check health and show result in an alert
+  void checkHealthAndShowAlert() async {
+    String healthResult = await HealthService.checkHealth();
+    if (mounted) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Health Check Result'),
+          content: Text(healthResult),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -87,7 +109,8 @@ class _ScreenOneState extends State<ScreenOne> {
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 18),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30.0, vertical: 18),
                   child: Text(
                     'TechLinker is your guide. Explore internships\nthat match your passion and skills.',
                     textAlign: TextAlign.center,
@@ -98,12 +121,19 @@ class _ScreenOneState extends State<ScreenOne> {
                     ),
                   ),
                 ),
-                SizedBox(height: 100),
+                SizedBox(height: 20),
+                // Button to manually trigger health check
                 CustomElevatedButton(
-                    text: 'Get Started',
-                    onPressed: () {
-                      Navigator.of(context).push(_modernRoute());
-                    }),
+                  text: 'Check Health',
+                  onPressed: checkHealthAndShowAlert,
+                ),
+                SizedBox(height: 20),
+                CustomElevatedButton(
+                  text: 'Get Started',
+                  onPressed: () {
+                    Navigator.of(context).push(_modernRoute());
+                  },
+                ),
               ],
             ),
           ],
@@ -112,7 +142,7 @@ class _ScreenOneState extends State<ScreenOne> {
     );
   }
 
-  ///  MODERN Slide + Fade + Scale Animation
+  /// MODERN Slide + Fade + Scale Animation
   Route _modernRoute() {
     return PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 600),

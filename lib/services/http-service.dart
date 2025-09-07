@@ -6,15 +6,16 @@ import 'package:tech_linker_new/services/api.dart';
 
 class HttpService {
   // Replace with your actual API URL
-  
+
   // Common headers for all requests
   static Map<String, String> get _headers => {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
 
   // POST request helper
-  static Future<ApiResponse> post(String endpoint, Map<String, dynamic> data) async {
+  static Future<ApiResponse> post(
+      String endpoint, Map<String, dynamic> data) async {
     try {
       print('📤 POST: ${AppKeys.baseUrl}$endpoint');
       print('📤 Data: $data');
@@ -38,7 +39,9 @@ class HttpService {
       );
     }
   }
-static Future<ApiResponse> put(String endpoint, Map<String, dynamic> data) async {
+
+  static Future<ApiResponse> put(
+      String endpoint, Map<String, dynamic> data) async {
     try {
       print('📤 POST: ${AppKeys.baseUrl}$endpoint');
       print('📤 Data: $data');
@@ -90,12 +93,12 @@ static Future<ApiResponse> put(String endpoint, Map<String, dynamic> data) async
   static ApiResponse _handleResponse(http.Response response) {
     try {
       final jsonData = jsonDecode(response.body);
-      
+
       // Success responses (200-299)
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return ApiResponse.fromJson(jsonData);
       }
-      
+
       // Error responses
       return ApiResponse(
         statusCode: response.statusCode,
@@ -111,39 +114,38 @@ static Future<ApiResponse> put(String endpoint, Map<String, dynamic> data) async
       );
     }
   }
-static Future<ApiResponse> postMultipart(
-    String url, Map<String, dynamic> body) async {
-  try {
-    var request = http.MultipartRequest('PUT', Uri.parse(url));
 
-    body.forEach((key, value) async {
-      if (value is File) {
-        request.files.add(await http.MultipartFile.fromPath(key, value.path));
-      } else if (value != null) {
-        request.fields[key] = value.toString();
-      }
-    });
+  static Future<ApiResponse> postMultipart(
+      String url, Map<String, dynamic> body) async {
+    try {
+      var request = http.MultipartRequest('PUT', Uri.parse(url));
 
-    var streamedResponse = await request.send();
-    var respStr = await streamedResponse.stream.bytesToString();
-    var jsonResp = jsonDecode(respStr);
+      body.forEach((key, value) async {
+        if (value is File) {
+          request.files.add(await http.MultipartFile.fromPath(key, value.path));
+        } else if (value != null) {
+          request.fields[key] = value.toString();
+        }
+      });
 
-    return ApiResponse(
-      success: streamedResponse.statusCode >= 200 &&
-               streamedResponse.statusCode < 300,
-      message: jsonResp['message'] ?? 'Request completed',
-      statusCode: streamedResponse.statusCode,
-      data: jsonResp,
-    );
-  } catch (e) {
-    return ApiResponse(
-      success: false,
-      message: 'Network error: $e',
-      statusCode: 0,
-      data: null,
-    );
+      var streamedResponse = await request.send();
+      var respStr = await streamedResponse.stream.bytesToString();
+      var jsonResp = jsonDecode(respStr);
+
+      return ApiResponse(
+        success: streamedResponse.statusCode >= 200 &&
+            streamedResponse.statusCode < 300,
+        message: jsonResp['message'] ?? 'Request completed',
+        statusCode: streamedResponse.statusCode,
+        data: jsonResp,
+      );
+    } catch (e) {
+      return ApiResponse(
+        success: false,
+        message: 'Network error: $e',
+        statusCode: 0,
+        data: null,
+      );
+    }
   }
-}
-
-
 }

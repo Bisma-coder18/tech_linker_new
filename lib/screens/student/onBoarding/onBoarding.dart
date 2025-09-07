@@ -4,11 +4,48 @@ import 'package:tech_linker_new/modules/controllers/auth/student_auth_controller
 import 'package:tech_linker_new/screens/admin/admin_login.dart';
 import 'package:tech_linker_new/screens/institute/institute-signup.dart';
 import 'package:tech_linker_new/screens/student/auth/student_login.dart';
+import 'package:tech_linker_new/services/api_services.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
 
 class OnBoardingScreen extends StatelessWidget {
-   OnBoardingScreen({super.key});
-    final controller = Get.put(StudentSignupController());
+  OnBoardingScreen({super.key});
+  final controller = Get.put(StudentSignupController());
+
+  // Method to check health and show alert
+  void _checkHealthAndShowAlert(BuildContext context) async {
+    String healthResult = await HealthService.checkHealth();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.green[100],
+        title: Text(
+          'Health Check Result',
+          style: TextStyle(
+            color: Colors.lightBlue,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          healthResult,
+          style: TextStyle(
+            color: Colors.blue[800],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'OK',
+              style: TextStyle(
+                color: Colors.deepOrange[900],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +61,8 @@ class OnBoardingScreen extends StatelessWidget {
             left: 0,
             child: Transform(
               alignment: Alignment.center,
-              transform: Matrix4.identity()..scale(-1.0, -1.0), // flip horizontally
-              child: Image.asset(
-                'assets/custom_shape.png',
-              ),
+              transform: Matrix4.identity()..scale(-1.0, -1.0),
+              child: Image.asset('assets/custom_shape.png'),
             ),
           ),
 
@@ -35,9 +70,7 @@ class OnBoardingScreen extends StatelessWidget {
           Positioned(
             bottom: 5,
             right: 0,
-            child: Image.asset(
-              'assets/custom_shape.png',
-            ),
+            child: Image.asset('assets/custom_shape.png'),
           ),
 
           // Foreground content
@@ -80,10 +113,10 @@ class OnBoardingScreen extends StatelessWidget {
                           child: _buildSquareButton(
                             imagePath: "assets/search.png",
                             label: "Students",
-                            onTap: (){
-                               controller.role.value="student";
-                               Get.to(() => StudentLoginScreen());
-                               },
+                            onTap: () {
+                              controller.role.value = "student";
+                              Get.to(() => StudentLoginScreen());
+                            },
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -91,8 +124,9 @@ class OnBoardingScreen extends StatelessWidget {
                           child: _buildSquareButton(
                             label: "Institute",
                             onTap: () {
-                             controller.role.value="institute";
-                              Get.to(() => StudentLoginScreen());},
+                              controller.role.value = "institute";
+                              Get.to(() => StudentLoginScreen());
+                            },
                           ),
                         ),
                       ],
@@ -106,8 +140,8 @@ class OnBoardingScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: GestureDetector(
                       onTap: () {
-                        controller.role.value="admin";
-                        Get.to(()=>AdminLoginScreen());
+                        controller.role.value = "admin";
+                        Get.to(() => AdminLoginScreen());
                       },
                       child: Container(
                         padding: const EdgeInsets.all(16),
@@ -145,9 +179,34 @@ class OnBoardingScreen extends StatelessWidget {
                                 Icons.settings,
                                 size: 30,
                                 color: AppColors.backgroundColor,
-                              )
+                              ),
                             ],
                           ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Health Check Button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ElevatedButton(
+                      onPressed: () => _checkHealthAndShowAlert(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryLight,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text(
+                        'Check Server Health',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -169,8 +228,8 @@ class OnBoardingScreen extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: double.infinity, // Take full width of parent (Expanded)
-        height: 160, // Fixed height for square-like appearance
+        width: double.infinity,
+        height: 160,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColors.primaryLight,

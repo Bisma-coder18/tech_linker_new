@@ -11,15 +11,14 @@ class CommonFillButton extends StatelessWidget {
   final double? height;
   final bgColor;
 
-  const CommonFillButton({
-    super.key,
-    required this.onPressed,
-    required this.text,
-    required this.isLoading,
-    this.width,
-    this.height = 50.0,
-    this.bgColor
-  });
+  const CommonFillButton(
+      {super.key,
+      required this.onPressed,
+      required this.text,
+      required this.isLoading,
+      this.width,
+      this.height = 50.0,
+      this.bgColor});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,7 @@ class CommonFillButton extends StatelessWidget {
           child: ElevatedButton(
             onPressed: isLoading.value ? null : onPressed,
             style: ElevatedButton.styleFrom(
-              backgroundColor:bgColor?? AppColors.primary,
+              backgroundColor: bgColor ?? AppColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

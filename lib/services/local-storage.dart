@@ -7,9 +7,8 @@ import 'dart:convert';
 import 'package:tech_linker_new/services/api.dart';
 
 class LocalStorage {
-  
   // Save login token
-  static Future<bool> setData(String key,dynamic value) async {
+  static Future<bool> setData(String key, dynamic value) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       return await prefs.setString(key, value);
@@ -41,6 +40,7 @@ class LocalStorage {
       return false;
     }
   }
+
   static Future<bool> saveInstUser(InstituteModel user) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -59,30 +59,31 @@ class LocalStorage {
     try {
       final prefs = await SharedPreferences.getInstance();
       final userJson = prefs.getString(AppKeys.userkey);
-    
+
       if (userJson != null) {
         final userData = jsonDecode(userJson);
         return User.fromJson(userData);
       }
-      
+
       return null;
     } catch (e) {
       print('❌ Error getting user: $e');
       return null;
     }
   }
-   static Future<InstituteModel?> getInsUser() async {
+
+  static Future<InstituteModel?> getInsUser() async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
       final userJson = prefs.getString(AppKeys.userkey);
-    
+
       if (userJson != null) {
         final userData = jsonDecode(userJson);
-        
+
         return InstituteModel.fromJson(userData);
       }
-      
+
       return null;
     } catch (e) {
       print('❌ Error getting user: $e');
@@ -105,6 +106,6 @@ class LocalStorage {
   // Check if user is logged in
   static Future<bool> isLoggedIn() async {
     final user = await getUser();
-    return user != null ;
+    return user != null;
   }
 }
