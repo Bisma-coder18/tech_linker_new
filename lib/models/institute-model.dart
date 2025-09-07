@@ -9,7 +9,7 @@ class InstituteModel {
   final String? bio;
   final String? website;
   final String? about;
-
+  final bool? active;
   InstituteModel({
     required this.id,
     this.role,
@@ -20,6 +20,7 @@ class InstituteModel {
     this.bio,
     this.website,
     this.about,
+     this.active,
     this.image,
   });
 

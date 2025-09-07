@@ -35,427 +35,429 @@ class StudentInternshipDetailScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    children: [
-                      Stack(
-                        clipBehavior: Clip.none,
-                        alignment: Alignment.center,
-                        children: [
-                          Stack(
-                            children: [
-                              Container(
-                                height: 120,
-                                width: double.infinity,
-                                color: Colors.grey.shade300,
-                                child: jobId.image.isNotEmpty
-                                    ? CachedNetworkImage(
-                                        imageUrl: "${AppKeys.admin}" +
-                                            jobId.image,
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, url) => Center(
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 3,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                    AppColors.primary),
+        body: Obx((){
+           if (controller.isLoading.value) {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+  print(controller.internshipDetail.value?.applied);
+  print(".....,,,,,mmmm");
+  return  Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: [
+                        Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.center,
+                          children: [
+                            Stack(
+                              children: [
+                                Container(
+                                  height: 120,
+                                  width: double.infinity,
+                                  color: Colors.grey.shade300,
+                                  child: jobId.image.isNotEmpty
+                                      ? CachedNetworkImage(
+                                          imageUrl: "${AppKeys.admin}" +jobId.image,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => Center(
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 3,
+                                              valueColor:AlwaysStoppedAnimation<Color>(AppColors.primary),
+                                            ),
                                           ),
+                                          errorWidget: (context, url, error) =>
+                                              Center(child: Icon(Icons.image,size: 40,color: Colors.grey.shade500),
+                                          ),
+                                        )
+                                      : Center(
+                                          child: Icon(Icons.image,size: 40,color: Colors.grey.shade500),
                                         ),
-                                        errorWidget: (context, url, error) =>
-                                            Center(
-                                          child: Icon(Icons.image,
-                                              size: 40,
-                                              color: Colors.grey.shade500),
-                                        ),
-                                      )
-                                    : Center(
-                                        child: Icon(Icons.image,
-                                            size: 40,
-                                            color: Colors.grey.shade500),
+                                ),
+                                Positioned(
+                                  right: 10,
+                                  bottom: 0,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: true,
+                                        barrierColor: Colors.black87,
+                                        builder: (_) {
+                                          return Dialog(
+                                            backgroundColor: Colors.transparent,
+                                            insetPadding:const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 60,
+                                            ),
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                  constraints: BoxConstraints(
+                                                    maxHeight:
+                                                        MediaQuery.of(context).size.height *0.7,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(16),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.3),
+                                                        blurRadius: 20,
+                                                        offset:
+                                                            const Offset(0, 10),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(16),
+                                                    child: InteractiveViewer(
+                                                      panEnabled: true,
+                                                      minScale: 1,
+                                                      maxScale: 5,
+                                                      child: CachedNetworkImage(
+                                                        imageUrl:
+                                                            "${AppKeys.admin}" +
+                                                                jobId.image,
+                                                        fit: BoxFit.contain,
+                                                        placeholder:
+                                                            (context, url) =>
+                                                                SizedBox(
+                                                          width: double.infinity,
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              const CircularProgressIndicator(
+                                                                strokeWidth: 3,
+                                                                valueColor:
+                                                                    AlwaysStoppedAnimation<
+                                                                        Color>(
+                                                                  AppColors
+                                                                      .primary,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 16),
+                                                              Text(
+                                                                'Loading image...',
+                                                                style: TextStyle(
+                                                                  color: Colors
+                                                                      .grey[600],
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            SizedBox(
+                                                          width: double.infinity,
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(20),
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: Colors
+                                                                      .red
+                                                                      .withOpacity(
+                                                                          0.1),
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                ),
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .image_not_supported_outlined,
+                                                                  size: 48,
+                                                                  color: Colors
+                                                                      .red[400],
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 16),
+                                                              Text(
+                                                                'Failed to load image',
+                                                                style: TextStyle(
+                                                                  color: Colors
+                                                                      .grey[800],
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 8),
+                                                              Text(
+                                                                'Please check your internet connection',
+                                                                style: TextStyle(
+                                                                  color: Colors
+                                                                      .grey[600],
+                                                                  fontSize: 12,
+                                                                ),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: 16,
+                                                  right: 16,
+                                                  child: GestureDetector(
+                                                    onTap: () =>
+                                                        Navigator.of(context)
+                                                            .pop(),
+                                                    child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(8),
+                                                      decoration: BoxDecoration(
+                                                        color: AppColors.primary,
+                                                        shape: BoxShape.circle,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.black
+                                                                .withOpacity(0.2),
+                                                            blurRadius: 8,
+                                                            offset: const Offset(
+                                                                0, 2),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.close,
+                                                        size: 20,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(6),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.textSecondary,
+                                        shape: BoxShape.circle,
                                       ),
-                              ),
-                              Positioned(
-                                right: 10,
-                                bottom: 0,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: true,
-                                      barrierColor: Colors.black87,
-                                      builder: (_) {
-                                        return Dialog(
-                                          backgroundColor: Colors.transparent,
-                                          insetPadding:
-                                              const EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                            vertical: 60,
-                                          ),
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                constraints: BoxConstraints(
-                                                  maxHeight:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .height *
-                                                          0.7,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.3),
-                                                      blurRadius: 20,
-                                                      offset:
-                                                          const Offset(0, 10),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                  child: InteractiveViewer(
-                                                    panEnabled: true,
-                                                    minScale: 1,
-                                                    maxScale: 5,
-                                                    child: CachedNetworkImage(
-                                                      imageUrl:
-                                                          "${AppKeys.admin}" +
-                                                              jobId.image,
-                                                      fit: BoxFit.contain,
-                                                      placeholder:
-                                                          (context, url) =>
-                                                              SizedBox(
-                                                        width: double.infinity,
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            const CircularProgressIndicator(
-                                                              strokeWidth: 3,
-                                                              valueColor:
-                                                                  AlwaysStoppedAnimation<
-                                                                      Color>(
-                                                                AppColors
-                                                                    .primary,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 16),
-                                                            Text(
-                                                              'Loading image...',
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .grey[600],
-                                                                fontSize: 14,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      errorWidget: (context,
-                                                              url, error) =>
-                                                          SizedBox(
-                                                        width: double.infinity,
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Container(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(20),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: Colors
-                                                                    .red
-                                                                    .withOpacity(
-                                                                        0.1),
-                                                                shape: BoxShape
-                                                                    .circle,
-                                                              ),
-                                                              child: Icon(
-                                                                Icons
-                                                                    .image_not_supported_outlined,
-                                                                size: 48,
-                                                                color: Colors
-                                                                    .red[400],
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 16),
-                                                            Text(
-                                                              'Failed to load image',
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .grey[800],
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 8),
-                                                            Text(
-                                                              'Please check your internet connection',
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .grey[600],
-                                                                fontSize: 12,
-                                                              ),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                top: 16,
-                                                right: 16,
-                                                child: GestureDetector(
-                                                  onTap: () =>
-                                                      Navigator.of(context)
-                                                          .pop(),
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(8),
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.primary,
-                                                      shape: BoxShape.circle,
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.black
-                                                              .withOpacity(0.2),
-                                                          blurRadius: 8,
-                                                          offset: const Offset(
-                                                              0, 2),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    child: const Icon(
-                                                      Icons.close,
-                                                      size: 20,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(6),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.textSecondary,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(
-                                      Icons.zoom_out_map,
-                                      size: 20,
-                                      color: Colors.white,
+                                      child: const Icon(
+                                        Icons.zoom_out_map,
+                                        size: 20,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              )
-                            ],
-                          ),
-                          // Positioned(
-                          //   bottom: -30,
-                          //   child: CircleAvatar(
-                          //     radius: 30,
-                          //     backgroundColor: Colors.orange.shade100,
-                          //     child: CachedImage(),
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                      const SizedBox(height: 40),
-                      Text(
-                        jobId.title,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
+                                )
+                              ],
+                            ),
+                            // Positioned(
+                            //   bottom: -30,
+                            //   child: CircleAvatar(
+                            //     radius: 30,
+                            //     backgroundColor: Colors.orange.shade100,
+                            //     child: CachedImage(),
+                            //   ),
+                            // ),
+                          ],
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 8),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: [
-                      //     Icon(Icons.calendar_today, size: 14, color: Colors.grey.shade600),
-                      //     const SizedBox(width: 4),
-                      //     Text(
-                      //       jobId.datePosted.toString().split(' ')[0],
-                      //       style: TextStyle(
-                      //         fontSize: 12,
-                      //         color: Colors.grey.shade600,
-                      //       ),
-                      //     ),
-                      //     const SizedBox(width: 16),
-                      //     // Icon(Icons.access_time, size: 14, color: Colors.grey.shade600),
-                      //     // const SizedBox(width: 4),
-                      //     // Text(
-                      //     //   '10 min ago',
-                      //     //   style: TextStyle(
-                      //     //     fontSize: 12,
-                      //     //     color: Colors.grey.shade600,
-                      //     //   ),
-                      //     // ),
-                      //     // const SizedBox(width: 16),
-                      //     // const Icon(Icons.star, size: 14, color: Colors.orange),
-                      //     // const SizedBox(width: 2),
-                      //     // const Text(
-                      //     //   '4.8',
-                      //     //   style: TextStyle(
-                      //     //     fontSize: 12,
-                      //     //     color: Colors.orange,
-                      //     //     fontWeight: FontWeight.w500,
-                      //     //   ),
-                      //     // ),
-                      //   ],
-                      // ),
-                      // const SizedBox(height: 10),
-                    ],
-                  ),
-                  // _buildTabBar(controller),
-                  // Obx(() => controller.isDescriptionTab.value ?
-                  Container(
-                    color: Colors.white,
-                    margin: const EdgeInsets.only(top: 10),
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Job Summary',
+                        const SizedBox(height: 40),
+                        Text(
+                          jobId.title,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 20,
                             fontWeight: FontWeight.w600,
                             color: Colors.black87,
                           ),
+                          textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 16),
-                        // _buildSummaryItem(Icons.business, 'Company', 'UI UX Designer, Graphic'),
-                        // _buildSummaryItem(Icons.school, 'Education', 'Masters in any discipline'),
-                        _buildSummaryItem(
-                            Icons.attach_money, 'Salary', jobId.stipend!),
-                        _buildSummaryItem(
-                            Icons.work, 'Job type', jobId.jobtype),
-                        _buildSummaryItem(Icons.create, 'Updated',
-                            jobId.updatedAt.toString().split(' ')[0]),
-                        _buildSummaryItem(
-                            Icons.bar_chart, 'Job level', jobId.joblevel ?? ""),
-                        // _buildSummaryItem(Icons.person, 'Age', 'Age at least 24 years'),
-                        _buildSummaryItem(Icons.work_history, 'location Type',
-                            jobId.location!),
-                        _buildSummaryItem(Icons.schedule, 'Deadline',
-                            jobId.deadline.toString().split(' ')[0]),
-                        const SizedBox(height: 20),
-                        Text(
-                          "Description",
-                          style: TextStyle(
-                            fontSize: 20,
-                            // color: Colors.grey.shade700,
-                            height: 1.5,
-                          ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.calendar_today, size: 14, color: Colors.grey.shade600),
+                            const SizedBox(width: 4),
+                            Text(
+                              jobId.datePosted.toString().split(' ')[0],
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            // Icon(Icons.access_time, size: 14, color: Colors.grey.shade600),
+                            // const SizedBox(width: 4),
+                            // Text(
+                            //   '10 min ago',
+                            //   style: TextStyle(
+                            //     fontSize: 12,
+                            //     color: Colors.grey.shade600,
+                            //   ),
+                            // ),
+                            // const SizedBox(width: 16),
+                            // const Icon(Icons.star, size: 14, color: Colors.orange),
+                            // const SizedBox(width: 2),
+                            // const Text(
+                            //   '4.8',
+                            //   style: TextStyle(
+                            //     fontSize: 12,
+                            //     color: Colors.orange,
+                            //     fontWeight: FontWeight.w500,
+                            //   ),
+                            // ),
+                          ],
                         ),
-                        Text(
-                          jobId.description,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade700,
-                            height: 1.5,
-                          ),
-                        ),
+                        const SizedBox(height: 10),
                       ],
                     ),
-                  )
+                    _buildTabBar(controller),
+                    Obx(() => controller.isDescriptionTab.value ?
+                    Container(
+                      color: Colors.white,
+                      margin: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Job Summary',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          // _buildSummaryItem(Icons.business, 'Company', 'UI UX Designer, Graphic'),
+                          // _buildSummaryItem(Icons.school, 'Education', 'Masters in any discipline'),
+                          _buildSummaryItem(
+                              Icons.attach_money, 'Salary', jobId.stipend!),
+                          _buildSummaryItem(
+                              Icons.work, 'Job type', jobId.jobtype),
+                          _buildSummaryItem(Icons.create, 'Updated',
+                              jobId.updatedAt.toString().split(' ')[0]),
+                          _buildSummaryItem(
+                              Icons.bar_chart, 'Job level', jobId.joblevel ?? ""),
+                          // _buildSummaryItem(Icons.person, 'Age', 'Age at least 24 years'),
+                          _buildSummaryItem(Icons.work_history, 'location Type',
+                              jobId.location!),
+                          _buildSummaryItem(Icons.schedule, 'Deadline',
+                              jobId.deadline.toString().split(' ')[0]),
+                          const SizedBox(height: 20),
+                          Text(
+                            "Description",
+                            style: TextStyle(
+                              fontSize: 20,
+                              // color: Colors.grey.shade700,
+                              height: 1.5,
+                            ),
+                          ),
+                          Text(
+                            jobId.description,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade700,
+                              height: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
 
-                  // : _buildCompanyContent()),
-                ],
+                    : _buildCompanyContent()),
+                  ],
+                ),
               ),
             ),
-          ),
-          authcontroller.role.value == "student"
-              ? Container(
-                  color: Colors.white,
-                  padding: const EdgeInsets.all(20),
-                  child: SafeArea(
-                    child: Row(
-                      children: [
-                        //  Expanded(
-                        //    child: OutlinedButton(
-                        //      onPressed: controller.saveJob,
-                        //      style: OutlinedButton.styleFrom(
-                        //        side: const BorderSide(color: AppColors.primary),
-                        //        padding: const EdgeInsets.symmetric(vertical: 16),
-                        //        shape: RoundedRectangleBorder(
-                        //          borderRadius: BorderRadius.circular(8),
-                        //        ),
-                        //      ),
-                        //      child: const Text(
-                        //        'Save',
-                        //        style: TextStyle(
-                        //          color: AppColors.primary,
-                        //          fontSize: 16,
-                        //          fontWeight: FontWeight.w500,
-                        //        ),
-                        //      ),
-                        //    ),
-                        //  ),
-                        //  const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              print("apply for jobsbsbs");
-                              controller.applyForJob(jobId.id);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+            authcontroller.role.value == "student"
+                ? Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.all(20),
+                    child: SafeArea(
+                      child: Row(
+                        children: [
+                          //  Expanded(
+                          //    child: OutlinedButton(
+                          //      onPressed: controller.saveJob,
+                          //      style: OutlinedButton.styleFrom(
+                          //        side: const BorderSide(color: AppColors.primary),
+                          //        padding: const EdgeInsets.symmetric(vertical: 16),
+                          //        shape: RoundedRectangleBorder(
+                          //          borderRadius: BorderRadius.circular(8),
+                          //        ),
+                          //      ),
+                          //      child: const Text(
+                          //        'Save',
+                          //        style: TextStyle(
+                          //          color: AppColors.primary,
+                          //          fontSize: 16,
+                          //          fontWeight: FontWeight.w500,
+                          //        ),
+                          //      ),
+                          //    ),
+                          //  ),
+                          //  const SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                               if(controller.internshipDetail.value?.applied?? false){
+                                 return;
+                               }
+                                controller.applyForJob(jobId.id);
+                              },
+                              
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
-                            ),
-                            child: const Text(
-                              'Apply',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                              child:  Text(
+                               controller.internshipDetail.value?.applied ==true ? 'Applied':'Apply',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              : const SizedBox.shrink()
-        ],
-      ),
+                  )
+                : const SizedBox.shrink()
+          ],
+        );
+
+        })
+        
     );
   }
 
@@ -605,26 +607,26 @@ class StudentInternshipDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
         children: [
-          // Expanded(
-          //   child: GestureDetector(
-          //     onTap: () => controller.toggleTab(true),
-          //     child: Obx(() => Container(
-          //       padding: const EdgeInsets.symmetric(vertical: 12),
-          //       decoration: BoxDecoration(
-          //         color: controller.isDescriptionTab.value ? AppColors.primary : Colors.transparent,
-          //         borderRadius: BorderRadius.circular(8),
-          //       ),
-          //       child: Text(
-          //         'Description',
-          //         textAlign: TextAlign.center,
-          //         style: TextStyle(
-          //           color: controller.isDescriptionTab.value ? AppColors.white : AppColors.textSecondary,
-          //           fontWeight: FontWeight.w500,
-          //         ),
-          //       ),
-          //     )),
-          //   ),
-          // ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => controller.toggleTab(true),
+              child: Obx(() => Container(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: controller.isDescriptionTab.value ? AppColors.primary : Colors.transparent,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'Description',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: controller.isDescriptionTab.value ? AppColors.white : AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              )),
+            ),
+          ),
           Text(
             'Description',
             textAlign: TextAlign.center,
@@ -639,35 +641,35 @@ class StudentInternshipDetailScreen extends StatelessWidget {
     );
   }
 
-  // Widget _buildCompanyContent() {
-  //   return Container(
-  //     color: Colors.white,
-  //     margin: const EdgeInsets.only(top: 10),
-  //     padding: const EdgeInsets.all(20),
-  //     child: const Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Text(
-  //           'Company Information',
-  //           style: TextStyle(
-  //             fontSize: 16,
-  //             fontWeight: FontWeight.w600,
-  //             color: Colors.black87,
-  //           ),
-  //         ),
-  //         SizedBox(height: 16),
-  //         Text(
-  //           'This is where company information would be displayed.',
-  //           style: TextStyle(
-  //             fontSize: 14,
-  //             color: Colors.grey,
-  //             height: 1.5,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget _buildCompanyContent() {
+    return Container(
+      color: Colors.white,
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.all(20),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Company Information',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+          SizedBox(height: 16),
+          Text(
+            'This is where company information would be displayed.',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildSummaryItem(IconData icon, String title, String value) {
     return Padding(

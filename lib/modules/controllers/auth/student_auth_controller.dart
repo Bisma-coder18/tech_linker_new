@@ -113,6 +113,7 @@ class StudentSignupController extends GetxController {
         print("user");
         Get.offAll(() => MainTabScreen());
       } else if (role.value == 'institute') {
+        print("login data saved");
         await LocalStorage.saveInstUser(InstituteModel.fromJson(user));
 
         Get.offAll(() => InstituteMainScreen());
