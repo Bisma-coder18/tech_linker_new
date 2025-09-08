@@ -81,32 +81,6 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
     });
   }
 
-  Future<void> _createStudent() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CreateEditStudentScreen(),
-      ),
-    );
-
-    if (result == true) {
-      fetchStudents();
-    }
-  }
-
-  Future<void> _editStudent(dynamic student) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CreateEditStudentScreen(student: student),
-      ),
-    );
-
-    if (result == true) {
-      fetchStudents();
-    }
-  }
-
   Future<void> _toggleStudentActiveStatus(dynamic student) async {
     final bool? confirmed = await showDialog<bool>(
       context: context,
@@ -247,11 +221,11 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: _createStudent,
-            tooltip: 'Add Student',
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.add, color: Colors.white),
+          //   onPressed: _createStudent,
+          //   tooltip: 'Add Student',
+          // ),
           IconButton(
             icon: const Icon(Icons.refresh, color: Colors.white),
             onPressed: () {
@@ -728,204 +702,6 @@ class StudentCard extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-// Create/Edit Student Screen (unchanged)
-class CreateEditStudentScreen extends StatefulWidget {
-  final dynamic student;
-
-  const CreateEditStudentScreen({super.key, this.student});
-
-  @override
-  State<CreateEditStudentScreen> createState() =>
-      _CreateEditStudentScreenState();
-}
-
-class _CreateEditStudentScreenState extends State<CreateEditStudentScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  bool isLoading = false;
-  bool _isActive = true;
-  bool get isEditing => widget.student != null;
-
-  @override
-  void initState() {
-    super.initState();
-    if (isEditing) {
-      _nameController.text = widget.student['name'] ?? '';
-      _emailController.text = widget.student['email'] ?? '';
-      _phoneController.text = widget.student['phone'] ?? '';
-      _isActive = widget.student['active'] ?? true;
-    }
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _saveStudent() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() => isLoading = true);
-
-    try {
-      final data = {
-        'name': _nameController.text,
-        'email': _emailController.text,
-        'phone': _phoneController.text,
-        'active': _isActive,
-        if (!isEditing && _passwordController.text.isNotEmpty)
-          'password': _passwordController.text,
-      };
-
-      http.Response response;
-
-      if (isEditing) {
-        response = await http.put(
-          Uri.parse('${AppKeys.baseUrl}/api/students/${widget.student['_id']}'),
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode(data),
-        );
-      } else {
-        response = await http.post(
-          Uri.parse('${AppKeys.baseUrl}/api/students'),
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode(data),
-        );
-      }
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-                'Student ${isEditing ? 'updated' : 'created'} successfully'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pop(context, true);
-      } else {
-        throw Exception('Failed to ${isEditing ? 'update' : 'create'} student');
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
-      );
-    } finally {
-      setState(() => isLoading = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF6750A4),
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
-          isEditing ? 'Edit Student' : 'Create Student',
-          style:
-              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Full Name',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-              validator: (value) =>
-                  value?.isEmpty ?? true ? 'Name is required' : null,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
-              ),
-              keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value?.isEmpty ?? true) return 'Email is required';
-                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
-                    .hasMatch(value!)) {
-                  return 'Enter a valid email';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _phoneController,
-              decoration: const InputDecoration(
-                labelText: 'Phone Number',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.phone),
-              ),
-              keyboardType: TextInputType.phone,
-            ),
-            const SizedBox(height: 16),
-            if (!isEditing)
-              Column(
-                children: [
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.lock),
-                    ),
-                    obscureText: true,
-                    validator: isEditing
-                        ? null
-                        : (value) => value?.isEmpty ?? true
-                            ? 'Password is required'
-                            : null,
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              ),
-            SwitchListTile(
-              title: const Text('Active Status'),
-              subtitle: Text(_isActive
-                  ? 'Student account is active'
-                  : 'Student account is inactive'),
-              value: _isActive,
-              onChanged: (value) => setState(() => _isActive = value),
-              activeColor: const Color(0xFF6750A4),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: isLoading ? null : _saveStudent,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6750A4),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: isLoading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : Text(isEditing ? 'Update Student' : 'Create Student'),
-            ),
-          ],
         ),
       ),
     );
