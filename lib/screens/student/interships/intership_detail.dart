@@ -6,6 +6,7 @@ import 'package:tech_linker_new/modules/controllers/auth/student_auth_controller
 import 'package:tech_linker_new/modules/controllers/student/internship_detail.dart';
 import 'package:tech_linker_new/services/api.dart';
 import 'package:tech_linker_new/theme/app_colors.dart';
+import 'package:tech_linker_new/util/util.dart';
 
 class StudentInternshipDetailScreen extends StatelessWidget {
   final Internship jobId;
@@ -14,6 +15,7 @@ class StudentInternshipDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(jobId.id);
     final controller = Get.put(InternshipDetailController(jobId.id));
     final authcontroller = Get.put(StudentSignupController());
 
@@ -41,8 +43,6 @@ class StudentInternshipDetailScreen extends StatelessWidget {
       child: CircularProgressIndicator(),
     );
   }
-  print(controller.internshipDetail.value?.applied);
-  print(".....,,,,,mmmm");
   return  Column(
           children: [
             Expanded(
@@ -286,7 +286,7 @@ class StudentInternshipDetailScreen extends StatelessWidget {
                             // ),
                           ],
                         ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 10),
                         Text(
                           jobId.title,
                           style: TextStyle(
@@ -296,29 +296,29 @@ class StudentInternshipDetailScreen extends StatelessWidget {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.calendar_today, size: 14, color: Colors.grey.shade600),
                             const SizedBox(width: 4),
                             Text(
-                              jobId.datePosted.toString().split(' ')[0],
+                              controller.internshipDetail.value!.updatedAt.toString().split(' ')[0],
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey.shade600,
                               ),
                             ),
                             const SizedBox(width: 16),
-                            // Icon(Icons.access_time, size: 14, color: Colors.grey.shade600),
-                            // const SizedBox(width: 4),
-                            // Text(
-                            //   '10 min ago',
-                            //   style: TextStyle(
-                            //     fontSize: 12,
-                            //     color: Colors.grey.shade600,
-                            //   ),
-                            // ),
+                            Icon(Icons.access_time, size: 14, color: Colors.grey.shade600),
+                            const SizedBox(width: 4),
+                            Text(
+                                Util.timeAgo(jobId.datePosted??controller.internshipDetail.value!.datePosted),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
                             // const SizedBox(width: 16),
                             // const Icon(Icons.star, size: 14, color: Colors.orange),
                             // const SizedBox(width: 2),
@@ -335,7 +335,57 @@ class StudentInternshipDetailScreen extends StatelessWidget {
                         const SizedBox(height: 10),
                       ],
                     ),
-                    _buildTabBar(controller),
+                      Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () => controller.toggleTab(true),
+              child: Obx(() => Container(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: controller.isDescriptionTab.value ? AppColors.primary : Colors.transparent,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'Description',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: controller.isDescriptionTab.value ? AppColors.white : AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              )),
+            ),
+          ),
+          const SizedBox(width: 10),
+          if (authcontroller.role.value != "institute")
+          Expanded(
+            child: GestureDetector(
+              onTap: () => controller.toggleTab(false),
+              child: Obx(() => Container(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: !controller.isDescriptionTab.value ? AppColors.primary : Colors.transparent,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'Company',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: !controller.isDescriptionTab.value ? AppColors.white : AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              )),
+            ),
+          ),
+        ],
+      ),
+    ),
+  
                     Obx(() => controller.isDescriptionTab.value ?
                     Container(
                       color: Colors.white,
@@ -359,7 +409,7 @@ class StudentInternshipDetailScreen extends StatelessWidget {
                               Icons.attach_money, 'Salary', jobId.stipend!),
                           _buildSummaryItem(
                               Icons.work, 'Job type', jobId.jobtype),
-                          _buildSummaryItem(Icons.create, 'Updated',
+                          _buildSummaryItem(Icons.create, 'Updated', controller.internshipDetail.value!.updatedAt.toString().split(' ')[0]??
                               jobId.updatedAt.toString().split(' ')[0]),
                           _buildSummaryItem(
                               Icons.bar_chart, 'Job level', jobId.joblevel ?? ""),
@@ -432,7 +482,7 @@ class StudentInternshipDetailScreen extends StatelessWidget {
                               },
                               
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
+                                backgroundColor:controller.internshipDetail.value?.applied ==true?AppColors.grey_20: AppColors.primary,
                                 padding: const EdgeInsets.symmetric(vertical: 16),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -601,55 +651,33 @@ class StudentInternshipDetailScreen extends StatelessWidget {
 
 // Then update your _buildBottomButtons method to use this modal:
 
-  Widget _buildTabBar(InternshipDetailController controller) {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () => controller.toggleTab(true),
-              child: Obx(() => Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: controller.isDescriptionTab.value ? AppColors.primary : Colors.transparent,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  'Description',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: controller.isDescriptionTab.value ? AppColors.white : AppColors.textSecondary,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              )),
-            ),
-          ),
-          Text(
-            'Description',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(width: 10),
-        ],
-      ),
-    );
-  }
+  
 
-  Widget _buildCompanyContent() {
+    Widget _buildCompanyContent() {
+    final controller = Get.find<InternshipDetailController>();
+    final company = controller.internshipDetail.value?.institute; 
+    // Assuming your InternshipDetail model has an `institute` field of type InstituteModel
+
+    if (company == null) {
+      return Container(
+        color: Colors.white,
+        margin: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.all(20),
+        child: const Text(
+          'No company information available.',
+          style: TextStyle(fontSize: 14, color: Colors.grey),
+        ),
+      );
+    }
+
     return Container(
       color: Colors.white,
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.all(20),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Company Information',
             style: TextStyle(
               fontSize: 16,
@@ -657,15 +685,56 @@ class StudentInternshipDetailScreen extends StatelessWidget {
               color: Colors.black87,
             ),
           ),
-          SizedBox(height: 16),
-          Text(
-            'This is where company information would be displayed.',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
-              height: 1.5,
+          const SizedBox(height: 16),
+
+          if (company.name != null && company.name!.isNotEmpty)
+            _buildSummaryItem(Icons.business, "Name", company.name!),
+
+          if (company.address != null && company.address!.isNotEmpty)
+            _buildSummaryItem(Icons.location_on, "Address", company.address!),
+
+          if (company.phone != null && company.phone!.isNotEmpty)
+            _buildSummaryItem(Icons.phone, "Phone", company.phone!),
+
+          if (company.email != null && company.email!.isNotEmpty)
+            _buildSummaryItem(Icons.email, "Email", company.email!),
+
+          if (company.website != null && company.website!.isNotEmpty)
+            _buildSummaryItem(Icons.language, "Website", company.website!),
+
+          if (company.bio != null && company.bio!.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            const Text(
+              "Bio",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
             ),
-          ),
+            const SizedBox(height: 6),
+            Text(
+              company.bio!,
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade700, height: 1.5),
+            ),
+          ],
+
+          if (company.about != null && company.about!.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            const Text(
+              "About",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              company.about!,
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade700, height: 1.5),
+            ),
+          ],
         ],
       ),
     );

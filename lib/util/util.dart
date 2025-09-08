@@ -5,7 +5,22 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class Util {
-  
+  static String timeAgo(DateTime date) {
+  final diff = DateTime.now().difference(date);
+
+  if (diff.inSeconds < 60) {
+    return "${diff.inSeconds}s ago";
+  } else if (diff.inMinutes < 60) {
+    return "${diff.inMinutes} min ago";
+  } else if (diff.inHours < 24) {
+    return "${diff.inHours} hours ago";
+  } else if (diff.inDays < 30) {
+    return "${diff.inDays} days ago";
+  } else {
+    return "${date.toLocal().toString().split(' ')[0]}"; // fallback original date
+  }
+}
+
   // Request permission for camera or gallery
   static Future<bool> _requestPermission(ImageSource source) async {
     if (source == ImageSource.camera) {

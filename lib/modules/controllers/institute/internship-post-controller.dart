@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart'; // For MediaType
+import 'package:tech_linker_new/models/internship_model.dart';
 import 'package:tech_linker_new/screens/institute/institute-main.dart';
 import 'dart:convert';
 
@@ -98,6 +99,26 @@ class InternshipPostController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  void setDataForEdit(Internship internship) {
+  jobTitleController.text = internship.title;
+  salaryController.text = internship.stipend ?? "";
+  locationController.text = internship.location ?? "";
+  descriptionController.text = internship.description;
+  deadlineController.text = internship.deadline != null
+      ? internship.deadline!.toIso8601String().split("T").first
+      : "";
+
+  jobType.value = internship.jobtype.isNotEmpty ? internship.jobtype : "Full Time";
+  jobLevel.value = internship.joblevel ?? "Mid Level";
+  // Agar API me locationType aata hai to handle karo
+  // locationType.value = internship.locationType ?? "Onsite";
+
+  // Image API se aayi hui hai to local XFile set nahi hoga,
+  // isko aap server se dikha sakte ho alag UI me.
+  selectedImage.value = null; 
+}
+
 
   // Clear form after success
   void _clearForm() {

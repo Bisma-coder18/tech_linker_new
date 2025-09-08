@@ -1,7 +1,8 @@
 class Internship {
   final String id;
-  final String role;
-  final String instituteId;
+  final String? role;
+  final String? instituteId;
+  final String? institute; // jab sirf name aata hai
   final String image;
   final String title;
   final String jobtype;
@@ -9,37 +10,39 @@ class Internship {
   final String? stipend;
   final String description;
   final String? location;
-  final DateTime deadline;
-  final DateTime datePosted;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final int version;
+  final DateTime? deadline;
+  final DateTime? datePosted;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final DateTime? appliedAt; // naya field
+  final int? version;
 
   const Internship({
     required this.id,
-    required this.role,
-    required this.instituteId,
-    required this.image,
     required this.title,
     required this.jobtype,
-    this.joblevel,
     required this.description,
-     this.stipend,
+    required this.image,
+    this.role,
+    this.instituteId,
+    this.institute,
+    this.joblevel,
+    this.stipend,
     this.location,
-    required this.deadline,
-    required this.datePosted,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.version,
+    this.deadline,
+    this.datePosted,
+    this.createdAt,
+    this.updatedAt,
+    this.appliedAt,
+    this.version,
   });
 
   factory Internship.fromJson(Map<String, dynamic> json) {
-    print(json['instituteId']);
-    print("alallalal");
     return Internship(
-      id: json['_id'] ?? '',
-      role: json['role'] ?? '',
-      instituteId: json['instituteId'] ,
+      id: json['_id'] ?? json['internshipId'] ?? '',
+      role: json['role'],
+      instituteId: json['instituteId'],
+      institute: json['institute'], // sirf name string
       image: json['image'] ?? '',
       title: json['title'] ?? '',
       jobtype: json['type'] ?? '',
@@ -47,11 +50,12 @@ class Internship {
       location: json['location'],
       joblevel: json['joblevel'],
       stipend: json['stipend'],
-      deadline: DateTime.parse(json['deadline'] ?? DateTime.now().toIso8601String()),
-      datePosted: DateTime.parse(json['datePosted'] ?? DateTime.now().toIso8601String()),
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
-      version: json['__v'] ?? 0,
+      deadline: json['deadline'] != null ? DateTime.tryParse(json['deadline']) : null,
+      datePosted: json['datePosted'] != null ? DateTime.tryParse(json['datePosted']) : null,
+      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt']) : null,
+      updatedAt: json['updatedAt'] != null ? DateTime.tryParse(json['updatedAt']) : null,
+      appliedAt: json['appliedAt'] != null ? DateTime.tryParse(json['appliedAt']) : null,
+      version: json['__v'],
     );
   }
 }

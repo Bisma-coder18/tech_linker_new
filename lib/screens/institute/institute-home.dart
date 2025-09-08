@@ -35,7 +35,8 @@ class InstituteHomeScreen extends StatelessWidget {
         child: RefreshIndicator(
           onRefresh: _refreshData, // 🔹 Pull-to-refresh trigger
           child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(), // ensures scroll even if content is short
+            physics:
+                const AlwaysScrollableScrollPhysics(), // ensures scroll even if content is short
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Column(
@@ -127,19 +128,22 @@ class InstituteHomeScreen extends StatelessWidget {
                       controller.internships.isNotEmpty
                           ? Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => AllInternships()),
+                              MaterialPageRoute(
+                                  builder: (_) => AllInternships()),
                             )
                           : null;
                     },
                     child: Row(
                       children: [
-                        Text("Recent Internships", style: AppTextStyles.largeBold),
+                        Text("Recent Internships",
+                            style: AppTextStyles.largeBold),
                         const Spacer(),
                         controller.internships.isNotEmpty
                             ? Text("See All", style: AppTextStyles.small)
                             : const SizedBox.shrink(),
                         controller.internships.isNotEmpty
-                            ? Icon(Icons.arrow_forward_ios, size: 12, color: AppColors.secondary)
+                            ? Icon(Icons.arrow_forward_ios,
+                                size: 12, color: AppColors.secondary)
                             : const SizedBox.shrink(),
                       ],
                     ),
@@ -157,24 +161,26 @@ class InstituteHomeScreen extends StatelessWidget {
                         svgAsset: 'assets/svg/search.svg',
                       );
                     }
-                    final jobs = controller.internships.map((job) => Internship.fromJson(job)).toList();
+                    final jobs = controller.internships
+                        .map((job) => Internship.fromJson(job))
+                        .toList();
 
                     return ListView.separated(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-
-      itemCount:jobs.length,
-      separatorBuilder: (context, index) => const Space(height: 16),
-      itemBuilder: (context, index) {
-        final job = jobs[index];
-        return InternshipCard(
-          job: job,
-          onApplyTap: () => Get.to(() => StudentInternshipDetailScreen(jobId: job)),
-          onDetail: ()=> Get.to(() => StudentInternshipDetailScreen(jobId:job)),
-        );
-      }
-    );
-                  
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: jobs.length,
+                        separatorBuilder: (context, index) =>
+                            const Space(height: 16),
+                        itemBuilder: (context, index) {
+                          final job = jobs[index];
+                          return InternshipCard(
+                            job: job,
+                            onApplyTap: () => Get.to(() =>
+                                StudentInternshipDetailScreen(jobId: job)),
+                            onDetail: () => Get.to(() =>
+                                StudentInternshipDetailScreen(jobId: job)),
+                          );
+                        });
                   }),
                 ],
               ),

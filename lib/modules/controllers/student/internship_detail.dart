@@ -101,7 +101,8 @@ if (response.statusCode == 200 || response.statusCode == 201) {
   try {
       final localUser = await LocalStorage.getUser();
     final uri = Uri.parse('${AppKeys.baseUrl}/internship/details/$jobId/${localUser?.id}');
-
+print(uri);
+print(".....,mmmm");
     final response = await http.get(uri);
       if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(response.body);
@@ -131,6 +132,8 @@ if (response.statusCode == 200 || response.statusCode == 201) {
         print("Error parsing error response: $e");
       }
     } else {
+      print(response.statusCode);
+      print(response.body);
       Get.snackbar(
         'Error',
         'Please try again later',

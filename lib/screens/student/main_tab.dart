@@ -20,7 +20,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
     AllInternships(),
-    // AppliedInternshipScreen(),
+    AppliedInternshipsScreen(),
     SettingsScreen()
   ];
 
@@ -38,6 +38,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
         items: [
           CurvedNavigationBarItem(child: Icon(Icons.home), ),
           CurvedNavigationBarItem(child: Icon(Icons.search), ),
+          CurvedNavigationBarItem(child: Icon(Icons.save_rounded)),
           CurvedNavigationBarItem(child: Icon(Icons.person)),
         ],
         backgroundColor: Colors.transparent,
