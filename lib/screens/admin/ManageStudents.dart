@@ -22,6 +22,7 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
   String? errorMessage;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  String filterStatus = 'All'; // New: Filter for active/inactive
 
   @override
   void initState() {
@@ -51,7 +52,7 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
     if (result['success']) {
       setState(() {
         allStudents = result['data'];
-        filteredStudents = allStudents;
+        _filterStudents(searchQuery); // Apply filter after fetching
         isLoading = false;
       });
       _animationController.forward();
@@ -66,11 +67,17 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
   void _filterStudents(String query) {
     setState(() {
       searchQuery = query.toLowerCase();
-      filteredStudents = allStudents
-          .where((student) =>
-              student['name']?.toLowerCase().contains(searchQuery) ||
-              student['email']?.toLowerCase().contains(searchQuery))
-          .toList();
+      filteredStudents = allStudents.where((student) {
+        final matchesSearch = student['name']
+                ?.toLowerCase()
+                .contains(searchQuery) ??
+            false || student['email']?.toLowerCase().contains(searchQuery) ??
+            false;
+        final matchesStatus = filterStatus == 'All' ||
+            (filterStatus == 'Active' && student['active'] == true) ||
+            (filterStatus == 'Inactive' && student['active'] == false);
+        return matchesSearch && matchesStatus;
+      }).toList();
     });
   }
 
@@ -109,17 +116,18 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Row(
-            mainAxisSize:
-                MainAxisSize.min, // Ensures row takes only needed width
+            mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 28),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Confirm Inactivation',
+                  student['active'] == true
+                      ? 'Confirm Inactivation'
+                      : 'Confirm Activation',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18, // Base size, will scale with media query
+                    fontSize: 18,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -129,18 +137,16 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
           ),
           content: Container(
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width *
-                  0.8, // 80% of screen width
-              maxHeight:
-                  MediaQuery.of(context).size.height * 0.3, // Limit height
+              maxWidth: MediaQuery.of(context).size.width * 0.8,
+              maxHeight: MediaQuery.of(context).size.height * 0.3,
             ),
             child: SingleChildScrollView(
               child: Text(
-                'Are you sure you want to mark "${student['name']}" as inactive?\n\nThis action cannot be undone.',
+                student['active'] == true
+                    ? 'Are you sure you want to mark "${student['name']}" as inactive?\n\nThis action cannot be undone.'
+                    : 'Are you sure you want to mark "${student['name']}" as active?',
                 style: TextStyle(
-                  fontSize: 16 *
-                      MediaQuery.of(context)
-                          .textScaleFactor, // Responsive text size
+                  fontSize: 16 * MediaQuery.of(context).textScaleFactor,
                   color: Colors.black87,
                 ),
                 textAlign: TextAlign.center,
@@ -167,13 +173,11 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
                     borderRadius: BorderRadius.circular(10)),
                 padding: EdgeInsets.symmetric(
                   horizontal: 16.0,
-                  vertical: 8.0 *
-                      MediaQuery.of(context)
-                          .textScaleFactor, // Responsive padding
+                  vertical: 8.0 * MediaQuery.of(context).textScaleFactor,
                 ),
               ),
               child: Text(
-                'Inactivate',
+                student['active'] == true ? 'Inactivate' : 'Activate',
                 style: TextStyle(
                   fontSize: 16 * MediaQuery.of(context).textScaleFactor,
                 ),
@@ -182,13 +186,11 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
           ],
           contentPadding: EdgeInsets.symmetric(
             horizontal: 20.0,
-            vertical: 16.0 *
-                MediaQuery.of(context).textScaleFactor, // Responsive padding
+            vertical: 16.0 * MediaQuery.of(context).textScaleFactor,
           ),
           actionsPadding: EdgeInsets.only(
             right: 20.0,
-            bottom: 16.0 *
-                MediaQuery.of(context).textScaleFactor, // Responsive padding
+            bottom: 16.0 * MediaQuery.of(context).textScaleFactor,
           ),
         );
       },
@@ -196,15 +198,17 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
 
     if (confirmed == true) {
       try {
-        final result = await AdminApiService.deleteStudent(student['_id']);
+        final result = await AdminApiService.updateStudentStatus(
+          student['_id'],
+        );
         if (result['success']) {
           setState(() {
-            allStudents.remove(student);
+            student['active'] = !student['active'];
             _filterStudents(searchController.text);
           });
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result['message'] ?? 'Student marked as inactive'),
+              content: Text(result['message'] ?? 'Student status updated'),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -212,7 +216,8 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
             ),
           );
         } else {
-          throw Exception(result['message'] ?? 'Failed to inactivate student');
+          throw Exception(
+              result['message'] ?? 'Failed to update student status');
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -324,6 +329,34 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
                           padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                           child: Column(
                             children: [
+                              // Filter Dropdown
+                              DropdownButton<String>(
+                                value: filterStatus,
+                                isExpanded: true,
+                                items: ['All', 'Active', 'Inactive']
+                                    .map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value,
+                                        style: TextStyle(color: Colors.white)),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    filterStatus = value!;
+                                    _filterStudents(searchController.text);
+                                  });
+                                },
+                                dropdownColor: const Color(0xFF6750A4),
+                                style: TextStyle(color: Colors.white),
+                                icon: Icon(Icons.filter_list,
+                                    color: Colors.white),
+                                underline: Container(
+                                  height: 2,
+                                  color: Colors.white.withOpacity(0.5),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
                               // Search Bar
                               Container(
                                 decoration: BoxDecoration(
@@ -379,9 +412,20 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
                                       Icons.school_outlined,
                                       Colors.white.withOpacity(0.9)),
                                   _buildStatCard(
-                                      'Showing',
-                                      filteredStudents.length.toString(),
-                                      Icons.visibility_outlined,
+                                      'Active',
+                                      allStudents
+                                          .where((s) => s['active'] == true)
+                                          .length
+                                          .toString(),
+                                      Icons.check_circle_outline,
+                                      Colors.white.withOpacity(0.9)),
+                                  _buildStatCard(
+                                      'Inactive',
+                                      allStudents
+                                          .where((s) => s['active'] == false)
+                                          .length
+                                          .toString(),
+                                      Icons.cancel_outlined,
                                       Colors.white.withOpacity(0.9)),
                                 ],
                               ),
@@ -398,7 +442,8 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
-                                      searchQuery.isEmpty
+                                      searchQuery.isEmpty &&
+                                              filterStatus == 'All'
                                           ? Icons.school_outlined
                                           : Icons.search_off,
                                       size: 64,
@@ -406,7 +451,8 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
                                     ),
                                     const SizedBox(height: 16),
                                     Text(
-                                      searchQuery.isEmpty
+                                      searchQuery.isEmpty &&
+                                              filterStatus == 'All'
                                           ? 'No Students Available'
                                           : 'No Results Found',
                                       style: TextStyle(
@@ -416,9 +462,10 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
-                                      searchQuery.isEmpty
+                                      searchQuery.isEmpty &&
+                                              filterStatus == 'All'
                                           ? 'There are no students to display at the moment.'
-                                          : 'Try adjusting your search terms.',
+                                          : 'Try adjusting your search terms or filter.',
                                       style: TextStyle(
                                           fontSize: 14,
                                           color: Colors.grey[600]),
@@ -476,11 +523,6 @@ class _ManageStudentsScreenState extends State<ManageStudentsScreen>
                     ],
                   ),
                 ),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: const Color(0xFF6750A4),
-      //   onPressed: _createStudent,
-      //   child: const Icon(Icons.add, color: Colors.white),
-      // ),
     );
   }
 
@@ -540,6 +582,7 @@ class StudentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isActive = student['active'] ?? true;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOutBack,
@@ -548,6 +591,12 @@ class StudentCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isActive
+                ? Colors.green.withOpacity(0.3)
+                : Colors.red.withOpacity(0.3),
+            width: 2,
+          ),
           boxShadow: [
             BoxShadow(
                 color: Colors.black.withOpacity(0.08),
@@ -568,7 +617,9 @@ class StudentCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                        color: const Color(0xFF6750A4).withOpacity(0.2),
+                        color: isActive
+                            ? Colors.green.withOpacity(0.5)
+                            : Colors.red.withOpacity(0.5),
                         width: 2),
                   ),
                   child: CircleAvatar(
@@ -592,10 +643,12 @@ class StudentCard extends StatelessWidget {
                     children: [
                       Text(
                         student['name'] ?? 'Unknown Student',
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF2A0845)),
+                            color: isActive
+                                ? Color(0xFF2A0845)
+                                : Colors.grey[600]),
                       ),
                       const SizedBox(height: 6),
                       Row(
@@ -639,23 +692,21 @@ class StudentCard extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
-                              color: student['active'] == true
+                              color: isActive
                                   ? Colors.green.withOpacity(0.1)
                                   : Colors.red.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: student['active'] == true
+                                color: isActive
                                     ? Colors.green.withOpacity(0.3)
                                     : Colors.red.withOpacity(0.3),
                               ),
                             ),
                             child: Text(
-                              student['active'] == true ? 'Active' : 'Inactive',
+                              isActive ? 'Active' : 'Inactive',
                               style: TextStyle(
                                 fontSize: 10,
-                                color: student['active'] == true
-                                    ? Colors.green
-                                    : Colors.red,
+                                color: isActive ? Colors.green : Colors.red,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -668,7 +719,7 @@ class StudentCard extends StatelessWidget {
 
                 // Action Switch
                 Switch(
-                  value: student['active'] ?? true,
+                  value: isActive,
                   onChanged: (value) => onToggleActive(),
                   activeColor: const Color(0xFF6750A4),
                   inactiveThumbColor: Colors.grey,

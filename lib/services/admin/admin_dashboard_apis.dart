@@ -405,9 +405,10 @@ class AdminApiService {
   }
 
   // Delete Student
-  static Future<Map<String, dynamic>> deleteStudent(String studentId) async {
+  static Future<Map<String, dynamic>> updateStudentStatus(
+      String studentId) async {
     try {
-      final response = await http.delete(
+      final response = await http.post(
         Uri.parse('${AppKeys.baseUrl}/student/$studentId'),
         headers: await _getHeaders(),
       );
