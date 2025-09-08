@@ -1,7 +1,7 @@
 class AppKeys {
   // urls\
 
-  static final appUrl = "http://192.168.1.6:3000";
+  static final appUrl = "http://192.168.0.104:3000";
   // static final appUrl = "https://techlinker-backend-8ood.vercel.app";
 
   static final baseUrl = '${appUrl}/api';
